@@ -1,0 +1,20 @@
+group = 'com.jobits.pos.core.client.rest'
+version = '0.0.1'
+description = 'JoBits POS REST:Core'
+
+
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+
+dependencies {
+    implementation 'org.jobits.pos:org.jobits.pos.core:4.3.0'
+}
+
+
