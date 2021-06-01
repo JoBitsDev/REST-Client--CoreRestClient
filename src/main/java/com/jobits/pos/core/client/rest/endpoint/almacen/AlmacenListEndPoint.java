@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jobits.pos.core.client.rest.endpoint;
+package com.jobits.pos.core.client.rest.endpoint.almacen;
 
 import com.jobits.pos.controller.almacen.AlmacenListService;
 import com.jobits.pos.controller.almacen.AlmacenManageService;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/almacen")
-public class AlmacenEndPoint extends CrudRestServiceTemplate<Almacen> {
+@RequestMapping(path = "/almacen_list")
+public class AlmacenListEndPoint extends CrudRestServiceTemplate<Almacen> {
 
     AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
 

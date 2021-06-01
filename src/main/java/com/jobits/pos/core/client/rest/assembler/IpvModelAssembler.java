@@ -5,23 +5,23 @@
  */
 package com.jobits.pos.core.client.rest.assembler;
 
-import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenListEndPoint;
-import com.jobits.pos.core.domain.models.Almacen;
+import com.jobits.pos.core.client.rest.endpoint.almacen.IPVEndPoint;
+import com.jobits.pos.core.domain.models.Ipv;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
 /**
  *
  * @author Home
  */
-public class AlmacenModelAssembler extends CrudModelAssembler<Almacen> {
+public class IpvModelAssembler extends CrudModelAssembler<Ipv> {
 
-    public AlmacenModelAssembler() {
-        super(AlmacenListEndPoint.class);
+    public IpvModelAssembler() {
+        super(IPVEndPoint.class);
     }
 
     @Override
-    public Object getId(Almacen entity) {
-        return entity.getCodAlmacen();
+    public Object getId(Ipv entity) {
+        return entity.getIpvPK();
     }
 
 }

@@ -5,23 +5,23 @@
  */
 package com.jobits.pos.core.client.rest.assembler;
 
-import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenListEndPoint;
-import com.jobits.pos.core.domain.models.Almacen;
+import com.jobits.pos.core.client.rest.endpoint.area.AreaDetailEndPoint;
+import com.jobits.pos.core.domain.models.Area;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
 /**
  *
  * @author Home
  */
-public class AlmacenModelAssembler extends CrudModelAssembler<Almacen> {
+public class AreaModelAssembler extends CrudModelAssembler<Area> {
 
-    public AlmacenModelAssembler() {
-        super(AlmacenListEndPoint.class);
+    public AreaModelAssembler() {
+        super(AreaDetailEndPoint.class);
     }
 
     @Override
-    public Object getId(Almacen entity) {
-        return entity.getCodAlmacen();
+    public Object getId(Area entity) {
+        return entity.getCodArea();
     }
 
 }
