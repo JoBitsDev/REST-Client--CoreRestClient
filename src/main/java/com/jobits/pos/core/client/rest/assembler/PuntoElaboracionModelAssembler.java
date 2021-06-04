@@ -23,5 +23,5 @@ public class PuntoElaboracionModelAssembler extends CrudModelAssembler<Cocina> {
     public Object getId(Cocina entity) {
         return entity.getCodCocina();
     }
-    
+
 }

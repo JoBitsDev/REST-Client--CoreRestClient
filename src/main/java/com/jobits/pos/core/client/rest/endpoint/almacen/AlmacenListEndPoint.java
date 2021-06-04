@@ -13,7 +13,9 @@ import com.jobits.pos.core.module.PosCoreModule;
 import com.root101.clean.core.app.usecase.CRUDUseCase;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -24,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/almacen_list")
 public class AlmacenListEndPoint extends CrudRestServiceTemplate<Almacen> {
 
+    public static final String RESET_ALMACEN_PATH = "/reset_almacen";
+    public static final RequestMethod RESET_ALMACEN_METHOD = RequestMethod.PUT;
+
     AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
 
     @Override
-    public CRUDUseCase<Almacen> getUc() {
+    public AlmacenListService getUc() {
         return PosCoreModule.getInstance().getImplementation(AlmacenListService.class);
     }
 
@@ -36,4 +41,9 @@ public class AlmacenListEndPoint extends CrudRestServiceTemplate<Almacen> {
         return almacenAssembler;
     }
 
+    @PutMapping(RESET_ALMACEN_PATH)
+    public boolean resetAlmacen(Almacen almacen) {
+        getUc().resetAlmacen(almacen);
+        return true;
+    }
 }
