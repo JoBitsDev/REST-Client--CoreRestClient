@@ -26,7 +26,7 @@ public class EscandalloEndPoint extends CrudRestServiceTemplate<RegistroEscandal
     EscandalloModelAssembler escandalloAssembler = new EscandalloModelAssembler();
 
     @Override
-    public CRUDUseCase<RegistroEscandallo> getUc() {
+    public EscandalloService getUc() {
         return PosCoreModule.getInstance().getImplementation(EscandalloService.class);
     }
 
