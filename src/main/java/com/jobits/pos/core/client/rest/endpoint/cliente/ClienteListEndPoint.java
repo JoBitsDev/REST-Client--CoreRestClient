@@ -26,7 +26,7 @@ public class ClienteListEndPoint extends CrudRestServiceTemplate<Cliente> {
     ClienteModelAssembler clienteAssembler = new ClienteModelAssembler();
 
     @Override
-    public CRUDUseCase<Cliente> getUc() {
+    public ClientesListService getUc() {
         return PosCoreModule.getInstance().getImplementation(ClientesListService.class);
     }
 
