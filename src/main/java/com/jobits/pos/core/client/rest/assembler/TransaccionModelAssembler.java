@@ -5,7 +5,7 @@
  */
 package com.jobits.pos.core.client.rest.assembler;
 
-import com.jobits.pos.core.client.rest.endpoint.almacen.TransaccionDetailEndPoint;
+import com.jobits.pos.core.client.rest.endpoint.almacen.TransaccionListEndPoint;
 import com.jobits.pos.core.domain.models.Transaccion;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
@@ -16,7 +16,7 @@ import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 public class TransaccionModelAssembler extends CrudModelAssembler<Transaccion> {
 
     public TransaccionModelAssembler() {
-        super(TransaccionDetailEndPoint.class);
+        super(TransaccionListEndPoint.class);
     }
 
     @Override
