@@ -27,7 +27,7 @@ public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
     AreaModelAssembler areaAssembler = new AreaModelAssembler();
 
     @Override
-    public CRUDUseCase<Area> getUc() {
+    public AreaVentaService getUc() {
         return PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
     }
 
