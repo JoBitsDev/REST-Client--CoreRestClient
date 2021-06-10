@@ -26,7 +26,7 @@ public class InsumoListEndPoint extends CrudRestServiceTemplate<Insumo> {
     InsumoModelAssembler insumoAssembler = new InsumoModelAssembler();
 
     @Override
-    public CRUDUseCase<Insumo> getUc() {
+    public InsumoListService getUc() {
         return PosCoreModule.getInstance().getImplementation(InsumoListService.class);
     }
 
