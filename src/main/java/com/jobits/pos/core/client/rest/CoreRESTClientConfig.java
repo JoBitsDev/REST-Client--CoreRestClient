@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CoreRESTClientConfig {
 
-    public static final String BASE_PACKAGE = "com.jobits.pos.client.rest";
+    public static final String BASE_PACKAGE = "com.jobits.pos.core.client.rest";
 
     static {
         PosCoreModule.init();
