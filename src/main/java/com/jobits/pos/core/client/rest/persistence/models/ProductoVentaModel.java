@@ -5,8 +5,8 @@ package com.jobits.pos.core.client.rest.persistence.models;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jobits.pos.core.domain.models.ProductoVenta;
 
 import java.io.Serializable;
 
@@ -21,21 +21,19 @@ public class ProductoVentaModel implements Serializable, Comparable<ProductoVent
     private String nombre;
     private float precioVenta;
     private String descripcion;
-    private SeccionModel seccionnombreSeccion;
+    //private SeccionModel seccionnombreSeccion;
 
     public ProductoVentaModel() {
     }
 
     public ProductoVentaModel(String codigoProducto, String nombre,
-            float precioVenta, String descripcion, SeccionModel seccionnombreSeccion) {
+            float precioVenta, String descripcion) {
         this.codigoProducto = codigoProducto;
         this.nombre = nombre;
         this.precioVenta = precioVenta;
         this.descripcion = descripcion;
-        this.seccionnombreSeccion = seccionnombreSeccion;
+        //  this.seccionnombreSeccion = seccionnombreSeccion;
     }
-    
-    
 
     public String getPCod() {
         return codigoProducto;
@@ -77,14 +75,6 @@ public class ProductoVentaModel implements Serializable, Comparable<ProductoVent
         this.descripcion = descripcion;
     }
 
-    public SeccionModel getSeccionnombreSeccion() {
-        return seccionnombreSeccion;
-    }
-
-    public void setSeccionnombreSeccion(SeccionModel seccionnombreSeccion) {
-        this.seccionnombreSeccion = seccionnombreSeccion;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -112,5 +102,10 @@ public class ProductoVentaModel implements Serializable, Comparable<ProductoVent
     @Override
     public int compareTo(ProductoVentaModel another) {
         return nombre.compareToIgnoreCase(another.nombre);
+    }
+
+    public static ProductoVentaModel of(ProductoVenta pv) {
+        return new ProductoVentaModel(
+                pv.getCodigoProducto(), pv.getNombre(), pv.getPrecioVenta(), pv.getDescripcion());
     }
 }

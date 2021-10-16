@@ -16,23 +16,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductoVentaOrdenModel {
 
+    private int id;
     private float enviadosACocina;
-    private ProductovOrdenPKModel productoVentaOrdenPK;
     private float cantidad;
     private ProductoVentaModel productoVenta;
     private int numeroComensal;
     private String nota;
 
     public ProductoVentaOrdenModel(float enviadosACocina,
-            ProductovOrdenPKModel productoVentaOrdenPK, float cantidad,
+             int id, float cantidad,
             ProductoVentaModel productoVenta, int numeroComensal,
             String nota) {
         this.enviadosACocina = enviadosACocina;
-        this.productoVentaOrdenPK = productoVentaOrdenPK;
         this.cantidad = cantidad;
         this.productoVenta = productoVenta;
         this.numeroComensal = numeroComensal;
         this.nota = nota;
+        this.id = id;
     }
 
     public float getEnviadosACocina() {
@@ -43,13 +43,15 @@ public class ProductoVentaOrdenModel {
         this.enviadosACocina = enviadosACocina;
     }
 
-    public ProductovOrdenPKModel getProductoVentaOrdenPK() {
-        return productoVentaOrdenPK;
+    public int getId() {
+        return id;
     }
 
-    public void setProductoVentaOrdenPK(ProductovOrdenPKModel productoVentaOrdenPK) {
-        this.productoVentaOrdenPK = productoVentaOrdenPK;
+    public void setId(int id) {
+        this.id = id;
     }
+
+  
 
     public float getCantidad() {
         return cantidad;
