@@ -8,6 +8,8 @@ package com.jobits.pos.core.client.rest.persistence.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jobits.pos.core.client.rest.persistence.models.ProductoVentaModel;
+import com.jobits.pos.core.domain.models.ProductoVenta;
+import com.jobits.pos.core.domain.models.Seccion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,13 +20,12 @@ import java.util.List;
  * @author Jorge
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SeccionModel implements Serializable, Comparable<SeccionModel>{
+public class SeccionModel implements Serializable, Comparable<SeccionModel> {
 
     private static final long serialVersionUID = 1L;
     private String nombreSeccion;
     private String descripcion;
 
-    @JsonIgnore
     private List<ProductoVentaModel> productos = new ArrayList<ProductoVentaModel>();
 
     public SeccionModel() {
@@ -92,8 +93,20 @@ public class SeccionModel implements Serializable, Comparable<SeccionModel>{
     }
 
     public void addProducto(ProductoVentaModel x) {
-        if(!productos.contains(x)){
+        if (!productos.contains(x)) {
             productos.add(x);
         }
+    }
+
+    public static SeccionModel of(Seccion s) {
+        SeccionModel ret = new SeccionModel();
+        ret.setNombreSeccion(s.getNombreSeccion());
+        ret.setDescripcion(s.getDescripcion());
+        List<ProductoVentaModel> pVenta = new ArrayList<>();
+        for (ProductoVenta p : s.getProductoVentaList()) {
+            pVenta.add(ProductoVentaModel.of(p));
+        }
+        ret.setProductos(pVenta);
+        return ret;
     }
 }

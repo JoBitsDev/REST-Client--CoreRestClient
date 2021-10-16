@@ -49,15 +49,18 @@ public class OrdenConverter implements Function<Orden, OrdenModel> {
             
             ProductoVentaModel productoVenta = new ProductoVentaModel(
                     p.getCodigoProducto(),p.getNombre(),p.getPrecioVenta(),
-                    p.getDescripcion(), seccion);
+                    p.getDescripcion());
             
-            ProductovOrdenPKModel pkMode = new ProductovOrdenPKModel(p.getCodigoProducto(),
-                    x.getOrden().getCodOrden(), x.getId());
 
             String nota = x.getNota() != null ? x.getNota().getDescripcion() : null;
             
-            ProductoVentaOrdenModel po = new ProductoVentaOrdenModel(x.getEnviadosacocina(),pkMode,
-                    x.getCantidad(),productoVenta,x.getNumeroComensal(),nota);
+            ProductoVentaOrdenModel po = new ProductoVentaOrdenModel(
+                    x.getEnviadosacocina()
+                    ,x.getId()
+                    ,x.getCantidad()
+                    ,productoVenta
+                    ,x.getNumeroComensal()
+                    ,nota);
                     pvo.add(po);
         }
         ret.setProductoVentaOrdenList(pvo);

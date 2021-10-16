@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.jobits.pos.core.client.rest.persistence.models;
+
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.utils.utils;
 import java.util.List;
@@ -24,17 +25,22 @@ public class VentaResumenModel {
             autorizos,
             gastosOtros;
 
-    private final  List<AreaListModel> areas;
-    private final List<DpteListModel> dptes;
-    private final List<PuntoElaboracionListModel> ptosElaboracion;
+    private List<AreaListModel> areas;
+    private List<DpteListModel> dptes;
+    private List<PuntoElaboracionListModel> ptosElaboracion;
 
-    public VentaResumenModel(Venta v,List<AreaListModel> areas, List<DpteListModel> dptes, List<PuntoElaboracionListModel> ptosElaboracion) {
+    public VentaResumenModel(Venta v) {
         ventaTotal = utils.setDosLugaresDecimalesFloat(VentaCalculator.getValorTotalVentas(v));
         ventaNeta = VentaCalculator.getValorTotalVentasNeta(v);
         gastosInsumo = utils.setDosLugaresDecimalesFloat(VentaCalculator.getValorTotalGastosInsumo(v));
         gastosSalario = utils.setDosLugaresDecimalesFloat(VentaCalculator.getValorTotalPagoTrabajadores(v));
         autorizos = utils.setDosLugaresDecimalesFloat(VentaCalculator.getValorTotalVentasCasa(v));
         gastosOtros = utils.setDosLugaresDecimalesFloat(VentaCalculator.getValorTotalOtrosGastos(v));
+
+    }
+
+    public VentaResumenModel(Venta v, List<AreaListModel> areas, List<DpteListModel> dptes, List<PuntoElaboracionListModel> ptosElaboracion) {
+        this(v);
         this.areas = areas;
         this.dptes = dptes;
         this.ptosElaboracion = ptosElaboracion;
@@ -74,5 +80,5 @@ public class VentaResumenModel {
 
     public List<PuntoElaboracionListModel> getPtosElaboracion() {
         return ptosElaboracion;
-    }    
+    }
 }
