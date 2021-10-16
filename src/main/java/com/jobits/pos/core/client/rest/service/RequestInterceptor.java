@@ -5,6 +5,8 @@
  */
 package com.jobits.pos.core.client.rest.service;
 
+import com.jobits.pos.controller.configuracion.ConfiguracionService;
+import com.jobits.pos.core.module.PosCoreModule;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -59,6 +61,8 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
 
     private void setCurrentUser(String token) {
         CoreUserResolver.resolveCurrentToken(token);
+        ConfiguracionService service = PosCoreModule.getInstance().getImplementation(ConfiguracionService.class);
+        service.cargarConfiguracion();
     }
 
 }
