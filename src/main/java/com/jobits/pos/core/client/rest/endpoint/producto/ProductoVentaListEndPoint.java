@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/producto_venta_list")
+@RequestMapping(path = "/producto-venta-list")
 public class ProductoVentaListEndPoint extends CrudRestServiceTemplate<ProductoVenta> {
 
     public static final String BULK_IMPORT_PRODUCTO_VENTA_PATH = "/bulk_import_producto_venta";
@@ -52,7 +52,7 @@ public class ProductoVentaListEndPoint extends CrudRestServiceTemplate<ProductoV
     public boolean bulkImportProductoInsumo(@RequestBody List<ProductoInsumo> productoInsumoList) {
         return getUc().bulkImportProductoInsumo(productoInsumoList);
     }
-
+ 
     @GetMapping(BULK_IMPORT_PRODUCTO_INSUMO_PATH)
     public boolean bulkImport(@RequestBody List<ProductoVenta> importList) {
         return getUc().bulkImport(importList);
