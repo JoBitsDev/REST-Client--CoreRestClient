@@ -5,7 +5,10 @@
  */
 package com.jobits.pos.core.client.rest;
 
+import com.jobits.pos.controller.configuracion.ConfiguracionService;
+import com.jobits.pos.core.client.rest.service.CoreUserResolver;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.root101.clean.core.app.services.UserResolver;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @author Jorge
  *
  */
-
 @Component
 public class CoreRESTClientConfig {
 
@@ -23,6 +25,7 @@ public class CoreRESTClientConfig {
 
     static {
         PosCoreModule.init();
+        UserResolver.registerUserResolverService(new CoreUserResolver());
     }
 
 }
