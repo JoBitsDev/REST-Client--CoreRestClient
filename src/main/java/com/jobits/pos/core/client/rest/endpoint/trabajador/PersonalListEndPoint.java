@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/personal_list")
+@RequestMapping(path = "/personal-list")
 public class PersonalListEndPoint extends CrudRestServiceTemplate<Personal> {
 
     PersonalModelAssembler personalAssembler = new PersonalModelAssembler();
@@ -35,4 +35,6 @@ public class PersonalListEndPoint extends CrudRestServiceTemplate<Personal> {
         return personalAssembler;
     }
 
+    
+    
 }
