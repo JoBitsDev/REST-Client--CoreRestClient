@@ -21,6 +21,8 @@ import com.jobits.pos.core.client.rest.assembler.models.IntegerModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.StringModelAssembler;
 import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenManageEndPoint;
 import com.jobits.pos.core.client.rest.persistence.models.DetallesVentasModel;
+import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
+import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
 import com.jobits.pos.core.client.rest.persistence.models.PuntoElaboracionListModel;
 import com.jobits.pos.core.client.rest.persistence.models.VentaCalculator;
 import com.jobits.pos.core.client.rest.persistence.models.VentaResumenController;
@@ -256,12 +258,12 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
         return ResponseEntity.ok().body(ret);
     }
     @PostMapping(CREATE_ORDEN)
-    ResponseEntity<Orden> createOrden(
+    ResponseEntity<OrdenModel> createOrden(
             @PathVariable("codMesa") String codMesa) {
         VentaDetailService ser = PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
         MesaService mSer = PosCoreModule.getInstance().getImplementation(MesaService.class);
         Orden ret = ser.createNewOrden(getUc().resolveVentaAbierta().getId(), mSer.findBy(codMesa));
-        return ResponseEntity.ok(ret);
+        return ResponseEntity.ok(new OrdenConverter().apply(ret));
     }
 
     @GetMapping(IS_Y_VISIBLE_PATH)
