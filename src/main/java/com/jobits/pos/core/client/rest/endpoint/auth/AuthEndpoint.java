@@ -11,6 +11,7 @@ import com.jobits.pos.core.client.rest.service.CoreUserResolver;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class AuthEndpoint extends DefaultEndpoint {
     private final String HEADER_BASIC = "Basic";
 
     @GetMapping(path = "/basic")
-    public Map<String,String> create(@RequestHeader("Tennant") String tennantToken,
+    public Map<String, Object> create(@RequestHeader("Tennant") String tennantToken,
             @RequestHeader("Authorization") String base64Credentials) {
         if (base64Credentials.contains(HEADER_BASIC)) {
             String ret = new String(Base64.getDecoder().decode(base64Credentials.substring(6)));
@@ -39,7 +40,10 @@ public class AuthEndpoint extends DefaultEndpoint {
             if (credentials.length == 2) {
                 LogInService service = PosCoreModule.getInstance().getImplementation(LogInService.class);
                 if (service.autenticar(credentials[0], credentials[1].toCharArray())) {
-                    return Collections.singletonMap("Token",CoreUserResolver.addUserAndSetCurrent(service.getUsuarioConectado(),tennantToken));
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("Token", CoreUserResolver.addUserAndSetCurrent(service.getUsuarioConectado(), tennantToken));
+                    map.put("User", service.getUsuarioConectado());
+                    return map;
 
                 }
             }

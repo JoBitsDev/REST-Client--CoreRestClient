@@ -43,7 +43,7 @@ public class AlmacenListEndPoint extends CrudRestServiceTemplate<Almacen> {
 
     @PutMapping(RESET_ALMACEN_PATH)
     public boolean resetAlmacen(Almacen almacen) {
-        getUc().resetAlmacen(almacen);
+        getUc().resetAlmacen(almacen.getCodAlmacen());
         return true;
     }
 }
