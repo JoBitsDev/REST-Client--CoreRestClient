@@ -12,10 +12,10 @@ import java.util.Collections;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,7 +28,7 @@ public class LicenceEndPoint {
 
     public static final String UID_PATH = "/uid";
 
-    public static final String LICENCE_PATH = "/";
+    public static final String LICENCE_PATH = "/status";
 
     public static final String UPDATE_LICENCE_PATH = "/renew";
 
@@ -40,15 +40,19 @@ public class LicenceEndPoint {
     }
 
     @GetMapping(LICENCE_PATH)
-    public ResponseEntity<Licence> getLicence(@RequestBody Map<String,Object> paramMap) {
-        Licence.getInstance().LICENCIA_ACTIVA = true;
-        Licence.getInstance().LICENCIA_VALIDA = true;
+    public ResponseEntity<Licence> getLicence(@RequestParam(name = "tipo", defaultValue = "R") String tipoLicencia) {
+        if (tipoLicencia.equals("R")) {
+            service.getEstadoLicencia(Licence.TipoLicencia.APLICACION);
+        }
+        if (tipoLicencia.equals("B")) {
+            service.getEstadoLicencia(Licence.TipoLicencia.SECUNDARIA);
+        }
         return ResponseEntity.ok(Licence.getInstance());
     }
 
-    @PostMapping(UPDATE_LICENCE_PATH)
+    @PutMapping(UPDATE_LICENCE_PATH)
     public ResponseEntity<Licence> renewLicence(@RequestBody String key) {
-        boolean ret = service.validateAndSafe(key);
+        service.validateAndSafe(key);
         return ResponseEntity.ok(Licence.getInstance());
     }
 
