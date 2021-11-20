@@ -13,32 +13,24 @@ import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.controller.venta.VentaListService;
 import com.jobits.pos.core.client.rest.assembler.VentaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.BooleanModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.DateModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.DayReviewWrapperModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.DoubleModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.FloatModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.IntegerModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.StringModelAssembler;
-import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenManageEndPoint;
 import com.jobits.pos.core.client.rest.persistence.models.DetallesVentasModel;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
-import com.jobits.pos.core.client.rest.persistence.models.PuntoElaboracionListModel;
 import com.jobits.pos.core.client.rest.persistence.models.VentaCalculator;
 import com.jobits.pos.core.client.rest.persistence.models.VentaResumenController;
 import com.jobits.pos.core.client.rest.persistence.models.VentaResumenModel;
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
 import com.jobits.pos.core.domain.models.Orden;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
@@ -106,13 +98,11 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
     public static final RequestMethod CREATE_ORDEN_METHOD = RequestMethod.POST;
 
     VentaModelAssembler ventaAssembler = new VentaModelAssembler();
-    DayReviewWrapperModelAssembler dayReviewWrapperAssembler = new DayReviewWrapperModelAssembler();
     BooleanModelAssembler booleanAssembler = new BooleanModelAssembler();
     FloatModelAssembler floatAssembler = new FloatModelAssembler();
     StringModelAssembler stringAssembler = new StringModelAssembler();
     IntegerModelAssembler integerAssembler = new IntegerModelAssembler();
     DoubleModelAssembler doubleAssembler = new DoubleModelAssembler();
-    DateModelAssembler dateAssembler = new DateModelAssembler();
 
     @Override
     public VentaListService getUc() {
@@ -126,10 +116,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @GetMapping(FIND_VENTAS_BY_MONTH_PATH)
     CollectionModel<EntityModel<DayReviewWrapper<Venta>>> findVentasByMonth(@RequestParam int month, @RequestParam int year) {
-        CollectionModel<EntityModel<DayReviewWrapper<Venta>>> entityModel
-                = dayReviewWrapperAssembler.toCollectionModel(getUc().findVentasByMonth(month, year));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).findVentasByMonth(month, year)).withRel("find_ventas_by_month"));
-        return entityModel;
+        return null;
     }
 
     @GetMapping(FIND_VENTAS_IN_RANGE_PATH)
@@ -150,10 +137,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @GetMapping(GET_FECHA_VENTAS_PATH)
     CollectionModel<EntityModel<Date>> getFechaVentas(@RequestBody List<Venta> ventas) {
-        CollectionModel<EntityModel<Date>> entityModel
-                = dateAssembler.toCollectionModel(getUc().getFechaVentas(ventas));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).getFechaVentas(ventas)).withRel("get_fecha_ventas"));
-        return entityModel;
+        return null;
     }
 
     @GetMapping(GET_TOTAL_GASTOS_PATH)
@@ -184,7 +168,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
     @GetMapping(GET_RESUMEN_AREA)
     ResponseEntity<List<DetallesVentasModel>> getResumenFromArea(
             @PathVariable("id") int idVentas,
-             @PathVariable("idArea") String idArea) {
+            @PathVariable("idArea") String idArea) {
         Venta v = getUc().findBy(idVentas);
         if (v == null) {
             return ResponseEntity.notFound().build();
@@ -195,38 +179,38 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
                         getUc().findBy(idVentas),
                         areaService.findBy(idArea))));
     }
-    
-     @GetMapping(GET_RESUMEN_PTO_ELAB)
+
+    @GetMapping(GET_RESUMEN_PTO_ELAB)
     ResponseEntity<List<DetallesVentasModel>> getResumenFromPuntoElab(
             @PathVariable("id") int idVentas,
-             @PathVariable("idPuntoElab") String idPuntoElab) {
+            @PathVariable("idPuntoElab") String idPuntoElab) {
         Venta v = getUc().findBy(idVentas);
         if (v == null) {
             return ResponseEntity.notFound().build();
         }
-         PuntoElaboracionListService ptoService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        PuntoElaboracionListService ptoService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
         return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
                 VentaCalculator.getResumenVentasCocina(
                         getUc().findBy(idVentas),
                         ptoService.findBy(idPuntoElab))));
     }
-      
-     @GetMapping(GET_RESUMEN_DPTE)
+
+    @GetMapping(GET_RESUMEN_DPTE)
     ResponseEntity<List<DetallesVentasModel>> getResumenFromDpte(
             @PathVariable("id") int idVentas,
-             @PathVariable("idUsuario") String idUsuario) {
+            @PathVariable("idUsuario") String idUsuario) {
         Venta v = getUc().findBy(idVentas);
         if (v == null) {
             return ResponseEntity.notFound().build();
         }
-         PersonalListService personalService = PosCoreModule.getInstance().getImplementation(PersonalListService.class);
+        PersonalListService personalService = PosCoreModule.getInstance().getImplementation(PersonalListService.class);
         return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
                 VentaCalculator.getResumenVentasCamarero(
                         getUc().findBy(idVentas),
                         personalService.findBy(idUsuario))));
     }
-    
-      @GetMapping(GET_RESUMEN_DETALLADO)
+
+    @GetMapping(GET_RESUMEN_DETALLADO)
     ResponseEntity<List<DetallesVentasModel>> getResumenDetallado(
             @PathVariable("id") int idVentas) {
         Venta v = getUc().findBy(idVentas);
@@ -257,6 +241,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
         }
         return ResponseEntity.ok().body(ret);
     }
+
     @PostMapping(CREATE_ORDEN)
     ResponseEntity<OrdenModel> createOrden(
             @PathVariable("codMesa") String codMesa) {
