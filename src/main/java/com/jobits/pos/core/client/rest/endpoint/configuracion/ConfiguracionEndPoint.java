@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/configuration")
+@RequestMapping(path = "pos/configuration")
 public class ConfiguracionEndPoint implements ConfiguracionService {
 
     public static final String CARGAR_CONFIGURACION_PATH = "/list";
