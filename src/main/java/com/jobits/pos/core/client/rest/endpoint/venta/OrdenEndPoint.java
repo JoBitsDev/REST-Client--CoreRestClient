@@ -6,11 +6,10 @@
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.mesa.MesaService;
-import com.jobits.pos.controller.productos.ProductoVentaListService;
+import com.jobits.pos.controller.productos.ProductoVentaService;
 import com.jobits.pos.controller.venta.OrdenService;
 import com.jobits.pos.core.client.rest.assembler.MesaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.ProductoVentaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
@@ -22,12 +21,10 @@ import com.jobits.pos.core.domain.models.ProductovOrden;
 import com.jobits.pos.core.domain.models.Seccion;
 import com.jobits.pos.core.domain.models.temporal.ProductoVentaWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.jobits.pos.core.repo.impl.ProductovOrdenDAO;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
@@ -47,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.function.EntityResponse;
 
 /**
  *
@@ -125,7 +121,6 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
 
     OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
     MesaModelAssembler mesaAssembler = new MesaModelAssembler();
-    ProductoVentaModelAssembler productoVentaAssembler = new ProductoVentaModelAssembler();
     ProductovOrdenModelAssembler productovOrdenAssembler = new ProductovOrdenModelAssembler();
 
     @Override
@@ -145,7 +140,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
 
     @PostMapping(ADD_PRODUCT_PATH)
     ResponseEntity<OrdenModel> addProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") String producto_seleccionado, @PathVariable("cantidad") Float cantidad) {
-        ProductoVentaListService productoService = PosCoreModule.getInstance().getImplementation(ProductoVentaListService.class);
+        ProductoVentaService productoService = PosCoreModule.getInstance().getImplementation(ProductoVentaService.class);
         getUc().addProduct(codOrden, productoService.findBy(producto_seleccionado), cantidad, null);
         Orden o = getUc().findBy(codOrden);
         return ResponseEntity.ok(new OrdenConverter().apply(o));
@@ -305,21 +300,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
         return entityModel;
     }
 
-    @GetMapping(GET_PDV_LIST_PATH)
-    CollectionModel<EntityModel<ProductoVenta>> getPDVList(@RequestParam String codOrden) {
-        CollectionModel<EntityModel<ProductoVenta>> entityModel
-                = productoVentaAssembler.toCollectionModel(getUc().getPDVList(codOrden));
-        entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getPDVList(codOrden)).withRel("get_producto_by_seccion"));
-        return entityModel;
-    }
 
-    @GetMapping(GET_PRODUCTO_BY_SEECION_PATH)
-    CollectionModel<EntityModel<ProductoVenta>> getProductoBySeccion(@RequestBody Seccion seccion) {
-        CollectionModel<EntityModel<ProductoVenta>> entityModel
-                = productoVentaAssembler.toCollectionModel(getUc().getProductoBySeccion(seccion));
-        entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getProductoBySeccion(seccion)).withRel("get_pdv_list"));
-        return entityModel;
-    }
 
     @GetMapping(GET_LISTA_MESAS_DISPONIBLES_PATH)
     CollectionModel<EntityModel<Mesa>> getListaMesasDisponibles() {
