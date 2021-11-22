@@ -11,7 +11,6 @@ import com.jobits.pos.core.client.rest.assembler.MesaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.PersonalModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.PuntoElaboracionModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.VentaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.BooleanModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.FloatModelAssembler;
@@ -26,6 +25,7 @@ import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
@@ -164,7 +164,6 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
     OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
     MesaModelAssembler mesaAssembler = new MesaModelAssembler();
     PersonalModelAssembler personalAssembler = new PersonalModelAssembler();
-    PuntoElaboracionModelAssembler cocinaAssembler = new PuntoElaboracionModelAssembler();
     AreaModelAssembler areaAssembler = new AreaModelAssembler();
     ProductovOrdenModelAssembler productoVordenAssembler = new ProductovOrdenModelAssembler();
     BooleanModelAssembler booleanAssembler = new BooleanModelAssembler();
@@ -351,11 +350,8 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
     }
 
     @GetMapping(GET_COCINAS_POR_VENTA_PATH)
-    CollectionModel<EntityModel<Cocina>> getCocinasPorVenta(@RequestParam int codVenta) {
-        CollectionModel<EntityModel<Cocina>> entityModel
-                = cocinaAssembler.toCollectionModel(getUc().getCocinasPorVenta(codVenta));
-        entityModel.add(linkTo(methodOn(VentaDetailEndPoint.class).getCocinasPorVenta(codVenta)).withRel("get_cocinas_por_venta"));
-        return entityModel;
+    List<Cocina> getCocinasPorVenta(@RequestParam int codVenta) {
+        return getUc().getCocinasPorVenta(codVenta);
     }
 
     @GetMapping(GET_AREAS_POR_VENTA_PATH)
