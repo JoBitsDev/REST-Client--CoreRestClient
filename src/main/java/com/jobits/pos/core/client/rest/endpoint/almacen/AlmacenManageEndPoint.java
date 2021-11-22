@@ -8,7 +8,6 @@ package com.jobits.pos.core.client.rest.endpoint.almacen;
 import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.InsumoAlmacenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.PuntoElaboracionModelAssembler;
 import com.jobits.pos.core.domain.TransaccionSimple;
 import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Insumo;
@@ -106,7 +105,6 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     public static final RequestMethod CREAR_OPERACION_TRASPASO_METHOD = RequestMethod.POST;
 
     AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
-    PuntoElaboracionModelAssembler cocinaAssembler = new PuntoElaboracionModelAssembler();
     InsumoAlmacenModelAssembler insumoAlmacenAssembler = new InsumoAlmacenModelAssembler();
 
     @Override
