@@ -6,6 +6,7 @@
 package com.jobits.pos.core.client.rest.persistence.models;
 
 import com.jobits.pos.controller.areaventa.AreaDetailService;
+import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
 import com.jobits.pos.controller.trabajadores.PersonalListService;
 import com.jobits.pos.core.domain.models.Area;
 import com.jobits.pos.core.domain.models.Cocina;
@@ -15,7 +16,6 @@ import com.jobits.pos.core.module.PosCoreModule;
 import com.root101.clean.core.app.usecase.CRUDUseCase;
 import java.util.ArrayList;
 import java.util.List;
-import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
 
 /**
  * Capa: Controllers
