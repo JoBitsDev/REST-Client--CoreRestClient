@@ -5,10 +5,9 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
-import com.jobits.pos.controller.mesa.MesaService;
+import com.jobits.pos.controller.areaventa.MesaService;
 import com.jobits.pos.controller.productos.ProductoVentaService;
 import com.jobits.pos.controller.venta.OrdenService;
-import com.jobits.pos.core.client.rest.assembler.MesaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
@@ -18,7 +17,6 @@ import com.jobits.pos.core.domain.models.Orden;
 import com.jobits.pos.core.domain.models.Personal;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
-import com.jobits.pos.core.domain.models.Seccion;
 import com.jobits.pos.core.domain.models.temporal.ProductoVentaWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.Collections;
@@ -29,8 +27,6 @@ import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -120,7 +116,6 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     public static final RequestMethod NOTA_METHOD = RequestMethod.GET;
 
     OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
-    MesaModelAssembler mesaAssembler = new MesaModelAssembler();
     ProductovOrdenModelAssembler productovOrdenAssembler = new ProductovOrdenModelAssembler();
 
     @Override
@@ -295,18 +290,13 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
 
     @GetMapping(FIND_MESA_CAJA_PATH)
     EntityModel<Mesa> findMesaCaja() {
-        EntityModel<Mesa> entityModel = mesaAssembler.toModel(getUc().findMesaCaja());
-        entityModel.add(linkTo(methodOn(OrdenEndPoint.class).findMesaCaja()).withRel("find_mesa_caja"));
-        return entityModel;
+      throw new UnsupportedOperationException();
     }
 
 
 
     @GetMapping(GET_LISTA_MESAS_DISPONIBLES_PATH)
     CollectionModel<EntityModel<Mesa>> getListaMesasDisponibles() {
-        CollectionModel<EntityModel<Mesa>> entityModel
-                = mesaAssembler.toCollectionModel(getUc().getListaMesasDisponibles());
-        entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getListaMesasDisponibles()).withRel("get_lista_mesas_disponibles"));
-        return entityModel;
+     throw new UnsupportedOperationException();
     }
 }

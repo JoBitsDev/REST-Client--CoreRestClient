@@ -5,18 +5,13 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.area;
 
-import com.jobits.pos.controller.areaventa.AreaDetailService;
 import com.jobits.pos.controller.areaventa.AreaVentaService;
-import com.jobits.pos.core.client.rest.assembler.AreaModelAssembler;
 import com.jobits.pos.core.domain.models.Area;
 import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.root101.clean.core.app.usecase.CRUDUseCase;
 import java.util.ArrayList;
 import java.util.List;
-import javax.websocket.server.PathParam;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/area-venta")
-public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
-
-    AreaModelAssembler areaAssembler = new AreaModelAssembler();
+public class AreaListEndPoint extends CrudRestEndPointTemplate<Area, AreaVentaService> implements AreaVentaService{
 
     public static final String LIST_NAMES_URL = "/list/names";
     public static final String LIST_MESAS_URL = "/{id}/list-mesas";
@@ -40,11 +33,6 @@ public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
     @Override
     public AreaVentaService getUc() {
         return PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
-    }
-
-    @Override
-    public CrudModelAssembler<Area> getAssembler() {
-        return areaAssembler;
     }
 
     @GetMapping(LIST_MESAS_URL)

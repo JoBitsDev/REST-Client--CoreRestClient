@@ -5,8 +5,8 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
-import com.jobits.pos.controller.areaventa.AreaDetailService;
-import com.jobits.pos.controller.mesa.MesaService;
+import com.jobits.pos.controller.areaventa.AreaVentaService;
+import com.jobits.pos.controller.areaventa.MesaService;
 import com.jobits.pos.controller.trabajadores.PersonalListService;
 import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.controller.venta.VentaListService;
@@ -173,7 +173,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
         if (v == null) {
             return ResponseEntity.notFound().build();
         }
-        AreaDetailService areaService = PosCoreModule.getInstance().getImplementation(AreaDetailService.class);
+        AreaVentaService areaService = PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
         return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
                 VentaCalculator.getResumenVentaPorArea(
                         getUc().findBy(idVentas),

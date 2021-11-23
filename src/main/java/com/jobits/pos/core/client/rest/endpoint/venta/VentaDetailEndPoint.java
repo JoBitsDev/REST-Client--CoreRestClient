@@ -6,8 +6,6 @@
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.venta.VentaDetailService;
-import com.jobits.pos.core.client.rest.assembler.AreaModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.MesaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.PersonalModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
@@ -162,9 +160,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     VentaModelAssembler ventaAssembler = new VentaModelAssembler();
     OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
-    MesaModelAssembler mesaAssembler = new MesaModelAssembler();
     PersonalModelAssembler personalAssembler = new PersonalModelAssembler();
-    AreaModelAssembler areaAssembler = new AreaModelAssembler();
     ProductovOrdenModelAssembler productoVordenAssembler = new ProductovOrdenModelAssembler();
     BooleanModelAssembler booleanAssembler = new BooleanModelAssembler();
     FloatModelAssembler floatAssembler = new FloatModelAssembler();
@@ -335,10 +331,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @GetMapping(GET_MESA_POR_VENTA_PATH)
     CollectionModel<EntityModel<Mesa>> getMesasPorVenta(@RequestParam int codVenta) {
-        CollectionModel<EntityModel<Mesa>> entityModel
-                = mesaAssembler.toCollectionModel(getUc().getMesasPorVenta(codVenta));
-        entityModel.add(linkTo(methodOn(VentaDetailEndPoint.class).getMesasPorVenta(codVenta)).withRel("get_mesas_por_venta"));
-        return entityModel;
+        throw new UnsupportedOperationException();
     }
 
     @GetMapping(GET_PERSONAL_POR_VENTA_PATH)
@@ -356,10 +349,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @GetMapping(GET_AREAS_POR_VENTA_PATH)
     CollectionModel<EntityModel<Area>> getAreasPorVenta(@RequestParam int codVenta) {
-        CollectionModel<EntityModel<Area>> entityModel
-                = areaAssembler.toCollectionModel(getUc().getAreasPorVenta(codVenta));
-        entityModel.add(linkTo(methodOn(VentaDetailEndPoint.class).getAreasPorVenta(codVenta)).withRel("get_areas_por_venta"));
-        return entityModel;
+        throw new UnsupportedOperationException();
     }
 
     @GetMapping(GET_RESUMEN_POR_MESA_PATH)
