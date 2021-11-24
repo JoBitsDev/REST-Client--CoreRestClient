@@ -27,11 +27,11 @@ public class ConfiguracionEndPoint implements ConfiguracionService {
 
     public static final String CARGAR_CONFIGURACION_PATH = "/list";
 
-    public static final String UPDATE_CONFIGURACION_PATH = "/configuration/update/{settingId}/{newValue}";
+    public static final String UPDATE_CONFIGURACION_PATH = "/update/{settingId}/{newValue}";
 
-    public static final String GET_CONFIGURACION_PATH = "/configuracion/find/{settingId}";
+    public static final String GET_CONFIGURACION_PATH = "/find/{settingId}";
 
-    public static final String GET_CONFIGURACION_Y_PATH = "/configuration/y";
+    public static final String GET_CONFIGURACION_Y_PATH = "/y";
 
     ConfiguracionService service = PosCoreModule.getInstance().getImplementation(ConfiguracionService.class);
 

@@ -10,9 +10,13 @@ import com.jobits.pos.core.domain.models.Seccion;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.jobits.pos.client.rest.endpoint.UrlTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,16 +25,46 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/seccion-list")
-public class SeccionListEndPoint extends CrudRestEndPointTemplate<Seccion, SeccionListService>
-        implements SeccionListService {
+@RequestMapping(path = "pos/seccion")
+public class SeccionListEndPoint implements SeccionListService {
 
     public static final String FIND_SECCION_BY_MESA_PATH = "/list/by-mesa/{idMesa}";
     public static final String MOVE_SECCION_PATH = "/{nombreSeccion}/move-to/{codCarta}";
 
-    @Override
+    public SeccionListEndPoint() {
+    }
+
     public SeccionListService getUc() {
         return PosCoreModule.getInstance().getImplementation(SeccionListService.class);
+    }
+
+    @Override
+    @PutMapping(UrlTemplate.EDIT_PATH)
+    public Seccion edit(@RequestBody Seccion t) throws RuntimeException {
+        return getUc().edit(t);
+    }
+
+    @Override
+    public Seccion destroy(Seccion t) throws RuntimeException {
+        throw new UnsupportedOperationException("En desarrollo");
+    }
+
+    @Override
+    @DeleteMapping(UrlTemplate.DESTROY_ID_PATH)
+    public Seccion destroyById(@PathVariable("id") Object o) throws RuntimeException {
+        return getUc().destroyById(o);
+    }
+
+    @Override
+    @GetMapping(UrlTemplate.FIND_BY_PATH)
+    public Seccion findBy(@PathVariable("id") Object o) throws RuntimeException {
+        return getUc().findBy(o);
+    }
+
+    @Override
+    @GetMapping(UrlTemplate.FIND_ALL_PATH)
+    public List<Seccion> findAll() throws RuntimeException {
+        return getUc().findAll();
     }
 
 //    @GetMapping(FIND_SECCION_BY_MESA_PATH)

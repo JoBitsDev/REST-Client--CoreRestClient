@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/area-venta")
+@RequestMapping(path = "pos/area-venta")
 public class AreaListEndPoint extends CrudRestEndPointTemplate<Area, AreaVentaService> implements AreaVentaService{
 
     public static final String LIST_NAMES_URL = "/list/names";

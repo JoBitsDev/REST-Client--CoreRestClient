@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/mesa")
+@RequestMapping(path = "pos/mesa")
 public class MesaEndPoint extends CrudRestEndPointTemplate<Mesa,MesaService> implements MesaService{
 
 
