@@ -7,7 +7,6 @@ package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.areaventa.AreaVentaService;
 import com.jobits.pos.controller.areaventa.MesaService;
-import com.jobits.pos.controller.trabajadores.PersonalListService;
 import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.controller.venta.VentaListService;
 import com.jobits.pos.core.client.rest.assembler.VentaModelAssembler;
@@ -46,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
+import com.jobits.pos.controller.trabajadores.PersonalUseCase;
 
 /**
  *
@@ -203,7 +203,7 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
         if (v == null) {
             return ResponseEntity.notFound().build();
         }
-        PersonalListService personalService = PosCoreModule.getInstance().getImplementation(PersonalListService.class);
+        PersonalUseCase personalService = PosCoreModule.getInstance().getImplementation(PersonalUseCase.class);
         return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
                 VentaCalculator.getResumenVentasCamarero(
                         getUc().findBy(idVentas),

@@ -7,7 +7,7 @@ package com.jobits.pos.core.client.rest.persistence.models;
 
 import com.jobits.pos.controller.areaventa.AreaVentaService;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
-import com.jobits.pos.controller.trabajadores.PersonalListService;
+import com.jobits.pos.controller.trabajadores.PersonalUseCase;
 import com.jobits.pos.core.domain.models.Area;
 import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.Personal;
@@ -78,7 +78,7 @@ public class VentaResumenController {
             service = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
         }
         if (entityClass == Personal.class) {
-            service = PosCoreModule.getInstance().getImplementation(PersonalListService.class);
+            service = PosCoreModule.getInstance().getImplementation(PersonalUseCase.class);
         }
         if (entityClass == Area.class) {
             service = PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
