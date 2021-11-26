@@ -15,6 +15,8 @@ import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "pos/area-venta")
-public class AreaListEndPoint extends CrudRestEndPointTemplate<Area, AreaVentaService> implements AreaVentaService{
+public class AreaListEndPoint extends CrudRestEndPointTemplate<Area, AreaVentaService>
+        implements AreaVentaService {
 
     public static final String LIST_NAMES_URL = "/list/names";
     public static final String LIST_MESAS_URL = "/{id}/list-mesas";
@@ -33,6 +36,12 @@ public class AreaListEndPoint extends CrudRestEndPointTemplate<Area, AreaVentaSe
     @Override
     public AreaVentaService getUc() {
         return PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
+    }
+
+    @Override
+    @PostMapping("/{cod}/add-mesa")
+    public Area addMesa(@PathVariable("cod") String codArea, @RequestBody Mesa newmesa) {
+        return getUc().addMesa(codArea, newmesa);
     }
 
     @GetMapping(LIST_MESAS_URL)
