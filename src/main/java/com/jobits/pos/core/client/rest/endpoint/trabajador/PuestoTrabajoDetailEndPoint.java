@@ -5,7 +5,6 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.trabajador;
 
-import com.jobits.pos.controller.trabajadores.PuestoTrabajoDetailService;
 import com.jobits.pos.core.client.rest.assembler.PuestoTrabajoModelAssembler;
 import com.jobits.pos.core.domain.models.PuestoTrabajo;
 import com.jobits.pos.core.module.PosCoreModule;
@@ -14,6 +13,7 @@ import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.jobits.pos.controller.trabajadores.PuestoTrabajoUseCase;
 
 /**
  *
@@ -27,7 +27,7 @@ public class PuestoTrabajoDetailEndPoint extends CrudRestServiceTemplate<PuestoT
 
     @Override
     public CRUDUseCase<PuestoTrabajo> getUc() {
-        return PosCoreModule.getInstance().getImplementation(PuestoTrabajoDetailService.class);
+        return PosCoreModule.getInstance().getImplementation(PuestoTrabajoUseCase.class);
     }
 
     @Override
