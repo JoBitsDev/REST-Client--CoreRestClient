@@ -7,7 +7,6 @@ package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.PersonalModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.VentaModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.models.BooleanModelAssembler;
@@ -160,7 +159,6 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     VentaModelAssembler ventaAssembler = new VentaModelAssembler();
     OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
-    PersonalModelAssembler personalAssembler = new PersonalModelAssembler();
     ProductovOrdenModelAssembler productoVordenAssembler = new ProductovOrdenModelAssembler();
     BooleanModelAssembler booleanAssembler = new BooleanModelAssembler();
     FloatModelAssembler floatAssembler = new FloatModelAssembler();
@@ -336,10 +334,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @GetMapping(GET_PERSONAL_POR_VENTA_PATH)
     CollectionModel<EntityModel<Personal>> getPersonalPorVenta(@RequestParam int codVenta) {
-        CollectionModel<EntityModel<Personal>> entityModel
-                = personalAssembler.toCollectionModel(getUc().getPersonalPorVenta(codVenta));
-        entityModel.add(linkTo(methodOn(VentaDetailEndPoint.class).getPersonalPorVenta(codVenta)).withRel("get_personal_por_ventas"));
-        return entityModel;
+        throw new UnsupportedOperationException();
     }
 
     @GetMapping(GET_COCINAS_POR_VENTA_PATH)

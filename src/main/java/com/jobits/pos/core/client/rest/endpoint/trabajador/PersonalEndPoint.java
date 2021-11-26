@@ -5,15 +5,14 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.trabajador;
 
-import com.jobits.pos.core.client.rest.assembler.PersonalModelAssembler;
 import com.jobits.pos.core.domain.models.Personal;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.root101.clean.core.app.usecase.CRUDUseCase;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.trabajadores.PersonalUseCase;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
@@ -21,18 +20,19 @@ import com.jobits.pos.controller.trabajadores.PersonalUseCase;
  */
 @RestController
 @RequestMapping(path = "pos/personal")
-public class PersonalDetailEndPoint extends CrudRestServiceTemplate<Personal> {
-
-    PersonalModelAssembler personalAssembler = new PersonalModelAssembler();
+public class PersonalEndPoint extends CrudRestEndPointTemplate<Personal, PersonalUseCase>
+        implements
+        PersonalUseCase {
 
     @Override
-    public CRUDUseCase<Personal> getUc() {
+    public PersonalUseCase getUc() {
         return PosCoreModule.getInstance().getImplementation(PersonalUseCase.class);
     }
 
     @Override
-    public CrudModelAssembler<Personal> getAssembler() {
-        return personalAssembler;
+    @PutMapping("/{usuario}/pagar")
+    public Personal pagarTrabajador(@PathVariable("usuario") String usuario) {
+        return getUc().pagarTrabajador(usuario);
     }
 
 }
