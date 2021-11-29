@@ -5,8 +5,11 @@
  */
 package com.jobits.pos.core.client.rest.advice;
 
+import com.jobits.pos.exception.UnAuthorizedException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,27 +28,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value
-            = {Exception.class})
-    protected ResponseEntity<Object> handleConflict(
-            Exception ex, WebRequest request) {
+//    // Let Spring BasicErrorController handle the exception, we just override the status code
+//    @ExceptionHandler(UnAuthorizedException.class)
+//    public void springHandleNotFound(HttpServletResponse response) throws IOException {
+//
+//        
+//        
+//        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+//
+//        response.sendError(HttpStatus.UNAUTHORIZED.value());
+//    }
 
-        List<String> errors = new ArrayList();
-        errors.add(ex.getMessage());
-        errors.add(ex.toString());
-        for (StackTraceElement s : ex.getStackTrace()) {
-            if (s.getClassName().contains("com.jobits.pos")) {
-                errors.add("Trace: {Class: "
-                        + s.getClassName()
-                        + " [" + s.getLineNumber() + "]}");
-            }
-        }
-
-        ApiError apiError
-                = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getLocalizedMessage(), errors);
-        return new ResponseEntity(apiError, HttpStatus.valueOf(apiError.getStatus()));
-
-    }
-    
-    
 }

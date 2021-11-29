@@ -8,7 +8,6 @@ package com.jobits.pos.core.client.rest.endpoint.venta;
 import com.jobits.pos.controller.areaventa.AreaVentaService;
 import com.jobits.pos.controller.areaventa.MesaService;
 import com.jobits.pos.controller.venta.VentaDetailService;
-import com.jobits.pos.controller.venta.VentaListService;
 import com.jobits.pos.core.client.rest.persistence.models.DetallesVentasModel;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
 import com.jobits.pos.controller.trabajadores.PersonalUseCase;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import com.jobits.pos.controller.venta.VentaCalendarResumeUseCase;
 
 /**
  *
@@ -43,7 +43,7 @@ import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
  */
 @RestController
 @RequestMapping(path = "/venta-list")
-public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaListService> {
+public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCalendarResumeUseCase> {
 
     public static final String FIND_VENTAS_BY_MONTH_PATH = "/find_ventas_by_month";
     public static final RequestMethod FIND_VENTAS_BY_MONTH_METHOD = RequestMethod.GET;
@@ -88,8 +88,8 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaList
     public static final RequestMethod CREATE_ORDEN_METHOD = RequestMethod.POST;
 
     @Override
-    public VentaListService getUc() {
-        return PosCoreModule.getInstance().getImplementation(VentaListService.class);
+    public VentaCalendarResumeUseCase getUc() {
+        return PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class);
     }
 
     @GetMapping(FIND_VENTAS_BY_MONTH_PATH)

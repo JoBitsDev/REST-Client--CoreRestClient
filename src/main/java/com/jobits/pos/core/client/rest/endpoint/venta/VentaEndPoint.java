@@ -6,6 +6,7 @@
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.venta.VentaDetailService;
+import com.jobits.pos.core.domain.VentaResourcesWrapper;
 import com.jobits.pos.core.domain.models.Area;
 import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.IpvRegistro;
@@ -36,8 +37,6 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
         return PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
     }
 
-    
-    
     @Override
     public List<Venta> getVentasDeFecha(Date date) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
@@ -144,22 +143,7 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public List<Mesa> getMesasPorVenta(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Personal> getPersonalPorVenta(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Cocina> getCocinasPorVenta(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Area> getAreasPorVenta(int codVenta) {
+    public VentaResourcesWrapper getVentaResources(int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
