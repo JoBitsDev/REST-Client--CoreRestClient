@@ -9,12 +9,6 @@ import com.jobits.pos.controller.areaventa.AreaVentaService;
 import com.jobits.pos.controller.areaventa.MesaService;
 import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.controller.venta.VentaListService;
-import com.jobits.pos.core.client.rest.assembler.VentaModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.BooleanModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.DoubleModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.FloatModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.IntegerModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.models.StringModelAssembler;
 import com.jobits.pos.core.client.rest.persistence.models.DetallesVentasModel;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
@@ -27,25 +21,21 @@ import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
 import com.jobits.pos.controller.trabajadores.PersonalUseCase;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 
 /**
  *
@@ -53,7 +43,7 @@ import com.jobits.pos.controller.trabajadores.PersonalUseCase;
  */
 @RestController
 @RequestMapping(path = "/venta-list")
-public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
+public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaListService> {
 
     public static final String FIND_VENTAS_BY_MONTH_PATH = "/find_ventas_by_month";
     public static final RequestMethod FIND_VENTAS_BY_MONTH_METHOD = RequestMethod.GET;
@@ -97,63 +87,14 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
     public static final String CREATE_ORDEN = "/get-venta-abierta/create-orden/{codMesa}";
     public static final RequestMethod CREATE_ORDEN_METHOD = RequestMethod.POST;
 
-    VentaModelAssembler ventaAssembler = new VentaModelAssembler();
-    BooleanModelAssembler booleanAssembler = new BooleanModelAssembler();
-    FloatModelAssembler floatAssembler = new FloatModelAssembler();
-    StringModelAssembler stringAssembler = new StringModelAssembler();
-    IntegerModelAssembler integerAssembler = new IntegerModelAssembler();
-    DoubleModelAssembler doubleAssembler = new DoubleModelAssembler();
-
     @Override
     public VentaListService getUc() {
         return PosCoreModule.getInstance().getImplementation(VentaListService.class);
     }
 
-    @Override
-    public CrudModelAssembler<Venta> getAssembler() {
-        return ventaAssembler;
-    }
-
     @GetMapping(FIND_VENTAS_BY_MONTH_PATH)
     CollectionModel<EntityModel<DayReviewWrapper<Venta>>> findVentasByMonth(@RequestParam int month, @RequestParam int year) {
         return null;
-    }
-
-    @GetMapping(FIND_VENTAS_IN_RANGE_PATH)
-    CollectionModel<EntityModel<Venta>> findVentasInRange(@RequestBody Calendar start, @RequestBody Calendar end) {
-        CollectionModel<EntityModel<Venta>> entityModel
-                = ventaAssembler.toCollectionModel(getUc().findVentasInRange(start, end));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).findVentasInRange(start, end)).withRel("find_ventas_in_range"));
-        return entityModel;
-    }
-
-    @GetMapping(GET_TOTAL_VENTAS_PATH)
-    CollectionModel<EntityModel<Double>> getTotalVentas(@RequestBody List<Venta> ventas) {
-        CollectionModel<EntityModel<Double>> entityModel
-                = doubleAssembler.toCollectionModel(getUc().getTotalVentas(ventas));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).getFechaVentas(ventas)).withRel("get_total_ventas"));
-        return entityModel;
-    }
-
-    @GetMapping(GET_FECHA_VENTAS_PATH)
-    CollectionModel<EntityModel<Date>> getFechaVentas(@RequestBody List<Venta> ventas) {
-        return null;
-    }
-
-    @GetMapping(GET_TOTAL_GASTOS_PATH)
-    CollectionModel<EntityModel<Float>> getTotalGastos(@RequestBody List<Venta> ventas) {
-        CollectionModel<EntityModel<Float>> entityModel
-                = floatAssembler.toCollectionModel(getUc().getTotalGastos(ventas));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).getTotalGastos(ventas)).withRel("get_total_gastos"));
-        return entityModel;
-    }
-
-    @GetMapping(GET_TOTAL_ORDEN_PATH)
-    CollectionModel<EntityModel<Integer>> getTotalOrden(@RequestBody List<Venta> ventas) {
-        CollectionModel<EntityModel<Integer>> entityModel
-                = integerAssembler.toCollectionModel(getUc().getTotalOrden(ventas));
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).getTotalOrden(ventas)).withRel("get_total_orden"));
-        return entityModel;
     }
 
     @GetMapping(RESUMEN)
@@ -249,13 +190,6 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
         MesaService mSer = PosCoreModule.getInstance().getImplementation(MesaService.class);
         Orden ret = ser.createNewOrden(getUc().resolveVentaAbierta().getId(), mSer.findBy(codMesa));
         return ResponseEntity.ok(new OrdenConverter().apply(ret));
-    }
-
-    @GetMapping(IS_Y_VISIBLE_PATH)
-    EntityModel<Boolean> isYVisible() {
-        EntityModel<Boolean> entityModel = booleanAssembler.toModel(getUc().isYVisible());
-        entityModel.add(linkTo(methodOn(VentaListEndPoint.class).isYVisible()).withRel("is_y_visible"));
-        return entityModel;
     }
 
 }

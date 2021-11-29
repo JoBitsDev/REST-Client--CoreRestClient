@@ -10,6 +10,7 @@ import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.root101.clean.core.app.usecase.AbstractUseCaseImpl;
 import java.util.List;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.jobits.pos.client.rest.endpoint.UrlTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +62,12 @@ public class MesaEndPoint extends AbstractUseCaseImpl implements MesaService {
     @GetMapping(UrlTemplate.FIND_ALL_PATH)
     public List<Mesa> findAll() throws RuntimeException {
         return getUc().findAll();
+    }
+
+    @Override
+    @GetMapping(UrlTemplate.FIND_ALL_PATH)
+    public List<Mesa> getListaMesasDisponibles() {
+        return getUc().getListaMesasDisponibles();
     }
 
 }

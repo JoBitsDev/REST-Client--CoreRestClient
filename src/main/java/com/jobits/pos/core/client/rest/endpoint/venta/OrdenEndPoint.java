@@ -8,23 +8,15 @@ package com.jobits.pos.core.client.rest.endpoint.venta;
 import com.jobits.pos.controller.areaventa.MesaService;
 import com.jobits.pos.controller.productos.ProductoVentaService;
 import com.jobits.pos.controller.venta.OrdenService;
-import com.jobits.pos.core.client.rest.assembler.OrdenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.ProductovOrdenModelAssembler;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
 import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.domain.models.Orden;
-import com.jobits.pos.core.domain.models.Personal;
-import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
-import com.jobits.pos.core.domain.models.temporal.ProductoVentaWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -47,7 +39,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping(path = "/orden")
-public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
+public class OrdenEndPoint {
 
     public static final String ADD_PRODUCT_PATH = "/{id}/add-product/{idProducto}/{cantidad}";
     public static final RequestMethod ADD_PRODUCT_METHOD = RequestMethod.POST;
@@ -115,17 +107,8 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     public static final String NOTA_PATH = "/{id}/nota-from/{codProducto}";
     public static final RequestMethod NOTA_METHOD = RequestMethod.GET;
 
-    OrdenModelAssembler ordenAssembler = new OrdenModelAssembler();
-    ProductovOrdenModelAssembler productovOrdenAssembler = new ProductovOrdenModelAssembler();
-
-    @Override
     public OrdenService getUc() {
         return PosCoreModule.getInstance().getImplementation(OrdenService.class);
-    }
-
-    @Override
-    public CrudModelAssembler<Orden> getAssembler() {
-        return ordenAssembler;
     }
 
     @GetMapping("{id}")
@@ -141,15 +124,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
         return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
 
-    @PostMapping(ADD_PRODUCTO_COMPUESTO_PATH)
-    void addProductoCompuesto(@RequestParam String codOrden, @RequestBody ProductoVenta producto_agregar, @RequestBody Float cantidad, @RequestBody List<ProductoVentaWrapper> lista_agregos) {
-        getUc().addProductoCompuesto(codOrden, producto_agregar, cantidad, lista_agregos);
-    }
 
-    @PostMapping(ADD_PRODUCTO_IN_HOT_PATH)
-    void addProductInHot(@RequestParam String codOrden, @RequestParam String nombre, @RequestParam String precio, @RequestParam String cantidad) {
-        getUc().addProductInHot(codOrden, nombre, precio, cantidad);
-    }
 
     @DeleteMapping(REMOVE_PRODUCT_PATH)
     ResponseEntity<OrdenModel> removeProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") int producto_orden_seleccionado, @PathVariable("cantidad") Float cantidad) {
@@ -188,28 +163,8 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     @PutMapping(MOVER_A_PATH)
     ResponseEntity<OrdenModel> moverA(@PathVariable("id") String codOrden, @PathVariable("codMesa") String codMesa) {
         Orden o = getUc().findBy(codOrden);
-        MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().moverA(codOrden, codMesa)));
     }
-//
-//     @PutMapping(MOVER_A_PATH)
-//    ResponseEntity<OrdenModel> moverA(@PathVariable("id") String codOrden,@PathVariable("codMesa") String codMesa) {
-//        Orden o = getUc().findBy(codOrden);
-//        MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
-//        getUc().moverA(codOrden, codMesa);
-//        if (o != null) {
-//            if (o.getHoraTerminada() != null) {
-//                Mesa m = o.getMesacodMesa();
-//                m.setEstado("Vacia");
-//                mService.edit(m);
-//                throw new ResponseStatusException(HttpStatus.GONE, "La mesa ya no se encuentra abierta");
-//            } else {
-//                return ResponseEntity.ok(new OrdenConverter().apply(o));
-//            }
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "La orden se elimino de manera inesperada");
-//        }
-//    }
 
     @PostMapping(ADD_NOTA_PATH)
     void addNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
@@ -234,21 +189,11 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
         for (ProductovOrden p : o.getProductovOrdenList()) {
             if (p.getId() == idProducto) {
                 if (p.getNota() != null) {
-                    return ResponseEntity.ok(Collections.singletonMap("nota", Objects.requireNonNullElse(p.getNota().getDescripcion(),"")));
+                    return ResponseEntity.ok(Collections.singletonMap("nota", Objects.requireNonNullElse(p.getNota().getDescripcion(), "")));
                 }
             }
         }
         return ResponseEntity.ok(Collections.singletonMap("nota", ""));
-    }
-
-    @GetMapping(CAN_VIEW_ORDEN_LOG_PATH)
-    void canViewOrdenLog(@RequestBody Personal usuario, String codOrden) {
-        getUc().canViewOrdenLog(usuario, codOrden);
-    }
-
-    @GetMapping(VALIDATE_ADD_ORDEN_PATH)
-    boolean validateAddOrden() {
-        return getUc().validateAddOrden();
     }
 
     @PutMapping(SET_DE_LA_CASA_PATH)
@@ -259,21 +204,6 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     @PutMapping(SET_PORCIENTO_PATH)
     void setPorciento(@RequestParam String codOrden, @RequestBody float porciento_servicio) {
         getUc().setPorciento(codOrden, porciento_servicio);
-    }
-
-    @GetMapping(GET_VALOR_TOTAL_ORDEN_PATH)
-    float getValorTotalOrden(@RequestParam String codOrden) {
-        return getUc().getValorTotalOrden(codOrden);
-    }
-
-    @PostMapping(IMPRIMIR_PRE_TICKET_PATH)
-    void imprimirPreTicket(@RequestParam String codOrden) {
-        getUc().imprimirPreTicket(codOrden);
-    }
-
-    @PostMapping(IMPRIMIR_LISTA_ORDENES_PATH)
-    void impimirListaOrdenes(@RequestBody List<Orden> list, @RequestParam int codVenta) {
-        getUc().impimirListaOrdenes(list, codVenta);
     }
 
     @PutMapping(ENVIAR_COCINA_PATH)
@@ -288,15 +218,8 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
         return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
 
-    @GetMapping(FIND_MESA_CAJA_PATH)
-    EntityModel<Mesa> findMesaCaja() {
-      throw new UnsupportedOperationException();
-    }
-
-
-
     @GetMapping(GET_LISTA_MESAS_DISPONIBLES_PATH)
     CollectionModel<EntityModel<Mesa>> getListaMesasDisponibles() {
-     throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }
