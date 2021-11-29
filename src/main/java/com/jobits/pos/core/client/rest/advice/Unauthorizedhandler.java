@@ -26,17 +26,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  *
  */
 @ControllerAdvice
-public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class Unauthorizedhandler extends ResponseEntityExceptionHandler {
 
-//    // Let Spring BasicErrorController handle the exception, we just override the status code
-//    @ExceptionHandler(UnAuthorizedException.class)
-//    public void springHandleNotFound(HttpServletResponse response) throws IOException {
-//
-//        
-//        
-//        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-//
-//        response.sendError(HttpStatus.UNAUTHORIZED.value());
-//    }
+    // Let Spring BasicErrorController handle the exception, we just override the status code
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity handleUnauthorized(Exception e) throws IOException {
+        return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
 }
