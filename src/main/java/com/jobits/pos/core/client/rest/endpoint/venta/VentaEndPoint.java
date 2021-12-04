@@ -17,6 +17,7 @@ import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
@@ -34,11 +35,11 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     public VentaDetailService getUc() {
-        return PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Venta> getVentasDeFecha(Date date) {
+    public List<Venta> getVentasDeFecha(LocalDate date) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -48,12 +49,12 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public Venta cambiarTurno(int idTurnoATerminar, Personal user) {
+    public Venta cambiarTurno(int idTurnoATerminar) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean canOpenNuevoTurno(Date fecha) {
+    public boolean canOpenNuevoTurno(LocalDate fecha) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -68,17 +69,17 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public Orden createNewOrden(int codVenta, Mesa mesa) {
+    public Orden createNewOrden(int codVenta, String codMesa) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public float getAutorizosTotalDelProducto(ProductoVenta productoVenta, int codVenta) {
+    public float getAutorizosTotalDelProducto(String codProductoVenta, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Float getGastoTotalDeInsumo(IpvRegistro i, int codVenta) {
+    public Float getGastoTotalDeInsumo(String codCocina, String codInsumo, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -88,12 +89,12 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public Float getPagoTrabajador(Personal personal, int codVenta, int dividirEntre) {
+    public Float getPagoTrabajador(String codPersonal, int codVenta, int dividirEntre) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Float getPropinaTrabajador(Personal personal, int codVenta) {
+    public Float getPropinaTrabajador(String codPersonal, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -103,7 +104,7 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public Venta inicializarVentas(Date fecha, boolean nuevaVenta) {
+    public Venta inicializarVentas(LocalDate fecha, boolean nuevaVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -113,12 +114,12 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    public void printPagoPorVentaPersonal(Personal user, int codVenta, boolean printValores) {
+    public void printPagoPorVentaPersonal(String codPersonal, int codVenta, boolean printValores) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void printComisionPorcentualResumen(Mesa mesa, int idVenta) {
+    public void printComisionPorcentualResumen(String codMesa, int idVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -142,9 +143,5 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public VentaResourcesWrapper getVentaResources(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
 
 }

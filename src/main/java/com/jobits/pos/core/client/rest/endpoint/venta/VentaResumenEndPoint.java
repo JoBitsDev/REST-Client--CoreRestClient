@@ -19,6 +19,7 @@ import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/venta")
+@RequestMapping(path = "/venta/resumen")
 public class VentaResumenEndPoint extends DefaultEndpoint
         implements VentaResumenUseCase {
 
@@ -41,42 +42,42 @@ public class VentaResumenEndPoint extends DefaultEndpoint
     }
 
     @Override
-    public List<ProductovOrden> getResumenPorMesa(int codVenta, Mesa mesa) {
+    public List<ProductovOrden> getResumenPorMesa(int codVenta, String codMesa) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ProductovOrden> getResumenPorPersonal(int codVenta, Personal personal) {
+    public List<ProductovOrden> getResumenPorPersonal(int codVenta, String codPersonal) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ProductovOrden> getResumenPorCocina(int codVenta, Cocina cocina) {
+    public List<ProductovOrden> getResumenPorCocina(int codVenta, String codCocina) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ProductovOrden> getResumenPorArea(int codVenta, Area area) {
+    public List<ProductovOrden> getResumenPorArea(int codVenta, String codArea) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getTotalResumenMesa(int codVenta, Mesa mesa) {
+    public String getTotalResumenMesa(int codVenta, String mesa) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getTotalResumenDependiente(int codVenta, Personal personal) {
+    public String getTotalResumenDependiente(int codVenta, String personal) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getTotalResumenCocina(int codVenta, Cocina cocina) {
+    public String getTotalResumenCocina(int codVenta, String cocina) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getTotalResumenArea(int codVenta, Area area) {
+    public String getTotalResumenArea(int codVenta, String area) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -86,27 +87,42 @@ public class VentaResumenEndPoint extends DefaultEndpoint
     }
 
     @Override
+    public VentaResourcesWrapper getVentaResources(int codVenta) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public float getVentaTotalDelProducto(ProductoVenta productoVenta, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void printMesaResumen(Mesa mesa, int idVenta) {
+    public void printMesaResumen(String codMesa, int idVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void printAreaResumen(Area a, int codVenta) {
+    public void printAreaResumen(String codArea, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void printPersonalResumenRow(Personal p, int codVenta, boolean printValores) {
+    public void printPersonalResumenRow(String codPersonal, int codVenta, boolean printValores) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void printCocinaResumen(String codCocina, int codVenta, boolean printValores) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener pl) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener pl) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
