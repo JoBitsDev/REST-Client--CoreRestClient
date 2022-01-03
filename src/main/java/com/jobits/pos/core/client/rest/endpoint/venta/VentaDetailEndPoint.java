@@ -198,7 +198,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @PostMapping(PRINT_COMISION_PORCENTUAL_RESUMEN_PATH)
     void printComisionPorcentualResumen(@RequestBody Mesa mesa, @RequestBody Venta venta) {
-        getUc().printComisionPorcentualResumen(mesa, venta);
+        getUc().printComisionPorcentualResumen(mesa, venta.getId());
     }
 
     @PostMapping(PRINT_Z_PATH)
@@ -223,7 +223,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @PostMapping(PRINT_MESA_RESUMEN_PATH)
     void printMesaResumen(@RequestBody Mesa mesa, @RequestBody Venta venta) {
-        getUc().printMesaResumen(mesa, venta);
+        getUc().printMesaResumen(mesa, venta.getId());
     }
 
     @PostMapping(PRINT_AREA_RESUMEN_PATH)
@@ -251,7 +251,7 @@ public class VentaDetailEndPoint extends CrudRestServiceTemplate<Venta> {
 
     @PostMapping(CAMBIO_TURNO_PATH)
     EntityModel<Venta> cambiarTurno(@RequestBody Venta fecha, @RequestBody Personal user) {
-        EntityModel<Venta> entityModel = ventaAssembler.toModel(getUc().cambiarTurno(fecha, user));
+        EntityModel<Venta> entityModel = ventaAssembler.toModel(getUc().cambiarTurno(fecha.getId(), user));
         entityModel.add(linkTo(methodOn(VentaDetailEndPoint.class).cambiarTurno(fecha, user)).withRel("cambiar_turno"));
         return entityModel;
     }

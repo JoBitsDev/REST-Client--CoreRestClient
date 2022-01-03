@@ -80,13 +80,13 @@ public class GastoOperacionEndPoint extends CrudRestServiceTemplate<GastoVenta> 
 
     @PutMapping(REMOVE_GASTO_PATH)
     public boolean removeGasto(@RequestBody GastoVenta gastoVenta, @RequestBody Venta diaVenta) {
-        getUc().removeGasto(gastoVenta, diaVenta);
+        getUc().removeGasto(gastoVenta.getGastoVentaPK());
         return true;
     }
 
     @GetMapping(GET_VALOR_TOTAL_GASTOS_PATH)
     public float getValorTotalGastos(@RequestBody Venta diaVenta) {
-        return getUc().getValorTotalGastos(diaVenta);
+        return getUc().getValorTotalGastos(diaVenta.getId());
     }
 
     @GetMapping(GET_NOMBRE_BY_TIPO_PATH)

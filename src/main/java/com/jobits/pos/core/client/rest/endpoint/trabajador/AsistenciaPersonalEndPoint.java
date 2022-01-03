@@ -64,7 +64,7 @@ public class AsistenciaPersonalEndPoint extends CrudRestServiceTemplate<Asistenc
 
     @PostMapping(IMPRIMIR_ASISTENCIA_PATH)
     public boolean imprimirAsistencia(@RequestBody Venta venta) {
-        getUc().imprimirAsistencia(venta);
+        getUc().imprimirAsistencia(venta.getId());
         return true;
     }
 
@@ -77,7 +77,7 @@ public class AsistenciaPersonalEndPoint extends CrudRestServiceTemplate<Asistenc
     @GetMapping(GET_PERSONAL_TRABAJANDO_PATH)
     CollectionModel<EntityModel<AsistenciaPersonal>> getPersonalTrabajando(@RequestBody Venta v) {
         CollectionModel<EntityModel<AsistenciaPersonal>> entityModel
-                = asistenciaPersonalAssembler.toCollectionModel(getUc().getPersonalTrabajando(v));
+                = asistenciaPersonalAssembler.toCollectionModel(getUc().getPersonalTrabajando(v.getId()));
         entityModel.add(linkTo(methodOn(AsistenciaPersonalEndPoint.class).getPersonalTrabajando(v)).withRel("get_personal_trabajando"));
         return entityModel;
     }
@@ -85,7 +85,7 @@ public class AsistenciaPersonalEndPoint extends CrudRestServiceTemplate<Asistenc
     @PutMapping(UPDATE_SALARIES_PATH)
     CollectionModel<EntityModel<AsistenciaPersonal>> updateSalaries(@RequestBody Venta venta) {
         CollectionModel<EntityModel<AsistenciaPersonal>> entityModel
-                = asistenciaPersonalAssembler.toCollectionModel(getUc().updateSalaries(venta));
+                = asistenciaPersonalAssembler.toCollectionModel(getUc().updateSalaries(venta.getId()));
         entityModel.add(linkTo(methodOn(AsistenciaPersonalEndPoint.class).updateSalaries(venta)).withRel("update_salaries"));
         return entityModel;
     }
