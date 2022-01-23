@@ -55,7 +55,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
         String token = request.getHeader("Authorization");
         System.out.println("RequestURI::" + requestURI + " || Search for Token  :: " + token);
         System.out.println("____________________________________________");
-        return token.replace("Bearer ", "");
+        return token != null ? token.replace("Bearer ", "") : "" ;
 
     }
 
