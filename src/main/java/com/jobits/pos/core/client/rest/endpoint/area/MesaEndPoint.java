@@ -59,7 +59,6 @@ public class MesaEndPoint extends AbstractUseCaseImpl implements MesaService {
     }
 
     @Override
-    @GetMapping(UrlTemplate.FIND_ALL_PATH)
     public List<Mesa> findAll() throws RuntimeException {
         return getUc().findAll();
     }
