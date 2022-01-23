@@ -28,6 +28,7 @@ import com.jobits.pos.core.client.rest.persistence.models.VentaCalculator;
 import com.jobits.pos.core.client.rest.persistence.models.VentaResumenController;
 import com.jobits.pos.core.client.rest.persistence.models.VentaResumenModel;
 import com.jobits.pos.core.domain.models.InsumoAlmacen;
+import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.domain.models.Orden;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
