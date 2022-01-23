@@ -5,7 +5,7 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.TransaccionListService;
+import com.jobits.pos.controller.almacen.TransaccionService;
 import com.jobits.pos.core.client.rest.assembler.TransaccionModelAssembler;
 import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Transaccion;
@@ -36,8 +36,8 @@ public class TransaccionListEndPoint extends CrudRestServiceTemplate<Transaccion
     TransaccionModelAssembler transaccionAssembler = new TransaccionModelAssembler();
 
     @Override
-    public TransaccionListService getUc() {
-        return PosCoreModule.getInstance().getImplementation(TransaccionListService.class);
+    public TransaccionService getUc() {
+        return PosCoreModule.getInstance().getImplementation(TransaccionService.class);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TransaccionListEndPoint extends CrudRestServiceTemplate<Transaccion
     @GetMapping(FIND_ALL_BY_ALMACEN_PATH)
     public CollectionModel<EntityModel<Transaccion>> findAllByAlmacen(@RequestBody Almacen almacen) {
         CollectionModel<EntityModel<Transaccion>> entityModel
-                = transaccionAssembler.toCollectionModel(getUc().findAllByAlmacen(almacen));
+                = transaccionAssembler.toCollectionModel(getUc().findAllByAlmacen(almacen.getCodAlmacen()));
         entityModel.add(linkTo(methodOn(TransaccionListEndPoint.class).findAllByAlmacen(almacen)).withRel("find_all_by_almacen"));
         return entityModel;
     }
