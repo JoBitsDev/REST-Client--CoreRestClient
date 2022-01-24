@@ -80,11 +80,6 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @Override
-    public boolean canViewOrdenLog(Personal usuario, String codOrden) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public List<ProductoVenta> getPDVList(String codOrden) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
