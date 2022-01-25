@@ -100,11 +100,6 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @Override
-    public void impimirListaOrdenes(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     @PostMapping("{id}/set-client/{idClient}")
     public Orden setCliente(@PathVariable("id") String codOrden, @PathVariable("idClient") Integer clienteId) {
         return getUc().setCliente(codOrden, clienteId);
