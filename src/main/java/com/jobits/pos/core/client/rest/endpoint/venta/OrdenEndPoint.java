@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -45,7 +46,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/orden")
+@RequestMapping(path = "pos/orden")
 public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         implements OrdenService {
 
@@ -55,42 +56,46 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @GetMapping("{id}")
+    @Deprecated
     public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
     }
 
     @Override
-    public ProductovOrden addProduct(String codOrden, String producto_seleccionado, Float cantidad, Optional<Integer> productoOrdenAgregar) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PostMapping("{codOrden}/add-product/{codProduct}/{cantidad}/extras")
+    public ProductovOrden addProduct(@PathVariable("codOrden") String codOrden,
+            @PathVariable("codProduct") String producto_seleccionado,
+            @PathVariable("cantidad") Float cantidad,
+            @PathParam("agregadoA") Optional<Integer> productoOrdenAgregar) {
+        return getUc().addProduct(codOrden, codOrden, cantidad, productoOrdenAgregar);
     }
 
     @Override
-    public Orden addProductoCompuesto(String codOrden, String producto_agregar, Float cantidad, List<ProductoVentaWrapper> lista_agregos) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PostMapping("{codOrden}/add-product-advanced/{codProduct}/{cantidad}")
+    public Orden addProductoCompuesto(@PathVariable("codOrden") String codOrden,
+            @PathVariable("codProduct") String producto_agregar,
+            @PathVariable("cantidad") Float cantidad,
+            @RequestBody List<ProductoVentaWrapper> lista_agregos) {
+        return getUc().addProductoCompuesto(codOrden, producto_agregar, cantidad, lista_agregos);
     }
 
     @Override
-    public Orden addProductInHot(String codOrden, String nombre, String precio, String cantidad) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PostMapping("{codOrden}/add-product-hot/{nombre}/{precio}/{cantidad}")
+    public Orden addProductInHot(@PathParam("codOrden") String codOrden,
+            @PathVariable("nombre") String nombre,
+            @PathVariable("precio") String precio, @PathVariable("cantidad") String cantidad) {
+        return getUc().addProductInHot(codOrden, nombre, precio, cantidad);
     }
 
     @Override
-    public Orden removeProduct(String codOrden, int idProductoOrden, float cantidad) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @DeleteMapping("{codOrden}/remove-product/{id}/{cantidad}")
+    public Orden removeProduct(@PathVariable("codOrden") String codOrden, @PathVariable("id") int idProductoOrden, @PathVariable("cantidad") float cantidad) {
+        return getUc().removeProduct(codOrden, idProductoOrden, cantidad);
     }
 
     @Override
-    public List<ProductoVenta> getPDVList(String codOrden) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<ProductoVenta> getProductoBySeccion(String seccion) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void imprimirPreTicket(String codOrden) {
+    @PostMapping("{id}/print-summary")
+    public void imprimirPreTicket(@PathVariable("id") String codOrden) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -100,10 +105,12 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @Override
-    public Orden setCliente(String codOrden, Integer clienteId) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PostMapping("{id}/set-client/{idClient}")
+    public Orden setCliente(@PathVariable("id") String codOrden, @PathVariable("idClient") Integer clienteId) {
+        return getUc().setCliente(codOrden, clienteId);
     }
 
+    @Deprecated
     @PostMapping(ADD_PRODUCT_PATH)
     ResponseEntity<OrdenModel> addProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") String producto_seleccionado, @PathVariable("cantidad") Float cantidad) {
         ProductoVentaService productoService = PosCoreModule.getInstance().getImplementation(ProductoVentaService.class);
@@ -212,7 +219,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     public static final String ADD_PRODUCTO_IN_HOT_PATH = "/add_producto_in_hot";
     public static final RequestMethod ADD_PRODUCTO_IN_HOT_METHOD = RequestMethod.POST;
 
-    public static final String REMOVE_PRODUCT_PATH = "/{id}/remove-product/{idProducto}/{cantidad}";
+    public static final String REMOVE_PRODUCT_PATH = "/{id}/remove-product-old/{idProducto}/{cantidad}";
     public static final RequestMethod REMOVE_PRODUCT_METHOD = RequestMethod.DELETE;
 
     public static final String ADD_NOTA_PATH = "{id}/add-nota/{idProductoOrden}/{nota}";
@@ -230,7 +237,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     public static final String SET_DE_LA_CASA_PATH = "{id}/set-autorizo/{boolValue}";
     public static final RequestMethod SET_DE_LA_CASA_METHOD = RequestMethod.PUT;
 
-    public static final String SET_PORCIENTO_PATH = "/set_porciento";
+    public static final String SET_PORCIENTO_PATH = "/set-porciento";
     public static final RequestMethod SET_PORCIENTO_METHOD = RequestMethod.PUT;
 
     public static final String GET_VALOR_TOTAL_ORDEN_PATH = "/get_valor_total_orden";
