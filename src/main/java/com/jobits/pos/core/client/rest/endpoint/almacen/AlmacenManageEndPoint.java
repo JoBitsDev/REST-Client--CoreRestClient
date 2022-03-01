@@ -9,7 +9,6 @@ import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.InsumoAlmacenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.InsumoModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.PuntoElaboracionModelAssembler;
 import com.jobits.pos.core.domain.TransaccionSimple;
 import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Insumo;
@@ -108,7 +107,6 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
 
     AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
     InsumoModelAssembler insumoAssembler = new InsumoModelAssembler();
-    PuntoElaboracionModelAssembler cocinaAssembler = new PuntoElaboracionModelAssembler();
     InsumoAlmacenModelAssembler insumoAlmacenAssembler = new InsumoAlmacenModelAssembler();
 
     @Override
@@ -194,7 +192,7 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     public boolean crearTransformacion(@RequestBody InsumoAlmacen ia,
             @RequestParam float f, @RequestBody List<TransaccionTransformacion> list,
             @RequestBody Almacen almcn) {
-        getUc().crearTransformacion(ia, f, list, almcn);
+      //  getUc().crearTransformacion(ia, f, list, almcn);
         return true;
     }
 
