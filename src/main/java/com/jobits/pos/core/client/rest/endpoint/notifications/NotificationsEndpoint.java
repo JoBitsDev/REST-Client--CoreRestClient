@@ -11,8 +11,11 @@ import com.jobits.pos.core.domain.models.NotificacionEnvioCocina;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import net.minidev.json.JSONObject;
 import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,10 +53,10 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     }
 
     @PostMapping("notify/{cod_orden}/{id_producto_orden}/{cantidad}")
-    public ResponseEntity<String> notifyCocina(@PathVariable("cod_orden") String codOrden, 
-            @PathVariable("id_producto_orden") int codProductoOrden, 
+    public ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
+            @PathVariable("id_producto_orden") int codProductoOrden,
             @PathVariable("cantidad") float cantidad) {
-        return ResponseEntity.ok(service.markProductAsCompleted(codOrden,codProductoOrden, cantidad));
+        return ResponseEntity.ok(Collections.singletonList(service.markProductAsCompleted(codOrden, codProductoOrden, cantidad)));
     }
 
     private ProductoVentaOrdenModel addProductoVentaOrdenModel(NotificacionEnvioCocina n) {
@@ -78,7 +81,9 @@ public class NotificationsEndpoint extends DefaultEndpoint {
                 x.getCantidad(),
                 productoVenta,
                 x.getNumeroComensal(),
-                nota);
+                nota,
+                x.getOrden().getCodOrden(),
+                x.getOrden().getMesacodMesa().getCodMesa());
         return po;
 
     }

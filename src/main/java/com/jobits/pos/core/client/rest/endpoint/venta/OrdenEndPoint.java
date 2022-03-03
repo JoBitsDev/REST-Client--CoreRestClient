@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
@@ -244,7 +245,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
         for (ProductovOrden p : o.getProductovOrdenList()) {
             if (p.getId() == idProducto) {
                 if (p.getNota() != null) {
-                    return ResponseEntity.ok(Collections.singletonMap("nota", Objects.requireNonNullElse(p.getNota().getDescripcion(),"")));
+                    return ResponseEntity.ok(Collections.singletonMap("nota", Objects.requireNonNullElse(p.getNota().getDescripcion(), "")));
                 }
             }
         }
@@ -287,8 +288,8 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @PutMapping(ENVIAR_COCINA_PATH)
-    ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden) {
-        getUc().enviarACocina(codOrden);
+    ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden, HttpServletRequest inRequest) {
+        getUc().enviarACocina(codOrden, inRequest.getRemoteHost());
         return ResponseEntity.ok(true);
     }
 

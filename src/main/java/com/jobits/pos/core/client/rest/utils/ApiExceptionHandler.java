@@ -9,6 +9,7 @@ import com.jobits.pos.core.repo.impl.AbstractRepository;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
+import org.jboss.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -44,6 +45,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         com.jobits.pos.core.repo.impl.AbstractRepository.transactionErrorListener.propertyChange(new PropertyChangeEvent(this, "ERROR", 0, 1));
         ApiError apiError
                 = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getLocalizedMessage(), errors);
+        Logger.getLogger(ApiExceptionHandler.class).error(apiError.getMessage(), ex);
         return new ResponseEntity(apiError, HttpStatus.valueOf(apiError.getStatus()));
 
     }

@@ -6,9 +6,12 @@
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
 import com.jobits.pos.controller.almacen.IPVService;
+import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionListService;
+import com.jobits.pos.controller.venta.VentaListService;
 import com.jobits.pos.core.client.rest.assembler.IpvModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvRegistroModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvVentaRegistroModelAssembler;
+import com.jobits.pos.core.client.rest.persistence.models.IpvRegistroModel;
 import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.Insumo;
@@ -17,13 +20,13 @@ import com.jobits.pos.core.domain.models.IpvRegistro;
 import com.jobits.pos.core.domain.models.IpvVentaRegistro;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,10 +60,10 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     public static final String REINICIAR_IPV_PATH = "/reiniciar_ipv";
     public static final RequestMethod REINICIAR_IPV_METHOD = RequestMethod.PUT;
 
-    public static final String GET_IPV_REGISTRO_LIST_PATH = "/ipv_registro_list";
+    public static final String GET_IPV_REGISTRO_LIST_PATH = "/ipv-registro-list/{cod_cocina}/{id_venta}";
     public static final RequestMethod GET_IPV_REGISTRO_LIST_METHOD = RequestMethod.GET;
 
-    public static final String GET_IPV_REGISTRO_VENTA_LIST_PATH = "/ipv_registro_venta_list";
+    public static final String GET_IPV_REGISTRO_VENTA_LIST_PATH = "/ipv-venta-list/{cod_cocina}/{id_venta}";
     public static final RequestMethod GET_IPV_REGISTRO_VENTA_LIST_METHOD = RequestMethod.GET;
 
     IpvModelAssembler ipvAssembler = new IpvModelAssembler();
@@ -113,19 +116,37 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
         return true;
     }
 
-    @GetMapping(GET_IPV_REGISTRO_LIST_PATH)
-    public CollectionModel<EntityModel<IpvRegistro>> getIpvRegistroList(@RequestBody Cocina cocina, @RequestParam int codVenta) {
-        CollectionModel<EntityModel<IpvRegistro>> entityModel
-                = ipvRegistroAssembler.toCollectionModel(getUc().getIpvRegistroList(cocina, codVenta));
-        entityModel.add(linkTo(methodOn(IPVEndPoint.class).getIpvRegistroList(cocina, codVenta)).withRel("ipv_registro_list"));
-        return entityModel;
+    @GetMapping(value = {"/ipv-registro-list/{cod_cocina}", "/ipv-registro-list/{cod_cocina}/{id_venta}"})
+    public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroList(
+            @PathVariable("cod_cocina") String codCocina,
+            @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
+        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        var pto = puntoElaboracionListService.findBy(codCocina);
+        if (codVenta == null) {
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+        }
+        var list = getUc().getIpvRegistroList(pto, codVenta);
+        List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
+        ret = ret.stream().filter((t) -> {
+            return t.getDisponible() != 0;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(ret);
     }
 
-    @GetMapping(GET_IPV_REGISTRO_VENTA_LIST_PATH)
-    public CollectionModel<EntityModel<IpvVentaRegistro>> getIpvRegistroVentaList(@RequestBody Cocina cocina, @RequestParam int codVenta) {
-        CollectionModel<EntityModel<IpvVentaRegistro>> entityModel
-                = ipvVentaRegistroAssembler.toCollectionModel(getUc().getIpvRegistroVentaList(cocina, codVenta));
-        entityModel.add(linkTo(methodOn(IPVEndPoint.class).getIpvRegistroVentaList(cocina, codVenta)).withRel("ipv_registro_venta_list"));
-        return entityModel;
+    @GetMapping(value = {"/ipv-venta-list/{cod_cocina}", "/ipv-venta-list/{cod_cocina}/{id_venta}"})
+    public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroVentaList(
+            @PathVariable("cod_cocina") String codCocina,
+            @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
+        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        var pto = puntoElaboracionListService.findBy(codCocina);
+        if (codVenta == null) {
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+        }
+        var list = getUc().getIpvRegistroVentaList(pto, codVenta);
+        List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
+        ret = ret.stream().filter((t) -> {
+            return t.getDisponible() != 0;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(ret);
     }
 }
