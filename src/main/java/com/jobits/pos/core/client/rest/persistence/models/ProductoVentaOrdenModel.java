@@ -23,6 +23,7 @@ public class ProductoVentaOrdenModel {
     private int numeroComensal;
     private String codOrden;
     private String codMesa;
+    private String usuario;
     private String nota;
 
     public ProductoVentaOrdenModel(float enviadosACocina,
@@ -42,7 +43,8 @@ public class ProductoVentaOrdenModel {
             ProductoVentaModel productoVenta, int numeroComensal,
             String nota,
             String codOrden,
-            String codMesa) {
+            String codMesa,
+            String usuario) {
         this.enviadosACocina = enviadosACocina;
         this.cantidad = cantidad;
         this.productoVenta = productoVenta;
@@ -51,6 +53,15 @@ public class ProductoVentaOrdenModel {
         this.id = id;
         this.codMesa = codMesa;
         this.codOrden = codOrden;
+        this.usuario = usuario;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public float getEnviadosACocina() {
@@ -116,7 +127,5 @@ public class ProductoVentaOrdenModel {
     public void setCodMesa(String codMesa) {
         this.codMesa = codMesa;
     }
-    
-    
 
 }

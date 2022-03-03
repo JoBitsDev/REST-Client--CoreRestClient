@@ -83,7 +83,8 @@ public class NotificationsEndpoint extends DefaultEndpoint {
                 x.getNumeroComensal(),
                 nota,
                 x.getOrden().getCodOrden(),
-                x.getOrden().getMesacodMesa().getCodMesa());
+                x.getOrden().getMesacodMesa().getCodMesa(),
+                x.getOrden().getPersonalusuario().getUsuario());
         return po;
 
     }
