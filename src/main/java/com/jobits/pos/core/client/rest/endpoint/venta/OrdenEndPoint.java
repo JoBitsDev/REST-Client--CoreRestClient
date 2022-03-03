@@ -22,6 +22,7 @@ import com.jobits.pos.core.domain.models.ProductovOrden;
 import com.jobits.pos.core.domain.models.Seccion;
 import com.jobits.pos.core.domain.models.temporal.ProductoVentaWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.core.repo.impl.OrdenDAO;
 import com.jobits.pos.core.repo.impl.ProductovOrdenDAO;
 import java.util.Collections;
 import java.util.List;
@@ -141,6 +142,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
 
     @GetMapping("{id}")
     public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
+        getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
     }
 
