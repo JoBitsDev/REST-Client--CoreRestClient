@@ -246,12 +246,9 @@ public class VentaListEndPoint extends CrudRestServiceTemplate<Venta> {
             @PathVariable("dd") int dia) {
         Calendar startEnd = Calendar.getInstance();
         startEnd.set(Calendar.YEAR, anno);
-        startEnd.set(Calendar.MONTH, mes);
+        startEnd.set(Calendar.MONTH, mes-1);
         startEnd.set(Calendar.DAY_OF_MONTH, dia);
         List<Venta> v = getUc().findVentasInRange(startEnd, startEnd);
-        if (v.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         List<Integer> ret = new ArrayList<>();
         for (Venta venta : v) {
             ret.add(venta.getId());
