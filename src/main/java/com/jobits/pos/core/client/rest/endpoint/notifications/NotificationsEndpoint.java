@@ -46,7 +46,7 @@ public class NotificationsEndpoint extends DefaultEndpoint {
         List<ProductoVentaOrdenModel> ret = new ArrayList<>();
         var all = service.getPendingNotificationsFrom(codCocina);
         for (NotificacionEnvioCocina x : all) {
-            x.getProductovOrden().setCantidad(x.getCantidad());
+            // x.getProductovOrden().setCantidad(x.getCantidad());
             ret.add(addProductoVentaOrdenModel(x));
         }
         return ResponseEntity.ok(ret);
@@ -79,7 +79,7 @@ public class NotificationsEndpoint extends DefaultEndpoint {
         ProductoVentaOrdenModel po = new ProductoVentaOrdenModel(
                 x.getEnviadosacocina(),
                 x.getId(),
-                x.getCantidad(),
+                n.getCantidad(),
                 productoVenta,
                 x.getNumeroComensal(),
                 nota,
