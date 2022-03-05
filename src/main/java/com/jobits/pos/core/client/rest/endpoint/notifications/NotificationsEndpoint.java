@@ -5,17 +5,16 @@
 package com.jobits.pos.core.client.rest.endpoint.notifications;
 
 import com.jobits.pos.controller.puntoelaboracion.NotificacionPuntoElaboracionService;
+import com.jobits.pos.controller.venta.OrdenService;
 import com.jobits.pos.core.client.rest.persistence.models.ProductoVentaModel;
 import com.jobits.pos.core.client.rest.persistence.models.ProductoVentaOrdenModel;
 import com.jobits.pos.core.domain.models.NotificacionEnvioCocina;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import net.minidev.json.JSONObject;
 import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationsEndpoint extends DefaultEndpoint {
 
     private NotificacionPuntoElaboracionService service = PosCoreModule.getInstance().getImplementation(NotificacionPuntoElaboracionService.class);
+    private OrdenService ordService = PosCoreModule.getInstance().getImplementation(OrdenService.class);
 
     public NotificationsEndpoint() {
     }
@@ -56,7 +56,8 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     public ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
             @PathVariable("id_producto_orden") int codProductoOrden,
             @PathVariable("cantidad") float cantidad) {
-        return ResponseEntity.ok(Collections.singletonList(service.markProductAsCompleted(codOrden, codProductoOrden, cantidad)));
+        ordService.markReadyToPickup(codOrden, codProductoOrden, cantidad);
+        return ResponseEntity.ok(Collections.singletonList("Notificacion Exitosa"));
     }
 
     private ProductoVentaOrdenModel addProductoVentaOrdenModel(NotificacionEnvioCocina n) {
