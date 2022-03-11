@@ -49,6 +49,7 @@ public class NotificationsEndpoint extends DefaultEndpoint {
             // x.getProductovOrden().setCantidad(x.getCantidad());
             ret.add(addProductoVentaOrdenModel(x));
         }
+        Collections.sort(ret);
         return ResponseEntity.ok(ret);
     }
 
