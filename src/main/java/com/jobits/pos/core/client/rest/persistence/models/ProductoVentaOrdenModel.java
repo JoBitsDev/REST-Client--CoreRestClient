@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductoVentaOrdenModel {
+public class ProductoVentaOrdenModel implements Comparable<ProductoVentaOrdenModel> {
 
     private int id;
     private float enviadosACocina;
@@ -126,6 +126,11 @@ public class ProductoVentaOrdenModel {
 
     public void setCodMesa(String codMesa) {
         this.codMesa = codMesa;
+    }
+
+    @Override
+    public int compareTo(ProductoVentaOrdenModel o) {
+        return Integer.valueOf(getCodOrden().substring(2)).compareTo(Integer.valueOf(o.getCodOrden().substring(2)));
     }
 
 }

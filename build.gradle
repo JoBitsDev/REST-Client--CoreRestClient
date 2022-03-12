@@ -15,7 +15,7 @@ jar {
 
 dependencies {
     implementation project(':Commons')
-    implementation 'org.jobits.pos:org.jobits.pos.core:5.5.7-SNAPSHOT'
+    implementation 'org.jobits.pos:org.jobits.pos.core:5.5.10'
 }
 
 

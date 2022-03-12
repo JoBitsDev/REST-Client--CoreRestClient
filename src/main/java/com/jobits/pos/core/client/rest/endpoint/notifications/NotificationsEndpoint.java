@@ -45,8 +45,10 @@ public class NotificationsEndpoint extends DefaultEndpoint {
         service.linkDeviceAsPrinter(codCocina, inRequest.getRemoteHost());
         List<ProductoVentaOrdenModel> ret = new ArrayList<>();
         var all = service.getPendingNotificationsFrom(codCocina);
+        Collections.sort(all,(o1, o2) -> {
+            return o1.getHoraNotificacion().compareTo(o2.getHoraNotificacion());
+        });
         for (NotificacionEnvioCocina x : all) {
-            // x.getProductovOrden().setCantidad(x.getCantidad());
             ret.add(addProductoVentaOrdenModel(x));
         }
         return ResponseEntity.ok(ret);
