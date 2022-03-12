@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.springframework.http.HttpStatus;
 
 /**
  *
@@ -29,7 +30,11 @@ public class CoreUserResolver implements UserResolverService<Personal> {
 
     @Override
     public Personal resolveUser() throws RuntimeException {
-        return tokenMap.get(lastRequestToken).getPersonal();
+        var resolved = tokenMap.get(lastRequestToken);
+        if(resolved == null){
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED,"Sesion expirada.");
+        }
+        return resolved.getPersonal();
     }
 
     public static void resolveCurrentToken(String token) {
