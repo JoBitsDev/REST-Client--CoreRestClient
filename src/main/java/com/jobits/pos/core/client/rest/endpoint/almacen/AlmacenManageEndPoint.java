@@ -122,14 +122,14 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     @PostMapping(CREAR_OPERACION_ENTRADA_PATH)
     public boolean crearOperacionEntrada(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestParam Date date, @RequestBody Almacen almcn) {
-        getUc().crearOperacionEntrada(al, string, date, almcn);
+      //  getUc().crearOperacionEntrada(al, string, date, almcn);
         return true;
     }
 
     @PostMapping(CREAR_OPERACION_REBAJA_PATH)
     public boolean crearOperacionRebaja(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestParam Date date, @RequestBody Almacen almcn) {
-        getUc().crearOperacionRebaja(al, string, date, almcn);
+        //getUc().crearOperacionRebaja(al, string, date, almcn);
         return true;
     }
 
@@ -137,47 +137,47 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     public boolean crearOperacionSalida(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestParam Date date,
             @RequestParam Integer intgr, @RequestParam Almacen almcn) {
-        getUc().crearOperacionSalida(al, string, date, intgr, almcn);
+        //getUc().crearOperacionSalida(al, string, date, intgr, almcn);
         return true;
     }
 
     @PostMapping(CREAR_OPERACION_TRASPASO_PATH)
     public boolean crearOperacionTraspaso(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestBody Date date, @RequestBody Almacen almcn) {
-        getUc().crearOperacionTraspaso(al, string, date, almcn);
+       // getUc().crearOperacionTraspaso(al, string, date, almcn);
         return true;
     }
 
     @PutMapping(DAR_ENTRADA_A_INSUMO_PATH)
     public boolean darEntradaAInsumo(@RequestBody TransaccionEntrada te, @RequestBody Almacen almcn) {
-        getUc().darEntradaAInsumo(te, almcn);
+        //getUc().darEntradaAInsumo(te, almcn);
         return true;
     }
 
     @PutMapping(DAR_MERMA_A_INSUMO_PATH)
     public boolean darMermaInsumo(@RequestBody TransaccionMerma tm, @RequestBody Almacen almcn) {
-        getUc().darMermaInsumo(tm, almcn);
+        //getUc().darMermaInsumo(tm, almcn);
         return true;
     }
 
     @PutMapping(DAR_SALIDA_A_INSUMO_PATH)
     public boolean darSalidaAInsumo(@RequestBody TransaccionSalida ts,
             @RequestParam int i, @RequestBody Almacen almcn) {
-        getUc().darSalidaAInsumo(ts, i, almcn);
+        //getUc().darSalidaAInsumo(ts, i, almcn);
         return true;
     }
 
     @PutMapping(DAR_TRANSFORMACION_A_INSUMO_PATH)
     public boolean darTransformacionAInsumo(@RequestBody Transaccion trnscn,
             @RequestBody Almacen almcn, @RequestBody Almacen almcn1) {
-        getUc().darTransformacionAInsumo(trnscn, almcn, almcn1);
+       // getUc().darTransformacionAInsumo(trnscn, almcn, almcn1);
         return true;
     }
 
     @PutMapping(DAR_TRASPASO_A_INSUMO_PATH)
     public boolean darTraspasoInsumo(@RequestBody TransaccionTraspaso tt,
             @RequestBody Almacen almcn) {
-        getUc().darTraspasoInsumo(tt, almcn);
+      //  getUc().darTraspasoInsumo(tt, almcn);
         return true;
     }
 
@@ -228,7 +228,7 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
 
     @PostMapping(DAR_ENTRADA_IPV_PATH)
     public boolean darEntradaIPV(@RequestBody Almacen almcn, @RequestBody Insumo insumo, @RequestParam float f) {
-        getUc().darEntradaIPV(almcn, insumo, f);
+       // getUc().darEntradaIPV(almcn, insumo, f);
         return true;
     }
 
