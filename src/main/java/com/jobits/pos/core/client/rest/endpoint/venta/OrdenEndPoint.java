@@ -141,13 +141,13 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
+    synchronized public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
         getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
     }
 
     @PostMapping(ADD_PRODUCT_PATH)
-    ResponseEntity<OrdenModel> addProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") String producto_seleccionado, @PathVariable("cantidad") Float cantidad) {
+    synchronized ResponseEntity<OrdenModel> addProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") String producto_seleccionado, @PathVariable("cantidad") Float cantidad) {
         ProductoVentaListService productoService = PosCoreModule.getInstance().getImplementation(ProductoVentaListService.class);
         getUc().addProduct(codOrden, productoService.findBy(producto_seleccionado), cantidad, null);
         Orden o = getUc().findBy(codOrden);
@@ -155,17 +155,17 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @PostMapping(ADD_PRODUCTO_COMPUESTO_PATH)
-    void addProductoCompuesto(@RequestParam String codOrden, @RequestBody ProductoVenta producto_agregar, @RequestBody Float cantidad, @RequestBody List<ProductoVentaWrapper> lista_agregos) {
+    synchronized void addProductoCompuesto(@RequestParam String codOrden, @RequestBody ProductoVenta producto_agregar, @RequestBody Float cantidad, @RequestBody List<ProductoVentaWrapper> lista_agregos) {
         getUc().addProductoCompuesto(codOrden, producto_agregar, cantidad, lista_agregos);
     }
 
     @PostMapping(ADD_PRODUCTO_IN_HOT_PATH)
-    void addProductInHot(@RequestParam String codOrden, @RequestParam String nombre, @RequestParam String precio, @RequestParam String cantidad) {
+    synchronized void addProductInHot(@RequestParam String codOrden, @RequestParam String nombre, @RequestParam String precio, @RequestParam String cantidad) {
         getUc().addProductInHot(codOrden, nombre, precio, cantidad);
     }
 
     @DeleteMapping(REMOVE_PRODUCT_PATH)
-    ResponseEntity<OrdenModel> removeProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") int producto_orden_seleccionado, @PathVariable("cantidad") Float cantidad) {
+    synchronized ResponseEntity<OrdenModel> removeProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") int producto_orden_seleccionado, @PathVariable("cantidad") Float cantidad) {
         var orden = getUc().findBy(codOrden);
         ProductovOrden prod = null;
         for (ProductovOrden p : orden.getProductovOrdenList()) {
@@ -180,7 +180,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping(VALIDATE_ORDEN_PATH)
-    ResponseEntity<OrdenModel> validateOrden(@PathVariable("id") String codOrden) {
+    synchronized ResponseEntity<OrdenModel> validateOrden(@PathVariable("id") String codOrden) {
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         if (o != null) {
@@ -199,7 +199,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @PutMapping(MOVER_A_PATH)
-    ResponseEntity<OrdenModel> moverA(@PathVariable("id") String codOrden, @PathVariable("codMesa") String codMesa) {
+    synchronized ResponseEntity<OrdenModel> moverA(@PathVariable("id") String codOrden, @PathVariable("codMesa") String codMesa) {
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().moverA(codOrden, codMesa)));
@@ -225,7 +225,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
 //    }
 
     @PostMapping(ADD_NOTA_PATH)
-    void addNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
+    synchronized void addNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
         var o = getUc().findBy(idOrden);
         if (o == null) {
             return;
@@ -239,7 +239,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping(GET_NOTA_PATH)
-    ResponseEntity<Map<String, String>> getNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto) {
+    synchronized ResponseEntity<Map<String, String>> getNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto) {
         var o = getUc().findBy(idOrden);
         if (o == null) {
             return ResponseEntity.ok(Collections.singletonMap("nota", ""));
@@ -255,61 +255,61 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping(CAN_VIEW_ORDEN_LOG_PATH)
-    void canViewOrdenLog(@RequestBody Personal usuario, String codOrden) {
+    synchronized void canViewOrdenLog(@RequestBody Personal usuario, String codOrden) {
         getUc().canViewOrdenLog(usuario, codOrden);
     }
 
     @GetMapping(VALIDATE_ADD_ORDEN_PATH)
-    boolean validateAddOrden() {
+    synchronized boolean validateAddOrden() {
         return getUc().validateAddOrden();
     }
 
     @PutMapping(SET_DE_LA_CASA_PATH)
-    void setDeLaCasa(@PathVariable("id") String codOrden, @PathVariable("boolValue") boolean booleanValue) {
+    synchronized void setDeLaCasa(@PathVariable("id") String codOrden, @PathVariable("boolValue") boolean booleanValue) {
         getUc().setDeLaCasa(codOrden, booleanValue);
     }
 
     @PutMapping(SET_PORCIENTO_PATH)
-    void setPorciento(@RequestParam String codOrden, @RequestBody float porciento_servicio) {
+    synchronized void setPorciento(@RequestParam String codOrden, @RequestBody float porciento_servicio) {
         getUc().setPorciento(codOrden, porciento_servicio);
     }
 
     @GetMapping(GET_VALOR_TOTAL_ORDEN_PATH)
-    float getValorTotalOrden(@RequestParam String codOrden) {
+    synchronized float getValorTotalOrden(@RequestParam String codOrden) {
         return getUc().getValorTotalOrden(codOrden);
     }
 
     @PostMapping(IMPRIMIR_PRE_TICKET_PATH)
-    void imprimirPreTicket(@RequestParam String codOrden) {
+    synchronized void imprimirPreTicket(@RequestParam String codOrden) {
         getUc().imprimirPreTicket(codOrden);
     }
 
     @PostMapping(IMPRIMIR_LISTA_ORDENES_PATH)
-    void impimirListaOrdenes(@RequestBody List<Orden> list, @RequestParam int codVenta) {
+    synchronized void impimirListaOrdenes(@RequestBody List<Orden> list, @RequestParam int codVenta) {
         getUc().impimirListaOrdenes(list, codVenta);
     }
 
     @PutMapping(ENVIAR_COCINA_PATH)
-    ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden, HttpServletRequest inRequest) {
+    synchronized ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden, HttpServletRequest inRequest) {
         getUc().enviarACocina(codOrden, inRequest.getRemoteHost());
         return ResponseEntity.ok(true);
     }
 
     @PutMapping(CERRAR_ORDEN_PATH)
-    ResponseEntity<OrdenModel> cerrarOrden(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
+    synchronized ResponseEntity<OrdenModel> cerrarOrden(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
         Orden o = getUc().cerrarOrden(codOrden, imprimirTicket);
         return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
 
     @GetMapping(FIND_MESA_CAJA_PATH)
-    EntityModel<Mesa> findMesaCaja() {
+    synchronized EntityModel<Mesa> findMesaCaja() {
         EntityModel<Mesa> entityModel = mesaAssembler.toModel(getUc().findMesaCaja());
         entityModel.add(linkTo(methodOn(OrdenEndPoint.class).findMesaCaja()).withRel("find_mesa_caja"));
         return entityModel;
     }
 
     @GetMapping(GET_PDV_LIST_PATH)
-    CollectionModel<EntityModel<ProductoVenta>> getPDVList(@RequestParam String codOrden) {
+    synchronized CollectionModel<EntityModel<ProductoVenta>> getPDVList(@RequestParam String codOrden) {
         CollectionModel<EntityModel<ProductoVenta>> entityModel
                 = productoVentaAssembler.toCollectionModel(getUc().getPDVList(codOrden));
         entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getPDVList(codOrden)).withRel("get_producto_by_seccion"));
@@ -317,7 +317,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping(GET_PRODUCTO_BY_SEECION_PATH)
-    CollectionModel<EntityModel<ProductoVenta>> getProductoBySeccion(@RequestBody Seccion seccion) {
+    synchronized CollectionModel<EntityModel<ProductoVenta>> getProductoBySeccion(@RequestBody Seccion seccion) {
         CollectionModel<EntityModel<ProductoVenta>> entityModel
                 = productoVentaAssembler.toCollectionModel(getUc().getProductoBySeccion(seccion));
         entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getProductoBySeccion(seccion)).withRel("get_pdv_list"));
@@ -325,7 +325,7 @@ public class OrdenEndPoint extends CrudRestServiceTemplate<Orden> {
     }
 
     @GetMapping(GET_LISTA_MESAS_DISPONIBLES_PATH)
-    CollectionModel<EntityModel<Mesa>> getListaMesasDisponibles() {
+    synchronized CollectionModel<EntityModel<Mesa>> getListaMesasDisponibles() {
         CollectionModel<EntityModel<Mesa>> entityModel
                 = mesaAssembler.toCollectionModel(getUc().getListaMesasDisponibles());
         entityModel.add(linkTo(methodOn(OrdenEndPoint.class).getListaMesasDisponibles()).withRel("get_lista_mesas_disponibles"));

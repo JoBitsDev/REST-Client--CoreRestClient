@@ -6,7 +6,7 @@
 package com.jobits.pos.core.client.rest.assembler;
 
 import com.jobits.pos.core.client.rest.endpoint.almacen.PedidoIPVVentasEndPoint;
-import com.jobits.pos.core.domain.models.IpvVentaRegistro;
+import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
 /**

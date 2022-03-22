@@ -6,7 +6,7 @@
 package com.jobits.pos.core.client.rest.assembler;
 
 import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenListEndPoint;
-import com.jobits.pos.core.domain.models.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
 /**

@@ -5,21 +5,21 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.IPVService;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionListService;
 import com.jobits.pos.controller.venta.VentaListService;
 import com.jobits.pos.core.client.rest.assembler.IpvModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvRegistroModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvVentaRegistroModelAssembler;
 import com.jobits.pos.core.client.rest.persistence.models.IpvRegistroModel;
-import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.Insumo;
-import com.jobits.pos.core.domain.models.Ipv;
-import com.jobits.pos.core.domain.models.IpvRegistro;
-import com.jobits.pos.core.domain.models.IpvVentaRegistro;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.Ipv;
+import com.jobits.pos.inventario.core.almacen.domain.IpvRegistro;
+import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
+import com.jobits.pos.inventario.core.almacen.usecase.IPVService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
