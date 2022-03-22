@@ -44,7 +44,7 @@ public class SeccionListEndPoint extends CrudRestServiceTemplate<Seccion> {
     }
 
     @GetMapping(FIND_SECCION_BY_MESA_PATH)
-    public ResponseEntity<List<SeccionModel>> findSeccionesByMesa(@PathVariable("idMesa") String mesa) {
+    public synchronized  ResponseEntity<List<SeccionModel>> findSeccionesByMesa(@PathVariable("idMesa") String mesa) {
         List<SeccionModel> ret = new ArrayList<>();
         List<Seccion> aux = getUc().findSeccionesByMesa(mesa);
         for (Seccion s : aux) {

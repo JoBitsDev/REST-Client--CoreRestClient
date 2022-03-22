@@ -5,32 +5,27 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.InsumoAlmacenModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.InsumoModelAssembler;
 import com.jobits.pos.core.domain.TransaccionSimple;
-import com.jobits.pos.core.domain.models.Almacen;
-import com.jobits.pos.core.domain.models.Insumo;
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
-import com.jobits.pos.core.domain.models.Transaccion;
-import com.jobits.pos.core.domain.models.TransaccionEntrada;
-import com.jobits.pos.core.domain.models.TransaccionMerma;
-import com.jobits.pos.core.domain.models.TransaccionSalida;
-import com.jobits.pos.core.domain.models.TransaccionTransformacion;
-import com.jobits.pos.core.domain.models.TransaccionTraspaso;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
+import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionEntrada;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionMerma;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionSalida;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionTransformacion;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionTraspaso;
+import com.jobits.pos.inventario.core.almacen.usecase.AlmacenManageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,7 +117,7 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     @PostMapping(CREAR_OPERACION_ENTRADA_PATH)
     public boolean crearOperacionEntrada(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestParam Date date, @RequestBody Almacen almcn) {
-      //  getUc().crearOperacionEntrada(al, string, date, almcn);
+        //  getUc().crearOperacionEntrada(al, string, date, almcn);
         return true;
     }
 
@@ -144,7 +139,7 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     @PostMapping(CREAR_OPERACION_TRASPASO_PATH)
     public boolean crearOperacionTraspaso(@RequestBody ArrayList<TransaccionSimple> al,
             @RequestParam String string, @RequestBody Date date, @RequestBody Almacen almcn) {
-       // getUc().crearOperacionTraspaso(al, string, date, almcn);
+        // getUc().crearOperacionTraspaso(al, string, date, almcn);
         return true;
     }
 
@@ -170,21 +165,14 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     @PutMapping(DAR_TRANSFORMACION_A_INSUMO_PATH)
     public boolean darTransformacionAInsumo(@RequestBody Transaccion trnscn,
             @RequestBody Almacen almcn, @RequestBody Almacen almcn1) {
-       // getUc().darTransformacionAInsumo(trnscn, almcn, almcn1);
+        // getUc().darTransformacionAInsumo(trnscn, almcn, almcn1);
         return true;
     }
 
     @PutMapping(DAR_TRASPASO_A_INSUMO_PATH)
     public boolean darTraspasoInsumo(@RequestBody TransaccionTraspaso tt,
             @RequestBody Almacen almcn) {
-      //  getUc().darTraspasoInsumo(tt, almcn);
-        return true;
-    }
-
-    @PutMapping(AGREGAR_INSUMO_ALMACEN_PATH)
-    public boolean agregarInsumoAlmacen(@RequestBody Insumo insumo,
-            @RequestBody Almacen almcn) {
-        getUc().agregarInsumoAlmacen(insumo, almcn);
+        //  getUc().darTraspasoInsumo(tt, almcn);
         return true;
     }
 
@@ -192,63 +180,8 @@ public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
     public boolean crearTransformacion(@RequestBody InsumoAlmacen ia,
             @RequestParam float f, @RequestBody List<TransaccionTransformacion> list,
             @RequestBody Almacen almcn) {
-      //  getUc().crearTransformacion(ia, f, list, almcn);
+        //  getUc().crearTransformacion(ia, f, list, almcn);
         return true;
     }
 
-    @PutMapping(SET_CENTRO_ELABORACION_PATH)
-    public boolean setCentroElaboracion(@RequestParam boolean bln, @RequestBody Almacen almcn) {
-        getUc().setCentroElaboracion(bln, almcn);
-        return true;
-    }
-
-    @PostMapping(IMPRIMIR_RESUMEN_COMPRAS_PATH)
-    public boolean imprimirReporteParaCompras(@RequestBody Almacen almcn, @RequestParam int i) {
-        getUc().imprimirReporteParaCompras(almcn, i);
-        return true;
-    }
-
-    @PostMapping(IMPRIMIR_RESUMEN_ALMACEN_PATH)
-    public boolean imprimirResumenAlmacen(@RequestBody Almacen almcn) {
-        getUc().imprimirResumenAlmacen(almcn);
-        return true;
-    }
-
-    @PutMapping(REMOVE_INSUMO_FROM_STRORAGE_PATH)
-    public boolean removeInsumoFromStorage(@RequestBody InsumoAlmacen ia, @RequestBody Almacen almcn) {
-        getUc().removeInsumoFromStorage(ia, almcn);
-        return true;
-    }
-
-    @PutMapping(UPDATE_VALOR_TOTAL_ALMACEN_PATH)
-    public boolean updateValorTotalAlmacen(@RequestBody Almacen almcn) {
-        getUc().updateValorTotalAlmacen(almcn);
-        return true;
-    }
-
-    @PostMapping(DAR_ENTRADA_IPV_PATH)
-    public boolean darEntradaIPV(@RequestBody Almacen almcn, @RequestBody Insumo insumo, @RequestParam float f) {
-       // getUc().darEntradaIPV(almcn, insumo, f);
-        return true;
-    }
-
-    @GetMapping(BULK_INSUMO_PATH)
-    public boolean bulkImport(@RequestBody List<InsumoAlmacen> list) {
-        return getUc().bulkImport(list);
-    }
-
-    @GetMapping(INSUMO_ALMACEN_LIST_PATH)
-    public CollectionModel<EntityModel<InsumoAlmacen>> getInsumoAlmacenList(@RequestBody Almacen almcn) {
-        CollectionModel<EntityModel<InsumoAlmacen>> entityModel
-                = insumoAlmacenAssembler.toCollectionModel(getUc().getInsumoAlmacenList(almcn));
-        entityModel.add(linkTo(methodOn(AlmacenManageEndPoint.class).getInsumoAlmacenList(almcn)).withRel("insumo_almacen_list"));
-        return entityModel;
-    }
-
-    @GetMapping(FIND_INSUMO_PATH)
-    public EntityModel<InsumoAlmacen> findInsumo(@RequestBody Insumo insumo, @RequestBody Almacen almcn) {
-        EntityModel<InsumoAlmacen> entityModel = insumoAlmacenAssembler.toModel(getUc().findInsumo(insumo, almcn));
-        entityModel.add(linkTo(methodOn(AlmacenManageEndPoint.class).findInsumo(insumo, almcn)).withRel("find_insumo"));
-        return entityModel;
-    }
 }

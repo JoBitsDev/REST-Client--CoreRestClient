@@ -5,15 +5,15 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.PedidoIpvVentasService;
 import com.jobits.pos.core.client.rest.assembler.PedidoIpvVentaModelAssembler;
 import com.jobits.pos.core.domain.InsumoPedidoModel;
 import com.jobits.pos.core.domain.ProdcutoVentaPedidoModel;
-import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.domain.models.Cocina;
-import com.jobits.pos.core.domain.models.IpvVentaRegistro;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
+import com.jobits.pos.inventario.core.almacen.usecase.PedidoIpvVentasService;
 import java.util.List;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;

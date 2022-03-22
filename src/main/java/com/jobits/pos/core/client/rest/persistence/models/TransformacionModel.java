@@ -5,7 +5,7 @@
  */
 package com.jobits.pos.core.client.rest.persistence.models;
 
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
+import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
 import java.util.List;
 
 /**

@@ -5,12 +5,10 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.AlmacenListService;
-import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
-import com.jobits.pos.core.domain.models.Almacen;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.root101.clean.core.app.usecase.CRUDUseCase;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.usecase.AlmacenManageService;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,8 +30,8 @@ public class AlmacenListEndPoint extends CrudRestServiceTemplate<Almacen> {
     AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
 
     @Override
-    public AlmacenListService getUc() {
-        return PosCoreModule.getInstance().getImplementation(AlmacenListService.class);
+    public AlmacenManageService getUc() {
+        return PosCoreModule.getInstance().getImplementation(AlmacenManageService.class);
     }
 
     @Override

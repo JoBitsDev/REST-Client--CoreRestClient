@@ -38,22 +38,22 @@ public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
     public static final String LIST_MESAS_VACIAS_NAMES_URL = "/mostrar-vacias/names";
 
     @Override
-    public AreaVentaService getUc() {
+    synchronized public AreaVentaService getUc() {
         return PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
     }
 
     @Override
-    public CrudModelAssembler<Area> getAssembler() {
+    synchronized public CrudModelAssembler<Area> getAssembler() {
         return areaAssembler;
     }
 
     @GetMapping(LIST_MESAS_URL)
-    ResponseEntity<List<Mesa>> findMesasOfArea(@PathVariable("id") String codArea) {
+    synchronized ResponseEntity<List<Mesa>> findMesasOfArea(@PathVariable("id") String codArea) {
         return ResponseEntity.ok(getUc().findBy(codArea).getMesaList());
     }
 
     @GetMapping(LIST_NAMES_URL)
-    ResponseEntity<List<String>> findAllToString() {
+    synchronized ResponseEntity<List<String>> findAllToString() {
         List<String> ret = new ArrayList<>();
         getUc().findAll().forEach(a -> {
             ret.add(a.getCodArea());
@@ -62,7 +62,7 @@ public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
     }
 
     @GetMapping(LIST_MESAS_VACIAS_NAMES_URL)
-    ResponseEntity<List<String>> findEmptyTablesNames() {
+    synchronized ResponseEntity<List<String>> findEmptyTablesNames() {
         List<String> ret = new ArrayList<>();
         for (Area a : getUc().findAll()) {
             for (Mesa m : a.getMesaList()) {
