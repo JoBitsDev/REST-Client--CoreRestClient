@@ -1,7 +1,7 @@
 package com.jobits.pos.core.client.rest.persistence.models;
 
-import com.jobits.pos.core.domain.models.IpvRegistro;
-import com.jobits.pos.core.domain.models.IpvVentaRegistro;
+import com.jobits.pos.inventario.core.almacen.domain.IpvRegistro;
+import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
 import java.io.Serializable;
 
 /**

@@ -6,8 +6,8 @@
 package com.jobits.pos.core.client.rest.assembler;
 
 import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenManageEndPoint;
-import com.jobits.pos.core.domain.models.Almacen;
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;

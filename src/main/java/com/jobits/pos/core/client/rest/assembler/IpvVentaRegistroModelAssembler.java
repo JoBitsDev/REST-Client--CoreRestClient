@@ -6,8 +6,8 @@
 package com.jobits.pos.core.client.rest.assembler;
 
 import com.jobits.pos.core.client.rest.endpoint.almacen.IPVEndPoint;
-import com.jobits.pos.core.domain.models.Ipv;
-import com.jobits.pos.core.domain.models.IpvVentaRegistro;
+import com.jobits.pos.inventario.core.almacen.domain.Ipv;
+import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
