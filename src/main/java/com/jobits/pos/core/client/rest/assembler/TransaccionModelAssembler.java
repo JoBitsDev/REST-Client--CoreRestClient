@@ -6,7 +6,7 @@
 package com.jobits.pos.core.client.rest.assembler;
 
 import com.jobits.pos.core.client.rest.endpoint.almacen.TransaccionListEndPoint;
-import com.jobits.pos.core.domain.models.Transaccion;
+import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 
 /**

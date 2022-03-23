@@ -7,9 +7,10 @@ package com.jobits.pos.core.client.rest.endpoint.almacen;
 
 import com.jobits.pos.controller.almacen.TransaccionService;
 import com.jobits.pos.core.client.rest.assembler.TransaccionModelAssembler;
-import com.jobits.pos.core.domain.models.Almacen;
-import com.jobits.pos.core.domain.models.Transaccion;
 import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
+import com.jobits.pos.inventario.core.almacen.usecase.TransaccionListService;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;

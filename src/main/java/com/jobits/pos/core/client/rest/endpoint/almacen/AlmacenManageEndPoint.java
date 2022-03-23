@@ -7,20 +7,25 @@ package com.jobits.pos.core.client.rest.endpoint.almacen;
 
 import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.domain.TransaccionSimple;
-import com.jobits.pos.core.domain.models.Almacen;
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
-import com.jobits.pos.core.domain.models.Transaccion;
-import com.jobits.pos.core.domain.models.TransaccionEntrada;
-import com.jobits.pos.core.domain.models.TransaccionMerma;
-import com.jobits.pos.core.domain.models.TransaccionSalida;
-import com.jobits.pos.core.domain.models.TransaccionTransformacion;
-import com.jobits.pos.core.domain.models.TransaccionTraspaso;
+import com.jobits.pos.core.module.PosCoreModule;
+import com.jobits.pos.inventario.core.almacen.domain.Almacen;
+import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
+import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionEntrada;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionMerma;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionSalida;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionTransformacion;
+import com.jobits.pos.inventario.core.almacen.domain.TransaccionTraspaso;
+import com.jobits.pos.inventario.core.almacen.usecase.AlmacenManageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**

@@ -7,14 +7,9 @@ package com.jobits.pos.core.client.rest.endpoint.trabajador;
 
 import com.jobits.pos.controller.trabajadores.AsistenciaPersonalService;
 import com.jobits.pos.core.client.rest.assembler.AsistenciaPersonalModelAssembler;
-import com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenManageEndPoint;
-import static com.jobits.pos.core.client.rest.endpoint.almacen.AlmacenManageEndPoint.CREAR_OPERACION_ENTRADA_PATH;
 import com.jobits.pos.core.domain.models.AsistenciaPersonal;
-import com.jobits.pos.core.domain.models.InsumoAlmacen;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.root101.clean.core.app.usecase.CRUDUseCase;
-import java.util.List;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
 import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
 import org.springframework.hateoas.CollectionModel;

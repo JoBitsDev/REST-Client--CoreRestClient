@@ -78,8 +78,13 @@ public class SeccionListEndPoint implements SeccionListService {
 //    }
     @Override
     @GetMapping(FIND_SECCION_BY_MESA_PATH)
-    public List<Seccion> findSeccionesByMesa(@PathVariable("idMesa") String codmesa) {
-        return getUc().findSeccionesByMesa(codmesa);
+    public synchronized  ResponseEntity<List<SeccionModel>> findSeccionesByMesa(@PathVariable("idMesa") String mesa) {
+        List<SeccionModel> ret = new ArrayList<>();
+        List<Seccion> aux = getUc().findSeccionesByMesa(mesa);
+        for (Seccion s : aux) {
+            ret.add(SeccionModel.of(s));
+        }
+        return ResponseEntity.ok(ret);
     }
 
     @Override
