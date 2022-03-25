@@ -5,11 +5,10 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.domain.TransaccionSimple;
-import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
+import com.jobits.pos.inventario.core.almacen.domain.Operacion;
 import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
 import com.jobits.pos.inventario.core.almacen.domain.TransaccionEntrada;
 import com.jobits.pos.inventario.core.almacen.domain.TransaccionMerma;
@@ -23,9 +22,6 @@ import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -103,67 +99,27 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen,Alma
     }
 
     @Override
-    public void resetAlmacen(String codAlmacen) {
+    public Operacion crearOperacion(Operacion.Tipo tipoOp, List<TransaccionSimple> transacciones, String recibo, Date fechaFactura, String codAlmacen, Integer codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void crearOperacionEntrada(ArrayList<TransaccionSimple> transacciones, String recibo, Date fechaFactura, String codAlmacen) {
+    public List<Operacion> getOperacionesPendientes(String codAlmacen) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void crearOperacionRebaja(ArrayList<TransaccionSimple> transacciones, String recibo, Date fechaFactura, String codAlmacen) {
+    public void ejecutarOperacion(String codAlmacen, Operacion operacionToUpdate) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void crearOperacionSalida(ArrayList<TransaccionSimple> transacciones, String recibo, Date fechaFactura, Integer codVenta, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void crearOperacionTraspaso(ArrayList<TransaccionSimple> transacciones, String recibo, Date fechaFactura, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darEntradaAInsumo(TransaccionEntrada x, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darMermaInsumo(TransaccionMerma x, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darSalidaAInsumo(TransaccionSalida x, int idVenta, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darTransformacionAInsumo(Transaccion t, String codAlmacenDestino, String codAlmacenOrigen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darTraspasoInsumo(TransaccionTraspaso x, String codAlmacen) {
+    public void ejecutarOperacion(String codAlmacen, int idOperacion) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void agregarInsumoAlmacen(String codInsumo, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void crearTransformacion(InsumoAlmacen selected, float cantidad, List<TransaccionTransformacion> items, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setCentroElaboracion(boolean selected, String codAlmacen) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -178,17 +134,7 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen,Alma
     }
 
     @Override
-    public void removeInsumoFromStorage(InsumoAlmacen insumoAlmacen, String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void updateValorTotalAlmacen(String codAlmacen) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void darEntradaIPV(String codAlmacen, String codInsumo, float cantidad) {
+    public void removeInsumoFromStorage(InsumoAlmacen insumoAlmacen) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -198,13 +144,15 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen,Alma
     }
 
     @Override
-    public List<InsumoAlmacen> getInsumoAlmacenList(String codAlmacen) {
+    public InsumoAlmacen findInsumo(String codIns, String codAlmacen) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public InsumoAlmacen findInsumo(String codInsumo, String codAlmacen) {
+    public void resetAlmacen(String codAlmacen) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
+
+   
 
 }

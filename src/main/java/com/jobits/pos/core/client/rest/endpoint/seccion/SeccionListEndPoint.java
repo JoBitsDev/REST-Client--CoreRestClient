@@ -6,11 +6,14 @@
 package com.jobits.pos.core.client.rest.endpoint.seccion;
 
 import com.jobits.pos.controller.seccion.SeccionListService;
+import com.jobits.pos.core.client.rest.persistence.models.SeccionModel;
 import com.jobits.pos.core.domain.models.Seccion;
 import com.jobits.pos.core.module.PosCoreModule;
+import java.util.ArrayList;
 import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.jobits.pos.client.rest.endpoint.UrlTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,15 +79,18 @@ public class SeccionListEndPoint implements SeccionListService {
 //        }
 //        return ResponseEntity.ok(ret);
 //    }
-    @Override
     @GetMapping(FIND_SECCION_BY_MESA_PATH)
-    public synchronized  ResponseEntity<List<SeccionModel>> findSeccionesByMesa(@PathVariable("idMesa") String mesa) {
+    public synchronized ResponseEntity<List<SeccionModel>> findSeccionesByMesa2(@PathVariable("idMesa") String mesa) {
         List<SeccionModel> ret = new ArrayList<>();
         List<Seccion> aux = getUc().findSeccionesByMesa(mesa);
         for (Seccion s : aux) {
             ret.add(SeccionModel.of(s));
         }
         return ResponseEntity.ok(ret);
+    }
+
+    public synchronized List<Seccion> findSeccionesByMesa(@PathVariable("idMesa") String mesa) {
+        return getUc().findSeccionesByMesa(mesa);
     }
 
     @Override

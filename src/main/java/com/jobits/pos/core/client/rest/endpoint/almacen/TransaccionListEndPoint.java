@@ -5,7 +5,6 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.TransaccionService;
 import com.jobits.pos.core.client.rest.assembler.TransaccionModelAssembler;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Almacen;
@@ -37,8 +36,8 @@ public class TransaccionListEndPoint extends CrudRestServiceTemplate<Transaccion
     TransaccionModelAssembler transaccionAssembler = new TransaccionModelAssembler();
 
     @Override
-    public TransaccionService getUc() {
-        return PosCoreModule.getInstance().getImplementation(TransaccionService.class);
+    public TransaccionListService getUc() {
+        return PosCoreModule.getInstance().getImplementation(TransaccionListService.class);
     }
 
     @Override

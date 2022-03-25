@@ -79,18 +79,6 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    //  @GetMapping("{id}/get-autorizos-producto")
-    public float getAutorizosTotalDelProducto(String codProductoVenta, int codVenta) {
-        throw new UnsupportedOperationException("Operacion no permitida"); //   return getUc().getAutorizosTotalDelProducto(codProductoVenta, codVenta);
-    }
-
-    @Override
-    public Float getGastoTotalDeInsumo(String codCocina, String codInsumo, int codVenta) {
-        throw new UnsupportedOperationException("Operacion no permitida"); //   return getUc().getAutorizosTotalDelProducto(codProductoVenta, codVenta);
-
-    }
-
-    @Override
     @GetMapping("{id}/ordenes-activas")
     public List<Orden> getOrdenesActivas(@PathVariable("id") int codVenta) {
         return getUc().getOrdenesActivas(codVenta);

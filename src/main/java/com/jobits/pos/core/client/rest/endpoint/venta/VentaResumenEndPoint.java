@@ -9,21 +9,11 @@ import com.jobits.pos.controller.venta.VentaDetailService;
 import com.jobits.pos.controller.venta.resumen.VentaResumenUseCase;
 import com.jobits.pos.core.domain.VentaResourcesWrapper;
 import com.jobits.pos.core.domain.VentaResumenWrapper;
-import com.jobits.pos.core.domain.models.Area;
-import com.jobits.pos.core.domain.models.Cocina;
-import com.jobits.pos.core.domain.models.IpvRegistro;
-import com.jobits.pos.core.domain.models.Mesa;
-import com.jobits.pos.core.domain.models.Orden;
-import com.jobits.pos.core.domain.models.Personal;
-import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
-import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.Date;
 import java.util.List;
-import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import java.util.Map;
 import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -92,11 +82,6 @@ public class VentaResumenEndPoint extends DefaultEndpoint
     }
 
     @Override
-    public float getVentaTotalDelProducto(ProductoVenta productoVenta, int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void printMesaResumen(String codMesa, int idVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
@@ -123,6 +108,22 @@ public class VentaResumenEndPoint extends DefaultEndpoint
 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener pl) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    //  @GetMapping("{id}/get-autorizos-producto")
+    public float getAutorizosTotalDelProducto(String codProductoVenta, int codVenta) {
+        throw new UnsupportedOperationException("Operacion no permitida"); //   return getUc().getAutorizosTotalDelProducto(codProductoVenta, codVenta);
+    }
+
+    @Override
+    public Map<String, Float> getGastoTotalDeInsumo(int codVenta) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public float getVentaTotalDelProducto(String codProductoVenta, int codVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 

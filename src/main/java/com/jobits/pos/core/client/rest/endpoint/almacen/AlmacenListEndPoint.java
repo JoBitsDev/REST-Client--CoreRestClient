@@ -5,7 +5,6 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.almacen.AlmacenManageService;
 import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Almacen;

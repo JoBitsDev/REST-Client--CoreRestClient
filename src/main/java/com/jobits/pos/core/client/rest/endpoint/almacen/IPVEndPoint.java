@@ -5,8 +5,8 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionListService;
-import com.jobits.pos.controller.venta.VentaListService;
+import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
+import com.jobits.pos.controller.venta.VentaCalendarResumeUseCase;
 import com.jobits.pos.core.client.rest.assembler.IpvModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvRegistroModelAssembler;
 import com.jobits.pos.core.client.rest.assembler.IpvVentaRegistroModelAssembler;
@@ -120,10 +120,10 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
-        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        PuntoElaboracionService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
         var pto = puntoElaboracionListService.findBy(codCocina);
         if (codVenta == null) {
-            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class).resolveVentaAbierta().getId();
         }
         var list = getUc().getIpvRegistroList(pto, codVenta);
         List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
@@ -137,10 +137,10 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroVentaList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
-        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        PuntoElaboracionService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
         var pto = puntoElaboracionListService.findBy(codCocina);
         if (codVenta == null) {
-            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class).resolveVentaAbierta().getId();
         }
         var list = getUc().getIpvRegistroVentaList(pto, codVenta);
         List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
