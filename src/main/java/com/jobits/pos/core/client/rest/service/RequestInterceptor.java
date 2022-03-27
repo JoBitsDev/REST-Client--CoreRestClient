@@ -9,6 +9,8 @@ import com.jobits.pos.controller.configuracion.ConfiguracionService;
 import com.jobits.pos.core.module.PosCoreModule;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.aop.target.ThreadLocalTargetSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -46,6 +48,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
             throws Exception {
         AsyncHandlerInterceptor.super.postHandle(request, response, handler, modelAndView); //To change body of generated methods, choose Tools | Templates.
+        CoreUserResolver.getInstance().clearToken();
     }
 
     private String getToken(HttpServletRequest request) {
@@ -60,7 +63,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
     }
 
     private void setCurrentUser(String token) {
-        CoreUserResolver.resolveCurrentToken(token);
+        CoreUserResolver.getInstance().resolveCurrentToken(token);
         ConfiguracionService service = PosCoreModule.getInstance().getImplementation(ConfiguracionService.class);
         service.cargarConfiguracion();
     }
