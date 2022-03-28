@@ -27,8 +27,7 @@ public class CoreUserResolver implements UserResolverService<Personal> {
 
     private Map<String, UserWrapper> tokenMap = new HashMap<>();
 
-    @Autowired
-    private LastRequestTokenStore requestToken;
+    private LastRequestTokenStore requestToken = new LastRequestTokenStore();
 
     private static CoreUserResolver INSTANCE = new CoreUserResolver();
 
