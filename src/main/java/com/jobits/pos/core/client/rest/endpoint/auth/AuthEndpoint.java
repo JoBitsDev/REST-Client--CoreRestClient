@@ -6,7 +6,6 @@
 package com.jobits.pos.core.client.rest.endpoint.auth;
 
 import com.jobits.pos.controller.login.LogInService;
-import com.jobits.pos.controller.login.impl.LogInController;
 import com.jobits.pos.core.client.rest.service.CoreUserResolver;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.Base64;

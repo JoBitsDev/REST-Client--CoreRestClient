@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -24,24 +25,37 @@ import org.springframework.http.HttpStatus;
  */
 public class CoreUserResolver implements UserResolverService<Personal> {
 
-    private static Map<String, UserWrapper> tokenMap = new HashMap<>();
+    private Map<String, UserWrapper> tokenMap = new HashMap<>();
 
     private LastRequestTokenStore requestToken = new LastRequestTokenStore();
 
+    private static CoreUserResolver INSTANCE = new CoreUserResolver();
+
+    private CoreUserResolver() {
+    }
+
     @Override
     public Personal resolveUser() throws RuntimeException {
-        var resolved = tokenMap.get(lastRequestToken);
-        if(resolved == null){
-            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED,"Sesion expirada.");
+        var resolved = tokenMap.get(requestToken.getTenantId());
+        if (resolved == null) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sesion expirada.");
         }
         return resolved.getPersonal();
     }
 
-    public static void resolveCurrentToken(String token) {
-        lastRequestToken = token;
+    public static CoreUserResolver getInstance() {
+        return INSTANCE;
     }
 
-    public static String addUserAndSetCurrent(Personal newPersonal, String tennantToken) {
+    public void resolveCurrentToken(String token) {
+        requestToken.setTenantId(token);
+    }
+
+    public void clearToken() {
+        requestToken.clear();
+    }
+
+    public String addUserAndSetCurrent(Personal newPersonal, String tennantToken) {
         for (Map.Entry<String, UserWrapper> e : tokenMap.entrySet()) {
             if (e.getValue().getTennantToken().equals(tennantToken)) {
                 if (e.getValue().getPersonal().equals(newPersonal)) {
@@ -54,7 +68,7 @@ public class CoreUserResolver implements UserResolverService<Personal> {
         return ret;
     }
 
-    private static String generateStringToken() {
+    private String generateStringToken() {
         Random random = new SecureRandom();
         return new BigInteger(121, random).toString(32);
     }
