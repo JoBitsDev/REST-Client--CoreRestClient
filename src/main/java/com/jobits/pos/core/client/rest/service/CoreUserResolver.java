@@ -26,7 +26,7 @@ public class CoreUserResolver implements UserResolverService<Personal> {
 
     private static Map<String, UserWrapper> tokenMap = new HashMap<>();
 
-    private static String lastRequestToken = null;
+    private LastRequestTokenStore requestToken = new LastRequestTokenStore();
 
     @Override
     public Personal resolveUser() throws RuntimeException {
