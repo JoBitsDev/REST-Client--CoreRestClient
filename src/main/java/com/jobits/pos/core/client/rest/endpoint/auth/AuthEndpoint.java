@@ -40,7 +40,7 @@ public class AuthEndpoint extends DefaultEndpoint {
                 LogInService service = PosCoreModule.getInstance().getImplementation(LogInService.class);
                 if (service.autenticar(credentials[0], credentials[1].toCharArray())) {
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put("Token", CoreUserResolver.addUserAndSetCurrent(service.getUsuarioConectado(), tennantToken));
+                    map.put("Token", CoreUserResolver.getInstance().addUserAndSetCurrent(service.getUsuarioConectado(), tennantToken));
                     map.put("User", service.getUsuarioConectado());
                     return map;
 
