@@ -117,7 +117,7 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     }
 
     @GetMapping(value = {"/ipv-registro-list/{cod_cocina}", "/ipv-registro-list/{cod_cocina}/{id_venta}"})
-    public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroList(
+    public synchronized ResponseEntity<List<IpvRegistroModel>> getIpvRegistroList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
         PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
@@ -134,7 +134,7 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     }
 
     @GetMapping(value = {"/ipv-venta-list/{cod_cocina}", "/ipv-venta-list/{cod_cocina}/{id_venta}"})
-    public ResponseEntity<List<IpvRegistroModel>> getIpvRegistroVentaList(
+    public synchronized ResponseEntity<List<IpvRegistroModel>> getIpvRegistroVentaList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
         PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);

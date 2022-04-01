@@ -41,7 +41,7 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     }
 
     @GetMapping(path = "{cod_cocina}/get-pending")
-    public ResponseEntity<List<ProductoVentaOrdenModel>> showPending(@PathVariable("cod_cocina") String codCocina, HttpServletRequest inRequest) {
+    public synchronized  ResponseEntity<List<ProductoVentaOrdenModel>> showPending(@PathVariable("cod_cocina") String codCocina, HttpServletRequest inRequest) {
         service.linkDeviceAsPrinter(codCocina, inRequest.getRemoteHost());
         List<ProductoVentaOrdenModel> ret = new ArrayList<>();
         var all = service.getPendingNotificationsFrom(codCocina);
@@ -55,7 +55,7 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     }
 
     @PostMapping("notify/{cod_orden}/{id_producto_orden}/{cantidad}")
-    public ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
+    public synchronized  ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
             @PathVariable("id_producto_orden") int codProductoOrden,
             @PathVariable("cantidad") float cantidad) {
         ordService.markReadyToPickup(codOrden, codProductoOrden, cantidad);

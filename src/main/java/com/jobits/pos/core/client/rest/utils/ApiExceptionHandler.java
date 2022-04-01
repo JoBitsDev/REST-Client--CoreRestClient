@@ -5,11 +5,11 @@
  */
 package com.jobits.pos.core.client.rest.utils;
 
-import com.jobits.pos.core.repo.impl.AbstractRepository;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import org.jboss.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,7 +40,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleGeneral(ex);
 
     }
-
+    
     private ResponseEntity<Object> handleGeneral(
             Exception ex) {
         List<String> errors = new ArrayList();
@@ -56,7 +56,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         com.jobits.pos.core.repo.impl.AbstractRepository.transactionErrorListener.propertyChange(new PropertyChangeEvent(this, "ERROR", 0, 1));
         ApiError apiError
                 = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getLocalizedMessage(), errors);
-        Logger.getLogger(ApiExceptionHandler.class).error(apiError.getMessage(), ex);
+        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, ex.getLocalizedMessage(), ex);
+
         return new ResponseEntity(apiError, HttpStatus.valueOf(apiError.getStatus()));
     }
 
@@ -74,8 +75,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
         com.jobits.pos.core.repo.impl.AbstractRepository.transactionErrorListener.propertyChange(new PropertyChangeEvent(this, "ERROR", 0, 1));
         ApiError apiError
-                = new ApiError(ex.getRawStatusCode(), ex.getReason(), errors);
-        Logger.getLogger(ApiExceptionHandler.class).error(apiError.getMessage(), ex);
+                = new ApiError(ex.getRawStatusCode(), ex.getMessage(), errors);
+        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
         return new ResponseEntity(apiError, HttpStatus.valueOf(apiError.getStatus()));
     }
 

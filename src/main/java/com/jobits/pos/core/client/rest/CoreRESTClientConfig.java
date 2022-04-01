@@ -24,7 +24,7 @@ public class CoreRESTClientConfig {
 
     static {
         PosCoreModule.init();
-        UserResolver.registerUserResolverService(new CoreUserResolver());
+        UserResolver.registerUserResolverService(CoreUserResolver.getInstance());
     }
 
 }

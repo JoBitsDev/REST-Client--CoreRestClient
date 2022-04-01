@@ -6,7 +6,6 @@
 package com.jobits.pos.core.client.rest.endpoint.auth;
 
 import com.jobits.pos.controller.login.LogInService;
-import com.jobits.pos.controller.login.impl.LogInController;
 import com.jobits.pos.core.client.rest.service.CoreUserResolver;
 import com.jobits.pos.core.module.PosCoreModule;
 import java.util.Base64;
@@ -39,7 +38,7 @@ public class AuthEndpoint extends DefaultEndpoint {
             if (credentials.length == 2) {
                 LogInService service = PosCoreModule.getInstance().getImplementation(LogInService.class);
                 if (service.autenticar(credentials[0], credentials[1].toCharArray())) {
-                    return Collections.singletonMap("Token",CoreUserResolver.addUserAndSetCurrent(service.getUsuarioConectado(),tennantToken));
+                    return Collections.singletonMap("Token",CoreUserResolver.getInstance().addUserAndSetCurrent(service.getUsuarioConectado(),tennantToken));
 
                 }
             }

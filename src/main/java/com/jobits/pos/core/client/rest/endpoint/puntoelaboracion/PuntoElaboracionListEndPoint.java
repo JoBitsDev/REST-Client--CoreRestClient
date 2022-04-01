@@ -45,7 +45,7 @@ public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocin
     }
 
     @GetMapping(LIST_NAMES_URL)
-    ResponseEntity<List<String>> findAllToString() {
+    synchronized ResponseEntity<List<String>> findAllToString() {
         List<String> ret = new ArrayList<>();
         getUc().findAll().forEach(a -> {
             ret.add(a.getCodCocina());
