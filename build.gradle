@@ -1,5 +1,5 @@
 group = 'com.jobits.pos.core.client.rest'
-version = '1.2.1'
+version = '5.7.0'
 description = 'JoBits POS REST:Core'
 
 
