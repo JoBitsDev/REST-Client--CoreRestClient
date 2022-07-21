@@ -49,6 +49,7 @@ public class AreaListEndPoint extends CrudRestServiceTemplate<Area> {
 
     @GetMapping(LIST_MESAS_URL)
     synchronized ResponseEntity<List<Mesa>> findMesasOfArea(@PathVariable("id") String codArea) {
+       // getUc().findAll();
         return ResponseEntity.ok(getUc().findBy(codArea).getMesaList());
     }
 

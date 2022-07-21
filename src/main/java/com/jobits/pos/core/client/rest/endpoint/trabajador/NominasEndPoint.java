@@ -11,6 +11,7 @@ import com.jobits.pos.core.client.rest.assembler.AsistenciaPersonalModelAssemble
 import com.jobits.pos.core.domain.AsistenciaPersonalEstadisticas;
 import com.jobits.pos.core.domain.models.AsistenciaPersonal;
 import com.jobits.pos.core.module.PosCoreModule;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
@@ -76,7 +77,7 @@ public class NominasEndPoint extends CrudRestServiceTemplate<AsistenciaPersonal>
 
     @PutMapping(PAGAR_PATH)
     public boolean pagar(@RequestBody List<AsistenciaPersonalEstadisticas> list, @RequestParam boolean flag) {
-        getUc().pagar(list, flag);
+        getUc().pagar(list,LocalDate.now(), flag);
         return true;
     }
 }
