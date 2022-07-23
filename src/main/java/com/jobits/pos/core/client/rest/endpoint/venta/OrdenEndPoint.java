@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * To change this license header, choose License Headers in Project Properties. 
+ * To change this template file, choose Tools | Templates 
+ * and open the template in the editor. 
  */
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
@@ -130,7 +130,13 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @Override
     public Orden enviarACocina(String codOrden, String uuid) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(); 
+        }
+        
+    @GetMapping("{id}")
+    synchronized public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
+        getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia 
+        return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
     }
 
     @Deprecated
@@ -164,15 +170,15 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         if (o != null) {
-//            if (o.getHoraTerminada() != null) {
-//                Mesa m = o.getMesacodMesa();
-//                m.setEstado("vacia");
-//                getUc().cerrarOrden(o.getCodOrden(),false);
-//                return ResponseEntity.status(HttpStatus.GONE).body(null);
-//                throw new ResponseStatusException(HttpStatus.GONE, "La mesa ya no se encuentra abierta");
-//            } else {
+//            if (o.getHoraTerminada() != null) { 
+//                Mesa m = o.getMesacodMesa(); 
+//                m.setEstado("vacia"); 
+//                getUc().cerrarOrden(o.getCodOrden(),false); 
+//                return ResponseEntity.status(HttpStatus.GONE).body(null); 
+//                throw new ResponseStatusException(HttpStatus.GONE, "La mesa ya no se encuentra abierta"); 
+//            } else { 
             return ResponseEntity.ok(new OrdenConverter().apply(o));
-//            }
+//            } 
         } else {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "La orden se elimino de manera inesperada");
         }
@@ -185,6 +191,25 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         return getUc().moverA(codOrden, codMesa);
     }
+// 
+//     @PutMapping(MOVER_A_PATH) 
+//    ResponseEntity<OrdenModel> moverA(@PathVariable("id") String codOrden,@PathVariable("codMesa") String codMesa) { 
+//        Orden o = getUc().findBy(codOrden); 
+//        MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class); 
+//        getUc().moverA(codOrden, codMesa); 
+//        if (o != null) { 
+//            if (o.getHoraTerminada() != null) { 
+//                Mesa m = o.getMesacodMesa(); 
+//                m.setEstado("Vacia"); 
+//                mService.edit(m); 
+//                throw new ResponseStatusException(HttpStatus.GONE, "La mesa ya no se encuentra abierta"); 
+//            } else { 
+//                return ResponseEntity.ok(new OrdenConverter().apply(o)); 
+//            } 
+//        } else { 
+//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "La orden se elimino de manera inesperada"); 
+//        } 
+//    } 
 
     @PostMapping(ADD_NOTA_PATH)
     public synchronized Orden addNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
@@ -232,6 +257,13 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         return ResponseEntity.ok(true);
     }
 
+    @PutMapping(CERRAR_ORDEN_PATH)
+    synchronized ResponseEntity<OrdenModel> cerrarOrden(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
+       // return ResponseEntity.badRequest().body(new OrdenModel());
+        var o = getUc().findBy(codOrden);
+        o = getUc().cerrarOrden(codOrden, imprimirTicket, o.getOrdenvalorMonetario(), 0);//TODO: implementar el pago por tarjeta
+        return ResponseEntity.ok(new OrdenConverter().apply(o));
+    }
 
     public static final String ADD_PRODUCT_PATH = "/{id}/add-product/{idProducto}/{cantidad}";
     public static final RequestMethod ADD_PRODUCT_METHOD = RequestMethod.POST;

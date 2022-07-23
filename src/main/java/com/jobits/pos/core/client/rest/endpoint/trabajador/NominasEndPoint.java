@@ -7,6 +7,8 @@ package com.jobits.pos.core.client.rest.endpoint.trabajador;
 
 import com.jobits.pos.core.domain.AsistenciaPersonalEstadisticas;
 import com.jobits.pos.core.module.PosCoreModule;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -66,9 +68,10 @@ public class NominasEndPoint implements NominasUseCase {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener pl) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PutMapping(PAGAR_PATH)
+    public boolean pagar(@RequestBody List<AsistenciaPersonalEstadisticas> list, @RequestParam boolean flag) {
+        getUc().pagar(list,LocalDate.now(), flag);
+        return true;
     }
 
 }
