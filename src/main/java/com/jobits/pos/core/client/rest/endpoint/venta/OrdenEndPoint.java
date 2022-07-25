@@ -59,7 +59,8 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @GetMapping("{id}")
     @Deprecated
-    public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
+    synchronized public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
+        getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia 
         return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
     }
 
@@ -114,8 +115,28 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @Override
-    public Orden cerrarOrden(String codOrden, boolean imprimirTicket) {
+    public void setPagadoPorTarjeta(String string, boolean bln) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Orden cerrarOrden(String string, boolean bln) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Orden cerrarOrden(String string, boolean bln, float f, float f1) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+
+    @PutMapping(CERRAR_ORDEN_PATH)
+    synchronized ResponseEntity<OrdenModel> cerrarOrdenOld(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
+        // return ResponseEntity.badRequest().body(new OrdenModel());
+        var o = getUc().findBy(codOrden);
+        o = getUc().cerrarOrden(codOrden, imprimirTicket, o.getOrdenvalorMonetario(), 0);//TODO: implementar el pago por tarjeta
+        return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
 
     @Override
@@ -130,13 +151,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @Override
     public Orden enviarACocina(String codOrden, String uuid) {
-        throw new UnsupportedOperationException(); 
-        }
-        
-    @GetMapping("{id}")
-    synchronized public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
-        getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia 
-        return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
+        throw new UnsupportedOperationException();
     }
 
     @Deprecated
@@ -147,8 +162,6 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         Orden o = getUc().findBy(codOrden);
         return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
-
-
 
     @DeleteMapping(REMOVE_PRODUCT_PATH)
     synchronized ResponseEntity<OrdenModel> removeProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") int producto_orden_seleccionado, @PathVariable("cantidad") Float cantidad) {
@@ -242,27 +255,16 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         return ResponseEntity.ok(Collections.singletonMap("nota", ""));
     }
 
-   
-
     @PutMapping(SET_DE_LA_CASA_PATH)
     @Override
     public synchronized Orden setDeLaCasa(@PathVariable("id") String codOrden, @PathVariable("boolValue") boolean booleanValue) {
         return getUc().setDeLaCasa(codOrden, booleanValue);
     }
 
-  
     @PutMapping(ENVIAR_COCINA_PATH)
     synchronized ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden, HttpServletRequest inRequest) {
         getUc().enviarACocina(codOrden, inRequest.getRemoteHost());
         return ResponseEntity.ok(true);
-    }
-
-    @PutMapping(CERRAR_ORDEN_PATH)
-    synchronized ResponseEntity<OrdenModel> cerrarOrden(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
-       // return ResponseEntity.badRequest().body(new OrdenModel());
-        var o = getUc().findBy(codOrden);
-        o = getUc().cerrarOrden(codOrden, imprimirTicket, o.getOrdenvalorMonetario(), 0);//TODO: implementar el pago por tarjeta
-        return ResponseEntity.ok(new OrdenConverter().apply(o));
     }
 
     public static final String ADD_PRODUCT_PATH = "/{id}/add-product/{idProducto}/{cantidad}";

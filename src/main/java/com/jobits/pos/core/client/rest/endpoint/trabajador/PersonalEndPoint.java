@@ -10,7 +10,9 @@ import com.jobits.pos.core.module.PosCoreModule;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.trabajadores.PersonalUseCase;
+import java.time.LocalDate;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -30,9 +32,10 @@ public class PersonalEndPoint extends CrudRestEndPointTemplate<Personal, Persona
     }
 
     @Override
-    @PutMapping("/{usuario}/pagar")
-    public Personal pagarTrabajador(@PathVariable("usuario") String usuario) {
-        return getUc().pagarTrabajador(usuario);
+    @PutMapping("/{usuario}/pagar/{hasta}")
+    public Personal pagarTrabajador(@PathVariable("usuario") String usuario,
+            @PathVariable("hasta") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta) {
+        return getUc().pagarTrabajador(usuario,hasta);
     }
 
 }

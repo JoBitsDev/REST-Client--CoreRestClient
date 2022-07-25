@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -36,7 +37,7 @@ public class NominasEndPoint implements NominasUseCase {
     public static final String IMPRIMIR_ESTADISTICAS_PATH = "/imprimir-estadisticas";
     public static final RequestMethod IMPRIMIR_ESTADISTICAS_METHOD = RequestMethod.POST;
 
-    public static final String PAGAR_PATH = "/pagar/{imprimir}";
+    public static final String PAGAR_PATH = "/pagar/{hasta}/{imprimir}";
     public static final RequestMethod PAGAR_METHOD = RequestMethod.PUT;
 
     public NominasUseCase getUc() {
@@ -58,20 +59,21 @@ public class NominasEndPoint implements NominasUseCase {
     }
 
     @Override
-    @PutMapping(PAGAR_PATH)
-    public List<AsistenciaPersonalEstadisticas> pagar(@RequestBody List<AsistenciaPersonalEstadisticas> list, @PathVariable("imprimir") boolean print) {
-        return getUc().pagar(list, print);
-    }
-
-    @Override
     public void addPropertyChangeListener(PropertyChangeListener pl) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @PutMapping(PAGAR_PATH)
-    public boolean pagar(@RequestBody List<AsistenciaPersonalEstadisticas> list, @RequestParam boolean flag) {
-        getUc().pagar(list,LocalDate.now(), flag);
-        return true;
+    @Override
+    public List<AsistenciaPersonalEstadisticas> pagar(@RequestBody List<AsistenciaPersonalEstadisticas> list,
+            @PathVariable("hasta") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable("imprimir") boolean flag) {
+        return getUc().pagar(list, date, flag);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener pl) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

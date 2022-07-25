@@ -22,7 +22,7 @@ import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/punto_elaboracion_list")
+@RequestMapping(path = "pos/punto-elaboracion")
 public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocina, PuntoElaboracionService> {
 
     public static final String DESTROY_IN_CASCADE_PATH = "/destroy-cascade/{idCocina}";
@@ -32,7 +32,8 @@ public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocin
     public static final RequestMethod EDIT_COCINA_METHOD = RequestMethod.PUT;
 
     public static final String LIST_NAMES_URL = "/list/names";
-
+    
+    public static final String LIST = "/list";
     @Override
     public PuntoElaboracionService getUc() {
         return PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
