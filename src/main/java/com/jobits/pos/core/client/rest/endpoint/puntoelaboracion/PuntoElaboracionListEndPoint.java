@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
+import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
@@ -23,7 +27,8 @@ import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
  */
 @RestController
 @RequestMapping(path = "pos/punto-elaboracion")
-public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocina, PuntoElaboracionService> {
+public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocina, PuntoElaboracionService>
+        implements PuntoElaboracionService {
 
     public static final String DESTROY_IN_CASCADE_PATH = "/destroy-cascade/{idCocina}";
     public static final RequestMethod DESTROY_IN_CASCADE_METHOD = RequestMethod.DELETE;
@@ -32,11 +37,23 @@ public class PuntoElaboracionListEndPoint extends CrudRestEndPointTemplate<Cocin
     public static final RequestMethod EDIT_COCINA_METHOD = RequestMethod.PUT;
 
     public static final String LIST_NAMES_URL = "/list/names";
-    
+
     public static final String LIST = "/list";
+
     @Override
     public PuntoElaboracionService getUc() {
         return PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
+    }
+
+    @Override
+    public Cocina destroyInCascade(String string) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    @PutMapping(EDIT_COCINA_PATH)
+    public Cocina edit(@PathVariable("id") String id, @PathVariable("newName") String newName) {
+        return getUc().edit(id, newName);
     }
 
     @GetMapping(LIST_NAMES_URL)
