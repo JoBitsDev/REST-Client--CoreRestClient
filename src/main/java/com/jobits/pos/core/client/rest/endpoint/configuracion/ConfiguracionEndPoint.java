@@ -14,6 +14,7 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,8 @@ public class ConfiguracionEndPoint implements ConfiguracionService {
 
     public static final String UPDATE_CONFIGURACION_PATH = "/update/{settingId}/{newValue}";
 
+    public static final String UPDATE_ALL_CONFIGURACION_PATH = "/update-all";
+
     public static final String GET_CONFIGURACION_PATH = "/find/{settingId}";
 
     public static final String GET_CONFIGURACION_Y_PATH = "/y";
@@ -43,7 +46,8 @@ public class ConfiguracionEndPoint implements ConfiguracionService {
 
     @Override
     @PutMapping(UPDATE_CONFIGURACION_PATH)
-    public Configuracion updateConfiguracion(@PathVariable("settingId") R.SettingID v,
+    public Configuracion updateConfiguracion(
+            @PathVariable("settingId") R.SettingID v,
             @PathVariable("newValue") Object configuration) {
         return service.updateConfiguracion(v, configuration);
     }
@@ -58,6 +62,12 @@ public class ConfiguracionEndPoint implements ConfiguracionService {
     @GetMapping(GET_CONFIGURACION_PATH)
     public Configuracion getConfiguracion(@PathVariable("settingId") R.SettingID v) {
         return service.getConfiguracion(v);
+    }
+
+    @Override
+    @PutMapping(UPDATE_ALL_CONFIGURACION_PATH)
+    public Map<String, Configuracion> guardarConfiguracion(@RequestBody Map<String, Configuracion> map) {
+        return service.guardarConfiguracion(map);
     }
 
 }
