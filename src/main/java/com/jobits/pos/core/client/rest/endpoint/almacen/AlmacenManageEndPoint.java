@@ -6,6 +6,7 @@
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
 import com.jobits.pos.core.domain.TransaccionSimple;
+import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
 import com.jobits.pos.inventario.core.almacen.domain.Operacion;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,13 +53,13 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen, Alm
 
     public static final String BULK_IMPORT = "/bulk-import";
 
-    public static final String ELIMINAR_INSUMO = "/eliminar-insumo";
+    public static final String ELIMINAR_INSUMO = "/{id}/eliminar-insumo/{idInsumo}";
 
     public static final String BUSCAR_INSUMO = "/{id}/insumo/{codInsumo}";
 
     @Override
     public AlmacenManageService getUc() {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+        return PosCoreModule.getInstance().getImplementation(AlmacenManageService.class);
     }
 
     @PostMapping(CREAR_OPERACION)
@@ -69,7 +71,7 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen, Alm
             @PathVariable("id") String codAlmacen,
             @PathVariable("idVenta") Integer codVenta) {
         return getUc().crearOperacion(tipoOp, transacciones, recibo, fechaFactura,
-                recibo, codVenta);
+                codAlmacen, codVenta);
     }
 
     @GetMapping(OPERACIONES_PENDIENTES)
@@ -100,7 +102,7 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen, Alm
 
     @GetMapping(IMPRIMIR_REPORTE_COMPRAS)
     @Override
-    public void imprimirReporteParaCompras(@PathVariable("id") String codAlmacen, int selection) {
+    public void imprimirReporteParaCompras(@PathVariable("id") String codAlmacen,@Value(value = "1") int selection) {
         getUc().imprimirReporteParaCompras(codAlmacen, 1);
     }
 
@@ -112,8 +114,9 @@ public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen, Alm
 
     @DeleteMapping(ELIMINAR_INSUMO)
     @Override
-    public void removeInsumoFromStorage(@RequestBody InsumoAlmacen insumoAlmacen) {
-        getUc().removeInsumoFromStorage(insumoAlmacen);
+    public void removeInsumoFromStorage(@PathVariable("id") String codAlmacen,
+            @PathVariable("idInsumo") String codInsumo) {
+        getUc().removeInsumoFromStorage(codAlmacen, codInsumo);
     }
 
     @PostMapping(BULK_IMPORT)
