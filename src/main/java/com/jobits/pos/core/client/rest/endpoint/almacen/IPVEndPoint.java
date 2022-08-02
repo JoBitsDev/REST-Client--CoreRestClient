@@ -145,7 +145,7 @@ public class IPVEndPoint
         return getUc().recalcularIpvRegistros(idVenta);
     }
 
-    @PutMapping(HAY_DISPONIBILIDAD_PATH)
+    @GetMapping(HAY_DISPONIBILIDAD_PATH)
     @Override
     public boolean hayDisponibilidad(@PathVariable("codProducto") String codProducto,
             @PathVariable("idVenta") int idVenta,
@@ -153,14 +153,14 @@ public class IPVEndPoint
         return getUc().hayDisponibilidad(codProducto, idVenta, cantidad);
     }
 
-    @PutMapping(GET_IPV_REGISTRO_LIST_PATH)
+    @GetMapping(GET_IPV_REGISTRO_LIST_PATH)
     @Override
     public List<IpvRegistro> getIpvRegistroList(@PathVariable("codCocina") String codCocina,
             @PathVariable("idVenta") int idVenta) {
         return getUc().getIpvRegistroList(codCocina, idVenta);
     }
 
-    @PutMapping(GET_IPV_REGISTRO_VENTA_LIST_PATH)
+    @GetMapping(GET_IPV_REGISTRO_VENTA_LIST_PATH)
     @Override
     public List<IpvVentaRegistro> getIpvRegistroVentaList(@PathVariable("codCocina") String codCocina,
             @PathVariable("idVenta") int idVenta) {
