@@ -12,6 +12,7 @@ import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.Insumo;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Ipv;
+import com.jobits.pos.inventario.core.almacen.domain.IpvPK;
 import com.jobits.pos.inventario.core.almacen.domain.IpvRegistro;
 import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
 import com.jobits.pos.inventario.core.almacen.usecase.IPVService;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,7 +46,7 @@ public class IPVEndPoint
 
     public static final String AJUSTAR_COSTO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/ajustar-costo/{cantidad}";
 
-    public static final String TRANSFERIR_IPV_REGISTRO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/transferir-ipv/{codCocina}/{cantidad}";
+    public static final String TRANSFERIR_IPV_REGISTRO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/transferir-ipv/{codCocinaTransferir}/{cantidad}";
 
     public static final String TRANSFERIR_IPV_REGISTRO_TO_ALMACEN_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/transferir-almacen/{codAlmacen}/{cantidad}";
 
@@ -65,6 +67,8 @@ public class IPVEndPoint
     public static final String INICIALIZAR_IPVS_PATH = "/productos/{idVenta}/inicializar";
 
     public static final String REGISTRAR_IPVS_PATH = "/insumos/{idVenta}/{codCocina}/registrar/{codInsumo}";
+
+    public static final String DELETE_BY_ID = "/delete/{codCocina}/{codInsumo}";
 
     @Override
     public IPVService getUc() {
@@ -111,7 +115,7 @@ public class IPVEndPoint
     public IpvRegistro transferirIPVRegistro(@PathVariable("codInsumo") String codInsumo,
             @PathVariable("codCocina") String codCocina,
             @PathVariable("idVenta") int codVenta,
-            @PathVariable("codCocina") String codCocinaTransferir,
+            @PathVariable("codCocinaTransferir") String codCocinaTransferir,
             @PathVariable("cantidad") float cantidad) {
         return getUc().transferirIPVRegistro(codInsumo, codCocina, codVenta, codCocinaTransferir, cantidad);
     }
@@ -181,10 +185,17 @@ public class IPVEndPoint
 
     @PutMapping(REGISTRAR_IPVS_PATH)
     @Override
-    public IpvRegistro registrarIPV(@PathVariable("codInsumo")String codInsumo,
-            @PathVariable("codCocina")String codCocina, 
-            @PathVariable("idVenta")int idVenta) {
-        return getUc().registrarIPV(codCocina, codInsumo, idVenta);
+    public IpvRegistro registrarIPV(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int idVenta) {
+        return getUc().registrarIPV(codInsumo, codCocina, idVenta);
+    }
+
+    @DeleteMapping(DELETE_BY_ID)
+    public Ipv deleteAux(
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("codInsumo") String codInsumo) {
+        return getUc().destroyById(new IpvPK(codInsumo, codCocina));
     }
 
     //
