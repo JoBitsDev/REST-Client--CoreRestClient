@@ -205,7 +205,7 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCale
     }
 
     @Override
-    public List<Date> getFechaVentas(List<Venta> ventas) {
+    public List<LocalDate> getFechaVentas(List<Venta> ventas) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 

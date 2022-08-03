@@ -304,7 +304,7 @@ public class VentaCalculator {
      */
     public static int getPickHour(Venta v) {
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(v.getFecha().getTime());
+        c.setTimeInMillis(v.getFecha().toEpochDay());
         int current_day = c.get(Calendar.DAY_OF_MONTH);
         float monto_hora_pico = 0;
         int hora_pico = 0,
