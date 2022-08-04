@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.venta.VentaCalendarResumeUseCase;
 import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
+import com.jobits.pos.core.domain.models.temporal.ResumenVentaEstadisticas;
 import java.time.LocalDate;
 import java.util.Date;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
@@ -200,26 +201,6 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCale
     }
 
     @Override
-    public List<Double> getTotalVentas(List<Venta> ventas) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<LocalDate> getFechaVentas(List<Venta> ventas) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Float> getTotalGastos(List<Venta> ventas) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Integer> getTotalOrden(List<Venta> ventas) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Venta deleteVenta(int idVenta) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
@@ -231,6 +212,16 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCale
 
     @Override
     public VentaCalendarResumeUseCase getUc() {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<DayReviewWrapper<ResumenVentaEstadisticas>> findVentasByMonthView(int month, int year) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<ResumenVentaEstadisticas> getResumenDeVentasEstadisticas(List<Integer> idVentas) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
