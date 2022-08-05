@@ -32,277 +32,81 @@ import com.jobits.pos.core.domain.models.temporal.ResumenVentaEstadisticas;
 import java.time.LocalDate;
 import java.util.Date;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/venta-list")
+@RequestMapping(path = "pos/venta-list")
 public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCalendarResumeUseCase>
-        implements VentaCalendarResumeUseCase  {
+        implements VentaCalendarResumeUseCase {
 
-    public static final String FIND_VENTAS_BY_MONTH_PATH = "/find_ventas_by_month";
-    public static final RequestMethod FIND_VENTAS_BY_MONTH_METHOD = RequestMethod.GET;
+    public static final String RESOLVE_VENTA_ABIERTA = "/venta-abierta";
+    public static final String FIND_VENTAS_BY_MONTH = "/find-by/month/{anno}/{mes}";
+    public static final String FIND_VENTAS_IN_RANGE = "/find-by/range/{start}/{end}";
+    public static final String IS_Y_VISIBLE = "/is-y-visible";
+    public static final String FIND_VENTAS_BY_MONTH_VIEW = "/find-by/month-view/{anno}/{mes}";
+    public static final String GET_RESUMEN_VENTAS_ESTAIDISTICAS = "/resumen-por-ids";
 
-    public static final String FIND_VENTAS_IN_RANGE_PATH = "/find_ventas_in_range";
-    public static final RequestMethod FIND_VENTAS_IN_RANGE_METHOD = RequestMethod.GET;
-
-    public static final String GET_TOTAL_VENTAS_PATH = "/get_total_ventas";
-    public static final RequestMethod GET_TOTAL_VENTAS_METHOD = RequestMethod.GET;
-
-    public static final String GET_FECHA_VENTAS_PATH = "/get_fecha_ventas";
-    public static final RequestMethod GET_FECHA_VENTAS_METHOD = RequestMethod.GET;
-
-    public static final String GET_TOTAL_GASTOS_PATH = "/get_total_gastos";
-    public static final RequestMethod GET_TOTAL_GASTOS_METHOD = RequestMethod.GET;
-
-    public static final String GET_TOTAL_ORDEN_PATH = "/get_total_orden";
-    public static final RequestMethod GET_TOTAL_ORDEN_METHOD = RequestMethod.GET;
-
-    public static final String IS_Y_VISIBLE_PATH = "/is_y_visible";
-    public static final RequestMethod IS_Y_VISIBLE_METHOD = RequestMethod.GET;
-
-    public static final String RESUMEN = "/{id}/resumen-general";
-    public static final RequestMethod RESUMEN_METHOD = RequestMethod.GET;
-
-    public static final String GET_IDS_VENTAS = "/ids/{aaaa}/{mm}/{dd}";
-    public static final RequestMethod GET_IDS_VENTAS_METHOD = RequestMethod.GET;
-
-    public static final String GET_RESUMEN_DETALLADO = "/{id}/resumen-detallado";
-    public static final RequestMethod GET_RESUMEN_DETALLADO_METHOD = RequestMethod.GET;
-
-    public static final String GET_RESUMEN_AREA = "/{id}/detalles-area/{idArea}";
-    public static final RequestMethod GET_RESUMEN_AREA_METHOD = RequestMethod.GET;
-
-    public static final String GET_RESUMEN_DPTE = "/{id}/detalles-mesero/{idUsuario}";
-    public static final RequestMethod GET_RESUMEN_DPTE_METHOD = RequestMethod.GET;
-
-    public static final String GET_RESUMEN_PTO_ELAB = "/{id}/detalles-punto-elaboracion/{idPuntoElab}";
-    public static final RequestMethod GET_RESUMEN_PTO_ELAB_METHOD = RequestMethod.GET;
-
-    public static final String CREATE_ORDEN = "/get-venta-abierta/create-orden/{codMesa}";
-    public static final RequestMethod CREATE_ORDEN_METHOD = RequestMethod.POST;
-
-//
-//    @Override
-//    public VentaCalendarResumeUseCase getUc() {
-//        return PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class);
-//    }
-//
-//    @GetMapping(RESUMEN)
-//    ResponseEntity<VentaResumenModel> getResumenGeneralFrom(@PathVariable("id") int idVentas) {
-//        Venta v = getUc().findBy(idVentas);
-//        if (v == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok().body(VentaResumenController.createResumenFromVenta(v));
-//    }
-//
-//    @GetMapping(GET_RESUMEN_AREA)
-//    ResponseEntity<List<DetallesVentasModel>> getResumenFromArea(
-//            @PathVariable("id") int idVentas,
-//            @PathVariable("idArea") String idArea) {
-//        Venta v = getUc().findBy(idVentas);
-//        if (v == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        AreaVentaService areaService = PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
-//        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-//                VentaCalculator.getResumenVentaPorArea(
-//                        getUc().findBy(idVentas),
-//                        areaService.findBy(idArea))));
-//    }
-//
-//    @GetMapping(GET_RESUMEN_PTO_ELAB)
-//    ResponseEntity<List<DetallesVentasModel>> getResumenFromPuntoElab(
-//            @PathVariable("id") int idVentas,
-//            @PathVariable("idPuntoElab") String idPuntoElab) {
-//        Venta v = getUc().findBy(idVentas);
-//        if (v == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        PuntoElaboracionService ptoService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
-//        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-//                VentaCalculator.getResumenVentasCocina(
-//                        getUc().findBy(idVentas),
-//                        ptoService.findBy(idPuntoElab))));
-//    }
-//
-//    @GetMapping(GET_RESUMEN_DPTE)
-//    ResponseEntity<List<DetallesVentasModel>> getResumenFromDpte(
-//            @PathVariable("id") int idVentas,
-//            @PathVariable("idUsuario") String idUsuario) {
-//        Venta v = getUc().findBy(idVentas);
-//        if (v == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        PersonalUseCase personalService = PosCoreModule.getInstance().getImplementation(PersonalUseCase.class);
-//        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-//                VentaCalculator.getResumenVentasCamarero(
-//                        getUc().findBy(idVentas),
-//                        personalService.findBy(idUsuario))));
-//    }
-//
-//    @GetMapping(GET_RESUMEN_DETALLADO)
-//    ResponseEntity<List<DetallesVentasModel>> getResumenDetallado(
-//            @PathVariable("id") int idVentas) {
-//        Venta v = getUc().findBy(idVentas);
-//        if (v == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-//                VentaCalculator.getResumenVentas(
-//                        getUc().findBy(idVentas))));
-//    }
-//
-//    @GetMapping(GET_IDS_VENTAS)
-//    ResponseEntity<List<Integer>> getVentasIdsOf(
-//            @PathVariable("aaaa") int anno,
-//            @PathVariable("mm") int mes,
-//            @PathVariable("dd") int dia) {
-//        Calendar startEnd = Calendar.getInstance();
-//        startEnd.set(Calendar.YEAR, anno);
-//        startEnd.set(Calendar.MONTH, mes);
-//        startEnd.set(Calendar.DAY_OF_MONTH, dia);
-//        List<Venta> v = getUc().findVentasInRange(startEnd, startEnd);
-//        if (v.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        List<Integer> ret = new ArrayList<>();
-//        for (Venta venta : v) {
-//            ret.add(venta.getId());
-//        }
-//        return ResponseEntity.ok().body(ret);
-//    }
-//
-//    @PostMapping(CREATE_ORDEN)
-//    ResponseEntity<OrdenModel> createOrden(
-//            @PathVariable("codMesa") String codMesa) {
-//        VentaDetailService ser = PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
-//        MesaService mSer = PosCoreModule.getInstance().getImplementation(MesaService.class);
-//        Orden ret = ser.createNewOrden(getUc().resolveVentaAbierta().getId(), mSer.findBy(codMesa));
-//        return ResponseEntity.ok(new OrdenConverter().apply(ret));
-//    }
-
+    @GetMapping(RESOLVE_VENTA_ABIERTA)
     @Override
     public Venta resolveVentaAbierta() {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+        return getUc().resolveVentaAbierta();
     }
 
+    @GetMapping(FIND_VENTAS_BY_MONTH)
     @Override
-    public List<DayReviewWrapper<Venta>> findVentasByMonth(int month, int year) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public List<DayReviewWrapper<Venta>> findVentasByMonth(
+            @PathVariable("mes") int month,
+            @PathVariable("anno") int year) {
+        return getUc().findVentasByMonth(month, year);
     }
 
+    @GetMapping(FIND_VENTAS_IN_RANGE)
     @Override
-    public List<Venta> findVentasInRange(LocalDate start, LocalDate end) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public List<Venta> findVentasInRange(@PathVariable("start") LocalDate start,
+            @PathVariable("end") LocalDate end) {
+        return getUc().findVentasInRange(start, end);
+    }
+
+    @GetMapping(IS_Y_VISIBLE)
+    @Override
+    public boolean isYVisible() {
+        return getUc().isYVisible();
+    }
+
+    @GetMapping(FIND_VENTAS_BY_MONTH_VIEW)
+    @Override
+    public List<DayReviewWrapper<ResumenVentaEstadisticas>>
+            findVentasByMonthView(@PathVariable("mes") int month,
+                    @PathVariable("anno") int year) {
+        return getUc().findVentasByMonthView(month, year);
+    }
+
+    @PutMapping(GET_RESUMEN_VENTAS_ESTAIDISTICAS)
+    @Override
+    public List<ResumenVentaEstadisticas> getResumenDeVentasEstadisticas(
+            @RequestBody List<Integer> idVentas) {
+        return getUc().getResumenDeVentasEstadisticas(idVentas);
     }
 
     @Override
     public Venta deleteVenta(int idVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+        return getUc().deleteVenta(idVenta);
     }
 
     @Override
-    public boolean isYVisible() {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public Venta destroyById(@PathVariable("id") Object o) throws RuntimeException {
+        return getUc().deleteVenta(Integer.valueOf(o.toString()));
     }
 
     @Override
     public VentaCalendarResumeUseCase getUc() {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<DayReviewWrapper<ResumenVentaEstadisticas>> findVentasByMonthView(int month, int year) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<ResumenVentaEstadisticas> getResumenDeVentasEstadisticas(List<Integer> idVentas) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @GetMapping(GET_RESUMEN_AREA)
-    ResponseEntity<List<DetallesVentasModel>> getResumenFromArea(
-            @PathVariable("id") int idVentas,
-            @PathVariable("idArea") String idArea) {
-        Venta v = getUc().findBy(idVentas);
-        if (v == null) {
-            return ResponseEntity.notFound().build();
-        }
-        AreaVentaService areaService = PosCoreModule.getInstance().getImplementation(AreaVentaService.class);
-        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-                VentaCalculator.getResumenVentaPorArea(
-                        getUc().findBy(idVentas),
-                        areaService.findBy(idArea))));
-    }
-
-    @GetMapping(GET_RESUMEN_PTO_ELAB)
-    ResponseEntity<List<DetallesVentasModel>> getResumenFromPuntoElab(
-            @PathVariable("id") int idVentas,
-            @PathVariable("idPuntoElab") String idPuntoElab) {
-        Venta v = getUc().findBy(idVentas);
-        if (v == null) {
-            return ResponseEntity.notFound().build();
-        }
-        PuntoElaboracionService ptoService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
-        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-                VentaCalculator.getResumenVentasCocina(
-                        getUc().findBy(idVentas),
-                        ptoService.findBy(idPuntoElab))));
-    }
-
-    @GetMapping(GET_RESUMEN_DPTE)
-    ResponseEntity<List<DetallesVentasModel>> getResumenFromDpte(
-            @PathVariable("id") int idVentas,
-            @PathVariable("idUsuario") String idUsuario) {
-        Venta v = getUc().findBy(idVentas);
-        if (v == null) {
-            return ResponseEntity.notFound().build();
-        }
-        PersonalUseCase personalService = PosCoreModule.getInstance().getImplementation(PersonalUseCase.class);
-        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-                VentaCalculator.getResumenVentasCamarero(
-                        getUc().findBy(idVentas),
-                        personalService.findBy(idUsuario))));
-    }
-
-    @GetMapping(GET_RESUMEN_DETALLADO)
-    ResponseEntity<List<DetallesVentasModel>> getResumenDetallado(
-            @PathVariable("id") int idVentas) {
-        Venta v = getUc().findBy(idVentas);
-        if (v == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().body(DetallesVentasModel.createDetallesVentaFromEntity(
-                VentaCalculator.getResumenVentas(
-                        getUc().findBy(idVentas))));
-    }
-
-    @GetMapping(GET_IDS_VENTAS)
-    ResponseEntity<List<Integer>> getVentasIdsOf(
-            @PathVariable("aaaa") int anno,
-            @PathVariable("mm") int mes,
-            @PathVariable("dd") int dia) {
-        var date = LocalDate.of(anno, mes, dia);
-        List<Venta> v = getUc().findVentasInRange(date, date);
-        List<Integer> ret = new ArrayList<>();
-        for (Venta venta : v) {
-            ret.add(venta.getId());
-        }
-        return ResponseEntity.ok().body(ret);
-    }
-
-    @PostMapping(CREATE_ORDEN)
-    ResponseEntity<OrdenModel> createOrden(
-            @PathVariable("codMesa") String codMesa) {
-        VentaDetailService ser = PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
-        MesaService mSer = PosCoreModule.getInstance().getImplementation(MesaService.class);
-        Orden ret = ser.createNewOrden(getUc().resolveVentaAbierta().getId(), mSer.findBy(codMesa).getCodMesa());
-        return ResponseEntity.ok(new OrdenConverter().apply(ret));
+        return PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class);
     }
 
 }

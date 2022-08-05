@@ -5,16 +5,18 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
-import com.jobits.pos.controller.venta.VentaDetailService;
-import com.jobits.pos.controller.venta.resumen.VentaResumenUseCase;
-import com.jobits.pos.core.domain.VentaResourcesWrapper;
-import com.jobits.pos.core.domain.VentaResumenWrapper;
+import com.jobits.pos.controller.resumen.ResumenFacadeInterface;
+import com.jobits.pos.core.domain.models.AsistenciaPersonal;
+import com.jobits.pos.core.domain.models.GastoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
+import com.jobits.pos.core.domain.models.escandallos.InsumoRegistro;
+import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
+import com.jobits.pos.core.domain.models.temporal.ResumenVentaWrapper;
 import com.jobits.pos.core.module.PosCoreModule;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,108 +25,55 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/venta/resumen")
-public class VentaResumenEndPoint extends DefaultEndpoint
-        implements VentaResumenUseCase {
+@RequestMapping(path = "/venta/resumen/{desde}/{hasta}")
+public class VentaResumenEndPoint extends DefaultEndpoint implements ResumenFacadeInterface {
 
-    public VentaDetailService getUc() {
-        return PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
+    public static final String AUTORIZO_RESUMEN = "/autorizo";
+    public static final String COSTO_RESUMEN = "/costo";
+    public static final String GASTO_RESUMEN = "/gasto";
+    public static final String SALARIO_RESUMEN = "/salario";
+    public static final String VENTAS_RESUMEN = "/ventas";
+
+    private ResumenFacadeInterface i = PosCoreModule.getInstance().getImplementation(ResumenFacadeInterface.class);
+
+    @GetMapping(AUTORIZO_RESUMEN)
+    @Override
+    public ResumenVentaWrapper<DayReviewWrapper<ProductovOrden>, ProductovOrden> getAutorizoResumen(
+            @PathVariable("desde") LocalDate desde,
+            @PathVariable("hasta") LocalDate hasta) {
+        return i.getAutorizoResumen(desde, hasta);
     }
 
+    @GetMapping(COSTO_RESUMEN)
     @Override
-    public List<ProductovOrden> getResumenPorMesa(int codVenta, String codMesa) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public ResumenVentaWrapper<DayReviewWrapper<InsumoRegistro>, InsumoRegistro> getCostoResumen(
+            @PathVariable("desde") LocalDate desde,
+            @PathVariable("hasta") LocalDate hasta) {
+        return i.getCostoResumen(desde, hasta);
     }
 
+    @GetMapping(GASTO_RESUMEN)
     @Override
-    public List<ProductovOrden> getResumenPorPersonal(int codVenta, String codPersonal) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public ResumenVentaWrapper<DayReviewWrapper<GastoVenta>, GastoVenta> getGastoResumen(
+            @PathVariable("desde") LocalDate desde,
+            @PathVariable("hasta") LocalDate hasta) {
+        return i.getGastoResumen(desde, hasta);
     }
 
+    @GetMapping(SALARIO_RESUMEN)
     @Override
-    public List<ProductovOrden> getResumenPorCocina(int codVenta, String codCocina) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public ResumenVentaWrapper<DayReviewWrapper<AsistenciaPersonal>, AsistenciaPersonal> getSalarioResumen(
+            @PathVariable("desde") LocalDate desde,
+            @PathVariable("hasta") LocalDate hasta) {
+        return i.getSalarioResumen(desde, hasta);
     }
 
+    @GetMapping(VENTAS_RESUMEN)
     @Override
-    public List<ProductovOrden> getResumenPorArea(int codVenta, String codArea) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getTotalResumenMesa(int codVenta, String mesa) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getTotalResumenDependiente(int codVenta, String personal) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getTotalResumenCocina(int codVenta, String cocina) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getTotalResumenArea(int codVenta, String area) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public VentaResumenWrapper getResumenVenta(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public VentaResourcesWrapper getVentaResources(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void printMesaResumen(String codMesa, int idVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void printAreaResumen(String codArea, int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void printPersonalResumenRow(String codPersonal, int codVenta, boolean printValores) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void printCocinaResumen(String codCocina, int codVenta, boolean printValores) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener pl) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener pl) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    //  @GetMapping("{id}/get-autorizos-producto")
-    public float getAutorizosTotalDelProducto(String codProductoVenta, int codVenta) {
-        throw new UnsupportedOperationException("Operacion no permitida"); //   return getUc().getAutorizosTotalDelProducto(codProductoVenta, codVenta);
-    }
-
-    @Override
-    public Map<String, Float> getGastoTotalDeInsumo(int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getVentaTotalDelProducto(String codProductoVenta, int codVenta) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public ResumenVentaWrapper<DayReviewWrapper<ProductovOrden>, ProductovOrden> getVentaResumen(
+            @PathVariable("desde") LocalDate desde,
+            @PathVariable("hasta") LocalDate hasta) {
+        return i.getVentaResumen(desde, hasta);
     }
 
 }
