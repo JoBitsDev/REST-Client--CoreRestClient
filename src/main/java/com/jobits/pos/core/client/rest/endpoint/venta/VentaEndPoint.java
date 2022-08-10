@@ -98,13 +98,13 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     @PutMapping("/importar")
-    public void importarVenta(File file) {//TODO; implementar
-        throw new UnsupportedOperationException("Operacion deshabilitada temporalmente"); //To change body of generated methods, choose Tools | Templates.
+    public Venta importarVenta(String file) {//TODO; implementar
+        return getUc().importarVenta(file);
     }
 
     @Override
-    @PostMapping("/inicializar")
-    public Venta inicializarVentas(@RequestBody LocalDate fecha) {
+    @PostMapping("/inicializar/{dateISO}")
+    public Integer inicializarVentas(@PathVariable("dateISO") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
         return getUc().inicializarVentas(fecha);
     }
 
@@ -135,20 +135,20 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     @PostMapping("/{id}/reabrir-ventas")
-    public void reabrirVentas(@PathVariable("id") int codVenta) {
-        getUc().reabrirVentas(codVenta);
+    public boolean reabrirVentas(@PathVariable("id") int codVenta) {
+        return getUc().reabrirVentas(codVenta);
     }
 
     @Override
     @PostMapping("/{id}/terminar-ventas")
-    public void terminarVentas(@PathParam("id") int codVenta) {
-        getUc().terminarVentas(codVenta);
+    public boolean terminarVentas(@PathParam("id") int codVenta) {
+        return getUc().terminarVentas(codVenta);
     }
 
     @Override
     @PostMapping("/{id}/terminar-y-exportar")
-    public void terminarYExportar(File file, @PathVariable("id") int codVenta) {//TODO: implementar
-        throw new UnsupportedOperationException("Operacion deshabilitada temporalmente"); //To change body of generated methods, choose Tools | Templates.
+    public String terminarYExportar(@PathVariable("id") int codVenta) {//TODO: implementar
+        return getUc().terminarYExportar(codVenta);
     }
 
     @GetMapping("/listar-ventas-id/fecha/{dateISO}")
