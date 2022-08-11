@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.websocket.server.PathParam;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.jobits.pos.client.rest.endpoint.UrlTemplate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -156,6 +157,11 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     public List<Integer> getVentasIds(@PathVariable(value = "dateISO")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return getUc().getVentasIds(date);
+    }
+
+    @GetMapping("/find-integer/{id}")
+    public Venta findByInteger(@PathVariable("id") int o) throws RuntimeException {
+        return getUc().findBy(o);
     }
 
     @GetMapping("/listar-ventas-id/{id}")
