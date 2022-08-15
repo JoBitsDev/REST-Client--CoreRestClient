@@ -6,22 +6,16 @@
 package com.jobits.pos.core.client.rest.endpoint.area;
 
 import com.jobits.pos.controller.areaventa.MesaService;
+import com.jobits.pos.core.domain.models.Area;
 import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.root101.clean.core.app.usecase.AbstractUseCaseImpl;
-import java.util.List;
-import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.jobits.pos.client.rest.endpoint.UrlTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
- *
  * @author Home
  */
 @RestController
@@ -68,5 +62,19 @@ public class MesaEndPoint extends AbstractUseCaseImpl implements MesaService {
     public List<Mesa> getListaMesasDisponibles() {
         return getUc().getListaMesasDisponibles();
     }
+
+    @Override
+    @GetMapping("/lista-por-area/{codArea}")
+    public List<Mesa> getListaMesas(@PathVariable("codArea") String codArea) {
+        return getUc().getListaMesas(codArea);
+    }
+
+
+    @Override
+    @GetMapping("/listar-areas")
+    public List<Area> getListaAreasDisponibles() {
+        return getUc().getListaAreasDisponibles();
+    }
+
 
 }

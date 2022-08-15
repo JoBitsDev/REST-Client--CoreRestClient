@@ -5,39 +5,18 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
-import com.jobits.pos.controller.areaventa.AreaVentaService;
-import com.jobits.pos.controller.areaventa.MesaService;
-import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
-import com.jobits.pos.controller.trabajadores.PersonalUseCase;
-import com.jobits.pos.controller.venta.VentaDetailService;
-import com.jobits.pos.core.client.rest.persistence.models.DetallesVentasModel;
-import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
-import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
-import com.jobits.pos.core.client.rest.persistence.models.VentaCalculator;
-import com.jobits.pos.core.domain.models.Orden;
-import com.jobits.pos.core.domain.models.Venta;
-import com.jobits.pos.core.module.PosCoreModule;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import com.jobits.pos.controller.venta.VentaCalendarResumeUseCase;
+import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.domain.models.temporal.DayReviewWrapper;
 import com.jobits.pos.core.domain.models.temporal.ResumenVentaEstadisticas;
-import java.time.LocalDate;
-import java.util.Date;
+import com.jobits.pos.core.module.PosCoreModule;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
- *
  * @author Home
  */
 @RestController
@@ -69,7 +48,7 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCale
     @GetMapping(FIND_VENTAS_IN_RANGE)
     @Override
     public List<Venta> findVentasInRange(@PathVariable("start") LocalDate start,
-            @PathVariable("end") LocalDate end) {
+                                         @PathVariable("end") LocalDate end) {
         return getUc().findVentasInRange(start, end);
     }
 
@@ -82,8 +61,8 @@ public class VentaListEndPoint extends CrudRestEndPointTemplate<Venta, VentaCale
     @GetMapping(FIND_VENTAS_BY_MONTH_VIEW)
     @Override
     public List<DayReviewWrapper<ResumenVentaEstadisticas>>
-            findVentasByMonthView(@PathVariable("mes") int month,
-                    @PathVariable("anno") int year) {
+    findVentasByMonthView(@PathVariable("mes") int month,
+                          @PathVariable("anno") int year) {
         return getUc().findVentasByMonthView(month, year);
     }
 

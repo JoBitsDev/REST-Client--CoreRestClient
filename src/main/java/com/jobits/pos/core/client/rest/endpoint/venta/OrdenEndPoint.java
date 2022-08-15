@@ -6,7 +6,6 @@
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.areaventa.MesaService;
-import com.jobits.pos.controller.productos.ProductoVentaService;
 import com.jobits.pos.controller.venta.OrdenService;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenConverter;
 import com.jobits.pos.core.client.rest.persistence.models.OrdenModel;
@@ -21,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Home
@@ -37,26 +38,19 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
         return PosCoreModule.getInstance().getImplementation(OrdenService.class);
     }
 
-    @GetMapping("{id}")
-    @Deprecated
-    synchronized public ResponseEntity<OrdenModel> findSimple(@PathVariable("id") String codOrden) {
-        getUc().findAll();//TODO: pifia metida aqui para refrescar la instancia 
-        return ResponseEntity.ok(new OrdenConverter().apply(getUc().findBy(codOrden)));
-    }
-
     @Override
-    @PostMapping(OrdenService.ADD_PRODUCT_PATH)
+    @PostMapping(value = OrdenService.ADD_PRODUCT_PATH)
     public ProductovOrden addProduct(@PathVariable("codOrden") String codOrden,
                                      @PathVariable("codProduct") String producto_seleccionado,
                                      @PathVariable("cantidad") Float cantidad,
-                                     @PathParam("agregadoA") Optional<Integer> productoOrdenAgregar) {
-        return getUc().addProduct(codOrden, codOrden, cantidad, productoOrdenAgregar);
+                                     @PathVariable("productoAgregado") int productoOrdenAgregar) {
+        return getUc().addProduct(codOrden, producto_seleccionado, cantidad, productoOrdenAgregar);
     }
 
     @Override
     @PostMapping(ADD_PRODUCTO_COMPUESTO_PATH)
     public Orden addProductoCompuesto(@PathVariable("codOrden") String codOrden,
-                                      @PathVariable("codProduct") String producto_agregar,
+                                      @PathVariable("idProducto") String producto_agregar,
                                       @PathVariable("cantidad") Float cantidad,
                                       @RequestBody List<ProductoVentaWrapper> lista_agregos) {
         return getUc().addProductoCompuesto(codOrden, producto_agregar, cantidad, lista_agregos);
@@ -64,27 +58,29 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @Override
     @PostMapping(ADD_PRODUCTO_IN_HOT_PATH)
-    public Orden addProductInHot(@PathParam("codOrden") String codOrden,
+    public Orden addProductInHot(@PathVariable("codOrden") String codOrden,
                                  @PathVariable("nombre") String nombre,
-                                 @PathVariable("precio") String precio, @PathVariable("cantidad") String cantidad) {
+                                 @PathVariable("precio") String precio,
+                                 @PathVariable("cantidad") String cantidad) {
         return getUc().addProductInHot(codOrden, nombre, precio, cantidad);
     }
 
     @Override
     @DeleteMapping(REMOVE_PRODUCT_PATH)
-    public Orden removeProduct(@PathVariable("codOrden") String codOrden, @PathVariable("id") int idProductoOrden, @PathVariable("cantidad") float cantidad) {
+    public Orden removeProduct(@PathVariable("codOrden") String codOrden, @PathVariable("idProducto") int idProductoOrden, @PathVariable("cantidad") float cantidad) {
         return getUc().removeProduct(codOrden, idProductoOrden, cantidad);
     }
 
     @Override
     @PostMapping(IMPRIMIR_PRE_TICKET_PATH)
-    public void imprimirPreTicket(@PathVariable("id") String codOrden) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    public void imprimirPreTicket(@PathVariable("codOrden") String codOrden) {
+        getUc().imprimirPreTicket(codOrden);
     }
+
 
     @Override
     @PostMapping()
-    public Orden setCliente(@PathVariable("id") String codOrden, @PathVariable("idClient") Integer clienteId) {
+    public Orden setCliente(@PathVariable("codOrden") String codOrden, @PathVariable("idClient") Integer clienteId) {
         return getUc().setCliente(codOrden, clienteId);
 
     }
@@ -98,7 +94,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @PostMapping(OrdenService.SET_PAGADO_POR_TARJETA_PATH)
     @Override
-    public Orden setPagadoPorTarjeta(@PathVariable("id") String codOrden, @PathVariable("pagadoTarjeta") boolean pagadoPorTarjeta) {
+    public Orden setPagadoPorTarjeta(@PathVariable("codOrden") String codOrden, @PathVariable("pagadoTarjeta") boolean pagadoPorTarjeta) {
         return getUc().setPagadoPorTarjeta(codOrden, pagadoPorTarjeta);
     }
 
@@ -110,65 +106,43 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @Override
     @PutMapping(CERRAR_ORDEN_PATH)
-    synchronized public Orden cerrarOrden(@PathVariable("id") String codOrden,
-                                          @PathVariable("imprimirTickets") boolean imprimirTickets,
+    synchronized public Orden cerrarOrden(@PathVariable("codOrden") String codOrden,
+                                          @PathVariable("imprimirTicket") boolean imprimirTickets,
                                           @PathVariable("pagadoCash") float pagadoCash,
                                           @PathVariable("pagadoTarjeta") float pagadoTarjeta) {
         return getUc().cerrarOrden(codOrden, imprimirTickets, pagadoCash, pagadoTarjeta);
     }
 
-    @PutMapping(CERRAR_ORDEN_PATH+"old")
-    synchronized ResponseEntity<OrdenModel> cerrarOrdenOld(@PathVariable("id") String codOrden, @RequestBody boolean imprimirTicket) {
-        // return ResponseEntity.badRequest().body(new OrdenModel());
-        var o = getUc().findBy(codOrden);
-        o = getUc().cerrarOrden(codOrden, imprimirTicket, o.getOrdenvalorMonetario(), 0);//TODO: implementar el pago por tarjeta
-        return ResponseEntity.ok(new OrdenConverter().apply(o));
-    }
 
     @Override
-    @PostMapping(SET_PORCIENTO_PATH)
-    public Orden setPorciento(String codOrden, float porciento_servicio) {
-        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    @PutMapping(SET_PORCIENTO_PATH)
+    public Orden setPorciento(@PathVariable("codOrden") String codOrden, @PathVariable("porciento") float porciento_servicio) {
+        return getUc().setPorciento(codOrden, porciento_servicio);
     }
+
 
     @Override
     public Orden enviarACocina(String codOrden) {
         throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    @PostMapping(ENVIAR_COCINA_PATH)
-    public Orden enviarACocina(String codOrden, String uuid) {
+    @PutMapping(ENVIAR_COCINA_PATH)
+    public Orden enviarACocinaApi(@PathVariable("codOrden") String codOrden,
+                                  @PathVariable("uuid") String uuid,
+                                  HttpServletRequest request) {
+        if (uuid.equals("127.0.0.1")) {
+            uuid = request.getRemoteHost();
+        }
         return getUc().enviarACocina(codOrden, uuid);
     }
 
-
-    @Deprecated
-    @PostMapping(ADD_PRODUCT_PATH+"old")
-    synchronized ResponseEntity<OrdenModel> addProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") String producto_seleccionado, @PathVariable("cantidad") Float cantidad) {
-        ProductoVentaService productoService = PosCoreModule.getInstance().getImplementation(ProductoVentaService.class);
-        getUc().addProduct(codOrden, productoService.findBy(producto_seleccionado).getCodigoProducto(), cantidad, null);
-        Orden o = getUc().findBy(codOrden);
-        return ResponseEntity.ok(new OrdenConverter().apply(o));
-    }
-
-    @DeleteMapping(REMOVE_PRODUCT_PATH+"old")
-    synchronized ResponseEntity<OrdenModel> removeProduct(@PathVariable("id") String codOrden, @PathVariable("idProducto") int producto_orden_seleccionado, @PathVariable("cantidad") Float cantidad) {
-        var orden = getUc().findBy(codOrden);
-        ProductovOrden prod = null;
-        for (ProductovOrden p : orden.getProductovOrdenList()) {
-            if (p.getId() == producto_orden_seleccionado) {
-                prod = p;
-                break;
-            }
-        }
-        getUc().removeProduct(codOrden, prod.getId(), cantidad);
-        Orden o = getUc().findBy(codOrden);
-        return ResponseEntity.ok(new OrdenConverter().apply(o));
+    @Override
+    public Orden enviarACocina(String s, String s1) {
+        return getUc().enviarACocina(s, s1);
     }
 
     @GetMapping("/{id}/validate")
-    synchronized ResponseEntity<OrdenModel> validateOrden(@PathVariable("id") String codOrden) {
+    synchronized ResponseEntity<OrdenModel> validateOrden(@PathVariable("codOrden") String codOrden) {
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         if (o != null) {
@@ -188,14 +162,14 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @PutMapping(MOVER_A_PATH)
     @Override
-    public synchronized Orden moverA(@PathVariable("id") String codOrden, @PathVariable("codMesa") String codMesa) {
+    public synchronized Orden moverA(@PathVariable("codOrden") String codOrden, @PathVariable("codMesa") String codMesa) {
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         return getUc().moverA(codOrden, codMesa);
     }
 
     @PostMapping(ADD_NOTA_PATH)
-    public synchronized Orden addNota(@PathVariable("id") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
+    public synchronized Orden addNota(@PathVariable("codOrden") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
         var o = getUc().findBy(idOrden);
         if (o == null) {
             throw new NullPointerException("Codigo de orden invalido");
@@ -210,7 +184,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @GetMapping(GET_NOTA_PATH)
-    synchronized ResponseEntity<Map<String, String>> getNota(@PathVariable("id") String idOrden, @PathVariable("codProducto") int idProducto) {
+    synchronized ResponseEntity<Map<String, String>> getNota(@PathVariable("codOrden") String idOrden, @PathVariable("codProducto") int idProducto) {
         var o = getUc().findBy(idOrden);
         if (o == null) {
             return ResponseEntity.ok(Collections.singletonMap("nota", ""));
@@ -227,14 +201,8 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @PutMapping(SET_DE_LA_CASA_PATH)
     @Override
-    public synchronized Orden setDeLaCasa(@PathVariable("id") String codOrden, @PathVariable("boolValue") boolean booleanValue) {
+    public synchronized Orden setDeLaCasa(@PathVariable("codOrden") String codOrden, @PathVariable("boolValue") boolean booleanValue) {
         return getUc().setDeLaCasa(codOrden, booleanValue);
-    }
-
-    @PutMapping(ENVIAR_COCINA_PATH)
-    synchronized ResponseEntity<Boolean> enviarACocina(@PathVariable("id") String codOrden, HttpServletRequest inRequest) {
-        getUc().enviarACocina(codOrden, inRequest.getRemoteHost());
-        return ResponseEntity.ok(true);
     }
 
 }

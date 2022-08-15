@@ -16,6 +16,8 @@ jar {
 dependencies {
     implementation project(':Commons')
     implementation 'org.jobits.pos:org.jobits.pos.core:6.0.0-SNAPSHOT'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:20.1.0'
 }
 
 

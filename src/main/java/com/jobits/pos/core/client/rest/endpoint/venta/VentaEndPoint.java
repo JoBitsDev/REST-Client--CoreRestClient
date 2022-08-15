@@ -6,36 +6,36 @@
 package com.jobits.pos.core.client.rest.endpoint.venta;
 
 import com.jobits.pos.controller.venta.VentaDetailService;
+import com.jobits.pos.controller.venta.resumen.VentaResumenUseCase;
+import com.jobits.pos.core.domain.VentaResourcesWrapper;
+import com.jobits.pos.core.domain.VentaResumenWrapper;
 import com.jobits.pos.core.domain.models.Orden;
 import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
-import java.io.File;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 import java.util.List;
-import javax.websocket.server.PathParam;
-import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
-import org.jobits.pos.client.rest.endpoint.UrlTemplate;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 /**
- *
  * @author Home
  */
 @RestController
 @RequestMapping(path = "pos/venta")
-public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailService>
-        implements VentaDetailService {
+public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailService> implements VentaDetailService, VentaResumenUseCase {
+
 
     @Override
     public VentaDetailService getUc() {
         return PosCoreModule.getInstance().getImplementation(VentaDetailService.class);
+    }
+
+    public VentaResumenUseCase getUcR() {
+        return PosCoreModule.getInstance().getImplementation(VentaResumenUseCase.class);
     }
 
     @Override
@@ -57,20 +57,21 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    @GetMapping("/can-open-nuevo-turno/{dateISO}")
-    public boolean canOpenNuevoTurno(@PathVariable("dateISO") LocalDate fecha) {
+    @GetMapping(value = "/can-open-nuevo-turno/{dateISO}")
+    public int canOpenNuevoTurno(@PathVariable("dateISO")
+                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
         return getUc().canOpenNuevoTurno(fecha);
     }
 
     @Override
     @GetMapping("/{id}/can-open-nuevo-turno")
-    public boolean canOpenNuevoTurno(@PathVariable("id") int idVenta) {
+    public int canOpenNuevoTurno(@PathVariable("id") int idVenta) {
         return getUc().canOpenNuevoTurno(idVenta);
     }
 
     @Override
     @GetMapping("/{id}/can-reabrir")
-    public boolean canReabrirVenta(@PathVariable("id") int codVenta) {
+    public int canReabrirVenta(@PathVariable("id") int codVenta) {
         return getUc().canReabrirVenta(codVenta);
     }
 
@@ -88,7 +89,7 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     @GetMapping("/{id}/get-pago-trabajador/{dividirEntre}/{codPersonal}")
-    public Float getPagoTrabajador(@PathVariable("codPersonal") String codPersonal, int codVenta, int dividirEntre) {
+    public Float getPagoTrabajador(@PathVariable("codPersonal") String codPersonal, @PathVariable("id") int codVenta, @PathVariable("dividirEntre") int dividirEntre) {
         throw new UnsupportedOperationException("Operacion no permitida"); //   return getUc().getAutorizosTotalDelProducto(codProductoVenta, codVenta);
     }
 
@@ -111,14 +112,13 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     @PostMapping("/{id}/print/autorizos")
-    public void printGastosCasa(@PathVariable("{id}") int codVenta) {
+    public void printGastosCasa(@PathVariable("id") int codVenta) {
         getUc().printGastosCasa(codVenta);
     }
 
     @Override
     @PostMapping("/{id}/print/pago-por-venta/{usuario}")
-    public void printPagoPorVentaPersonal(@PathVariable("usuario") String codPersonal,
-            @PathVariable("id") int codVenta, @PathParam("printValues") boolean printValores) {
+    public void printPagoPorVentaPersonal(@PathVariable("usuario") String codPersonal, @PathVariable("id") int codVenta, @PathParam("printValues") boolean printValores) {
         getUc().printPagoPorVentaPersonal(codPersonal, codVenta, printValores);
     }
 
@@ -136,13 +136,13 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
 
     @Override
     @PostMapping("/{id}/reabrir-ventas")
-    public boolean reabrirVentas(@PathVariable("id") int codVenta) {
+    public Venta reabrirVentas(@PathVariable("id") int codVenta) {
         return getUc().reabrirVentas(codVenta);
     }
 
     @Override
     @PostMapping("/{id}/terminar-ventas")
-    public boolean terminarVentas(@PathParam("id") int codVenta) {
+    public Venta terminarVentas(@PathVariable("id") int codVenta) {
         return getUc().terminarVentas(codVenta);
     }
 
@@ -152,10 +152,15 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
         return getUc().terminarYExportar(codVenta);
     }
 
+    @Override
+    @PutMapping("/{id}/set-propina/{cantidad}")
+    public Float setPropina(@PathVariable("id") Integer integer, @PathVariable("cantidad") Float aFloat) {
+        return getUc().setPropina(integer, aFloat);
+    }
+
     @GetMapping("/listar-ventas-id/fecha/{dateISO}")
     @Override
-    public List<Integer> getVentasIds(@PathVariable(value = "dateISO")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public List<Integer> getVentasIds(@PathVariable(value = "dateISO") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return getUc().getVentasIds(date);
     }
 
@@ -170,4 +175,64 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
         return getUc().getVentasIds(idVenta);
     }
 
+    @Override
+    @GetMapping("/{id}/get-resumen")
+    public VentaResumenWrapper getResumenVenta(@PathVariable("id") int idVenta) {
+        return getUcR().getResumenVenta(idVenta);
+    }
+
+
+    @Override
+    @GetMapping("/{id}/get-resources")
+    public VentaResourcesWrapper getVentaResources(@PathVariable("id") int idVenta) {
+        return getUcR().getVentaResources(idVenta);
+    }
+
+    @Override
+    @GetMapping("/{id}/get-venta-total-producto")
+    public Map<String, Float> getVentaTotalDelProducto(@PathVariable("id") int idVenta) {
+        return getUcR().getVentaTotalDelProducto(idVenta);
+    }
+
+    @Override
+    @GetMapping("/{id}/get-gasto-total-insumos")
+    public Map<String, Float> getGastoTotalDeInsumo(@PathVariable("id") int idVenta) {
+        return getUcR().getGastoTotalDeInsumo(idVenta);
+    }
+
+    @Override
+    @GetMapping("/{id}/get-autorizos-total-producto")
+    public Map<String, Float> getAutorizosTotalDelProducto(@PathVariable("id") int idVenta) {
+        return getUcR().getGastoTotalDeInsumo(idVenta);
+    }
+
+    @Override
+    @GetMapping("/{id}/print/mesa-resumen/{codMesa}")
+    public void printMesaResumen(@PathVariable("codMesa") String s, @PathVariable("id") int idVenta) {
+        getUcR().printMesaResumen(s, idVenta);
+    }
+
+    @Override
+    @GetMapping("/{id}/print/area-resumen/{codArea}")
+    public void printAreaResumen(@PathVariable("codArea") String s, @PathVariable("id") int idVenta) {
+        getUcR().printAreaResumen(s, idVenta);
+
+    }
+
+    @Override
+    @GetMapping("/{id}/print/personal-resumen/{usuario}/{printValues}")
+    public void printPersonalResumenRow(@PathVariable("usuario") String personal,
+                                        @PathVariable("id") int idVenta,
+                                        @PathVariable("printValues") boolean printValues) {
+        getUcR().printPersonalResumenRow(personal, idVenta, printValues);
+
+    }
+
+    @Override
+    @GetMapping("/{id}/print/cocina-resumen/{idCocina}/{printValues}")
+    public void printCocinaResumen(@PathVariable("idCocina") String cocina,
+                                   @PathVariable("id") int idVenta,
+                                   @PathVariable("printValues") boolean printValues) {
+        getUcR().printCocinaResumen(cocina, idVenta, printValues);
+    }
 }

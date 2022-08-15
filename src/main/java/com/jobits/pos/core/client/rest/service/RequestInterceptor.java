@@ -7,20 +7,17 @@ package com.jobits.pos.core.client.rest.service;
 
 import com.jobits.pos.controller.configuracion.ConfiguracionService;
 import com.jobits.pos.core.module.PosCoreModule;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.aop.target.ThreadLocalTargetSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
- *
  * JoBits
  *
  * @author Jorge
- *
  */
 public class RequestInterceptor implements AsyncHandlerInterceptor {
 
@@ -36,7 +33,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
         var token = getToken(request);
         if (token == null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getWriter().append("Token not present in the Request Header");
+            response.getWriter().append("Bearer Token not present in the Request Header");
             return false;
         }
         setCurrentUser(token);
@@ -58,7 +55,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
         String token = request.getHeader("Authorization");
         System.out.println("RequestURI::" + requestURI + " || Search for Token  :: " + token);
         System.out.println("____________________________________________");
-        return token != null ? token.replace("Bearer ", "") : "" ;
+        return token != null ? token.replace("Bearer ", "") : "";
 
     }
 
