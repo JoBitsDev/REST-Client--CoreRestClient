@@ -8,10 +8,7 @@ package com.jobits.pos.core.client.rest.endpoint.trabajador;
 import com.jobits.pos.controller.trabajadores.AsistenciaPersonalService;
 import com.jobits.pos.core.domain.models.AsistenciaPersonal;
 import com.jobits.pos.core.module.PosCoreModule;
-import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
+import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "pos/asistencia-personal")
 public class AsistenciaPersonalEndPoint
-        extends CrudRestEndPointTemplate<AsistenciaPersonal, AsistenciaPersonalService>
+        extends DefaultEndpoint
         implements AsistenciaPersonalService {
 
     public static final String IMPRIMIR_ASISTENCIA = "/venta/{id}/imprimir-asistencia";
@@ -35,8 +32,12 @@ public class AsistenciaPersonalEndPoint
 
     public static final String UPDATE_SALARIES = "/venta/{id}/update-salaries";
 
+    public static final String CREATE = "/venta/{id}/add-trabajador/{usuario}";
 
-    @Override
+    public static final String FIND_BY = "/venta/{id}/find/{usuario}";
+
+    public static final String DELETE = "/venta/{id}/delete/{usuario}";
+
     public AsistenciaPersonalService getUc() {
         return PosCoreModule.getInstance().getImplementation(AsistenciaPersonalService.class);
     }
@@ -70,5 +71,22 @@ public class AsistenciaPersonalEndPoint
     public List<AsistenciaPersonal> updateSalaries(@PathVariable("id") int idVenta) {
         return getUc().updateSalaries(idVenta);
     }
+
+
+    @PostMapping(CREATE)
+    public AsistenciaPersonal create(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().create(idVenta, usuario);
+    }
+
+    @GetMapping(FIND_BY)
+    public AsistenciaPersonal findBy(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().findBy(idVenta, usuario);
+    }
+
+    @DeleteMapping(DELETE)
+    public AsistenciaPersonal destroy(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().destroy(idVenta, usuario);
+    }
+
 
 }
