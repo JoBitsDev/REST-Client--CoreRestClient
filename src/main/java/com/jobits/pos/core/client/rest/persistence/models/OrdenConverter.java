@@ -9,16 +9,14 @@ import com.jobits.pos.core.domain.models.Mesa;
 import com.jobits.pos.core.domain.models.Orden;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.ProductovOrden;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 /**
- *
  * JoBits
  *
  * @author Jorge
- *
  */
 public class OrdenConverter implements Function<Orden, OrdenModel> {
 
@@ -44,24 +42,24 @@ public class OrdenConverter implements Function<Orden, OrdenModel> {
         for (ProductovOrden x : t.getProductovOrdenList()) {
             ProductoVenta p = x.getProductoVenta();
             SeccionModel seccion = new SeccionModel(
-                    p.getSeccionnombreSeccion().getNombreSeccion(),
-                    p.getSeccionnombreSeccion().getDescripcion());
-            
+                    p.getSeccionnombreSeccion(),
+                    "");
+
             ProductoVentaModel productoVenta = new ProductoVentaModel(
-                    p.getCodigoProducto(),p.getNombre(),p.getPrecioVenta(),
+                    p.getCodigoProducto(), p.getNombre(), p.getPrecioVenta(),
                     p.getDescripcion());
-            
+
 
             String nota = x.getNota() != null ? x.getNota().getDescripcion() : null;
-            
+
             ProductoVentaOrdenModel po = new ProductoVentaOrdenModel(
                     x.getEnviadosacocina()
-                    ,x.getId()
-                    ,x.getCantidad()
-                    ,productoVenta
-                    ,x.getNumeroComensal()
-                    ,nota);
-                    pvo.add(po);
+                    , x.getId()
+                    , x.getCantidad()
+                    , productoVenta
+                    , x.getNumeroComensal()
+                    , nota);
+            pvo.add(po);
         }
         ret.setProductoVentaOrdenList(pvo);
         return ret;

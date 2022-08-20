@@ -16,7 +16,6 @@ import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -117,13 +116,13 @@ public class VentaEndPoint extends CrudRestEndPointTemplate<Venta, VentaDetailSe
     }
 
     @Override
-    @PostMapping("/{id}/print/pago-por-venta/{usuario}")
-    public void printPagoPorVentaPersonal(@PathVariable("usuario") String codPersonal, @PathVariable("id") int codVenta, @PathParam("printValues") boolean printValores) {
+    @PostMapping("/{id}/print/pago-por-venta/{usuario}/{printValues}")
+    public void printPagoPorVentaPersonal(@PathVariable("usuario") String codPersonal, @PathVariable("id") int codVenta, @PathVariable("printValues") boolean printValores) {
         getUc().printPagoPorVentaPersonal(codPersonal, codVenta, printValores);
     }
 
     @Override
-    @PostMapping("/{id}/print/comision-pocentual/{codMesa}")
+    @GetMapping("/{id}/print/comision-pocentual/{codMesa}")
     public void printComisionPorcentualResumen(@PathVariable("codMesa") String codMesa, @PathVariable("id") int idVenta) {
         getUc().printComisionPorcentualResumen(codMesa, idVenta);
     }

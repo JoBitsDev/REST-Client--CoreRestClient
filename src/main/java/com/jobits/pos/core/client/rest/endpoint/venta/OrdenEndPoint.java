@@ -40,10 +40,10 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
 
     @Override
     @PostMapping(value = OrdenService.ADD_PRODUCT_PATH)
-    public ProductovOrden addProduct(@PathVariable("codOrden") String codOrden,
-                                     @PathVariable("codProduct") String producto_seleccionado,
-                                     @PathVariable("cantidad") Float cantidad,
-                                     @PathVariable("productoAgregado") int productoOrdenAgregar) {
+    public Orden addProduct(@PathVariable("codOrden") String codOrden,
+                            @PathVariable("codProduct") String producto_seleccionado,
+                            @PathVariable("cantidad") Float cantidad,
+                            @PathVariable("productoAgregado") int productoOrdenAgregar) {
         return getUc().addProduct(codOrden, producto_seleccionado, cantidad, productoOrdenAgregar);
     }
 
@@ -142,7 +142,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @GetMapping("/{id}/validate")
-    synchronized ResponseEntity<OrdenModel> validateOrden(@PathVariable("codOrden") String codOrden) {
+    synchronized ResponseEntity<OrdenModel> validateOrden(@PathVariable("id") String codOrden) {
         Orden o = getUc().findBy(codOrden);
         MesaService mService = PosCoreModule.getInstance().getImplementation(MesaService.class);
         if (o != null) {
@@ -169,7 +169,7 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @PostMapping(ADD_NOTA_PATH)
-    public synchronized Orden addNota(@PathVariable("codOrden") String idOrden, @PathVariable("idProductoOrden") int idProducto, @PathVariable("nota") String nota) {
+    public synchronized Orden addNota(@PathVariable("codOrden") String idOrden, @PathVariable("codProducto") int idProducto, @PathVariable("nota") String nota) {
         var o = getUc().findBy(idOrden);
         if (o == null) {
             throw new NullPointerException("Codigo de orden invalido");
