@@ -5,9 +5,7 @@
  */
 package com.jobits.pos.core.client.rest.persistence.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.jobits.pos.core.client.rest.persistence.models.ProductoVentaModel;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.domain.models.Seccion;
 

@@ -5,183 +5,137 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.core.client.rest.assembler.AlmacenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.InsumoAlmacenModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.InsumoModelAssembler;
 import com.jobits.pos.core.domain.TransaccionSimple;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import com.jobits.pos.inventario.core.almacen.domain.InsumoAlmacen;
-import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
-import com.jobits.pos.inventario.core.almacen.domain.TransaccionEntrada;
-import com.jobits.pos.inventario.core.almacen.domain.TransaccionMerma;
-import com.jobits.pos.inventario.core.almacen.domain.TransaccionSalida;
-import com.jobits.pos.inventario.core.almacen.domain.TransaccionTransformacion;
-import com.jobits.pos.inventario.core.almacen.domain.TransaccionTraspaso;
+import com.jobits.pos.inventario.core.almacen.domain.Operacion;
 import com.jobits.pos.inventario.core.almacen.usecase.AlmacenManageService;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/almacen_manage")
-public class AlmacenManageEndPoint extends CrudRestServiceTemplate<Almacen> {
+@RequestMapping(path = "pos/almacen")
+public class AlmacenManageEndPoint extends CrudRestEndPointTemplate<Almacen, AlmacenManageService>
+        implements AlmacenManageService {
 
-    public static final String INSUMO_ALMACEN_LIST_PATH = "/insumo_almacen_list";
-    public static final RequestMethod INSUMO_ALMACEN_LIST_METHOD = RequestMethod.GET;
+    public static final String RESET_ALMACEN = "/{id}/reset-almacen";
 
-    public static final String FIND_INSUMO_PATH = "/find_insumo";
-    public static final RequestMethod FIND_INSUMO_METHOD = RequestMethod.GET;
+    public static final String CREAR_OPERACION = "/{id}/crear-operacion/{tipo}/{recibo}/{fecha}/{idVenta}";
 
-    public static final String BULK_INSUMO_PATH = "/bulk_insumo";
-    public static final RequestMethod BULK_INSUMO_METHOD = RequestMethod.POST;
+    public static final String OPERACIONES_PENDIENTES = "/{id}/operaciones-pendientes";
 
-    public static final String DAR_ENTRADA_IPV_PATH = "/dar_entrada_ipv";
-    public static final RequestMethod DAR_ENTRADA_IPV__METHOD = RequestMethod.POST;
+    public static final String EJECUTAR_OPERACION = "/{id}/ejecutar-operacion/{idOp}";
 
-    public static final String UPDATE_VALOR_TOTAL_ALMACEN_PATH = "/update_valor_total_almacen";
-    public static final RequestMethod UPDATE_VALOR_TOTAL_ALMACEN_METHOD = RequestMethod.PUT;
+    public static final String ACTUALIZAR_OPERACION = "/{id}/actualizar-operacion";
 
-    public static final String REMOVE_INSUMO_FROM_STRORAGE_PATH = "/remove_insumo_from_storage";
-    public static final RequestMethod REMOVE_INSUMO_FROM_STRORAGE_METHOD = RequestMethod.PUT;
+    public static final String REGISTRAR_INSUMO = "/{id}/registrar-insumo/{codInsumo}";
 
-    public static final String IMPRIMIR_RESUMEN_ALMACEN_PATH = "/imprimir_resumen_almacen";
-    public static final RequestMethod IMPRIMIR_RESUMEN_ALMACEN_METHOD = RequestMethod.POST;
+    public static final String IMPRIMIR_REPORTE_COMPRAS = "/{id}/imprimir/reporte-compras";
 
-    public static final String IMPRIMIR_RESUMEN_COMPRAS_PATH = "/imprimir_resumen_compras";
-    public static final RequestMethod IMPRIMIR_RESUMEN_COMPRAS_METHOD = RequestMethod.POST;
+    public static final String IMPRIMIR_RESUMEN = "/{id}/imprimir/resumen";
 
-    public static final String SET_CENTRO_ELABORACION_PATH = "/set_centro_elaboracion";
-    public static final RequestMethod SET_CENTRO_ELABORACION_METHOD = RequestMethod.PUT;
+    public static final String BULK_IMPORT = "/bulk-import";
 
-    public static final String CREAR_TRANSFORMACION_PATH = "/crear_transformacion";
-    public static final RequestMethod CREAR_TRANSFORMACION_METHOD = RequestMethod.POST;
+    public static final String ELIMINAR_INSUMO = "/{id}/eliminar-insumo/{idInsumo}";
 
-    public static final String AGREGAR_INSUMO_ALMACEN_PATH = "/agregar_insumo_almacen";
-    public static final RequestMethod AGREGAR_INSUMO_ALMACEN_METHOD = RequestMethod.PUT;
-
-    public static final String DAR_TRASPASO_A_INSUMO_PATH = "/dar_traspaso_a_insumo";
-    public static final RequestMethod DAR_TRASPASO_A_INSUMO_METHOD = RequestMethod.PUT;
-
-    public static final String DAR_TRANSFORMACION_A_INSUMO_PATH = "/dar_transformacion_a_insumo";
-    public static final RequestMethod DAR_TRANSFORMACION_A_INSUMO_METHOD = RequestMethod.PUT;
-
-    public static final String DAR_SALIDA_A_INSUMO_PATH = "/dar_salida_a_insumo";
-    public static final RequestMethod DAR_SALIDA_A_INSUMO_METHOD = RequestMethod.PUT;
-
-    public static final String DAR_MERMA_A_INSUMO_PATH = "/dar_merma_a_insumo";
-    public static final RequestMethod DAR_MERMA_A_INSUMO_METHOD = RequestMethod.PUT;
-
-    public static final String DAR_ENTRADA_A_INSUMO_PATH = "/dar_entrada_a_insumo";
-    public static final RequestMethod DAR_ENTRADA__A_INSUMO_METHOD = RequestMethod.PUT;
-
-    public static final String CREAR_OPERACION_ENTRADA_PATH = "/crear_operacion_entrada";
-    public static final RequestMethod CREAR_OPERACION_ENTRADA_METHOD = RequestMethod.POST;
-
-    public static final String CREAR_OPERACION_REBAJA_PATH = "/crear_operacion_rebaja";
-    public static final RequestMethod CREAR_OPERACION_REBAJA_METHOD = RequestMethod.POST;
-
-    public static final String CREAR_OPERACION_SALIDA_PATH = "/crear_operacion_salida";
-    public static final RequestMethod CREAR_OPERACION_SALIDA_METHOD = RequestMethod.POST;
-
-    public static final String CREAR_OPERACION_TRASPASO_PATH = "/crear_operacion_traspaso";
-    public static final RequestMethod CREAR_OPERACION_TRASPASO_METHOD = RequestMethod.POST;
-
-    AlmacenModelAssembler almacenAssembler = new AlmacenModelAssembler();
-    InsumoModelAssembler insumoAssembler = new InsumoModelAssembler();
-    InsumoAlmacenModelAssembler insumoAlmacenAssembler = new InsumoAlmacenModelAssembler();
+    public static final String BUSCAR_INSUMO = "/{id}/insumo/{codInsumo}";
 
     @Override
     public AlmacenManageService getUc() {
         return PosCoreModule.getInstance().getImplementation(AlmacenManageService.class);
     }
 
+    @PostMapping(CREAR_OPERACION)
     @Override
-    public CrudModelAssembler<Almacen> getAssembler() {
-        return almacenAssembler;
+    public Operacion crearOperacion(@PathVariable("tipo") Operacion.Tipo tipoOp,
+            @RequestBody List<TransaccionSimple> transacciones,
+            @PathVariable("recibo") String recibo,
+            @PathVariable("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFactura,
+            @PathVariable("id") String codAlmacen,
+            @PathVariable("idVenta") Integer codVenta) {
+        return getUc().crearOperacion(tipoOp, transacciones, recibo, fechaFactura,
+                codAlmacen, codVenta);
     }
 
-    @PostMapping(CREAR_OPERACION_ENTRADA_PATH)
-    public boolean crearOperacionEntrada(@RequestBody ArrayList<TransaccionSimple> al,
-            @RequestParam String string, @RequestParam Date date, @RequestBody Almacen almcn) {
-        //  getUc().crearOperacionEntrada(al, string, date, almcn);
-        return true;
+    @GetMapping(OPERACIONES_PENDIENTES)
+    @Override
+    public List<Operacion> getOperacionesPendientes(@PathVariable("id") String codAlmacen) {
+        return getUc().getOperacionesPendientes(codAlmacen);
     }
 
-    @PostMapping(CREAR_OPERACION_REBAJA_PATH)
-    public boolean crearOperacionRebaja(@RequestBody ArrayList<TransaccionSimple> al,
-            @RequestParam String string, @RequestParam Date date, @RequestBody Almacen almcn) {
-        //getUc().crearOperacionRebaja(al, string, date, almcn);
-        return true;
+    @PutMapping(ACTUALIZAR_OPERACION)
+    @Override
+    public void ejecutarOperacion(@PathVariable("id") String codAlmacen,
+            @RequestBody Operacion operacionToUpdate) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @PostMapping(CREAR_OPERACION_SALIDA_PATH)
-    public boolean crearOperacionSalida(@RequestBody ArrayList<TransaccionSimple> al,
-            @RequestParam String string, @RequestParam Date date,
-            @RequestParam Integer intgr, @RequestParam Almacen almcn) {
-        //getUc().crearOperacionSalida(al, string, date, intgr, almcn);
-        return true;
+    @PutMapping(EJECUTAR_OPERACION)
+    @Override
+    public void ejecutarOperacion(@PathVariable("id") String codAlmacen,
+            @PathVariable("idOp") int idOperacion) {
+        getUc().ejecutarOperacion(codAlmacen, idOperacion);
     }
 
-    @PostMapping(CREAR_OPERACION_TRASPASO_PATH)
-    public boolean crearOperacionTraspaso(@RequestBody ArrayList<TransaccionSimple> al,
-            @RequestParam String string, @RequestBody Date date, @RequestBody Almacen almcn) {
-        // getUc().crearOperacionTraspaso(al, string, date, almcn);
-        return true;
+    @PutMapping(REGISTRAR_INSUMO)
+    @Override
+    public void agregarInsumoAlmacen(@PathVariable("codInsumo") String codInsumo, @PathVariable("id") String codAlmacen) {
+        getUc().agregarInsumoAlmacen(codInsumo, codAlmacen);
     }
 
-    @PutMapping(DAR_ENTRADA_A_INSUMO_PATH)
-    public boolean darEntradaAInsumo(@RequestBody TransaccionEntrada te, @RequestBody Almacen almcn) {
-        //getUc().darEntradaAInsumo(te, almcn);
-        return true;
+    @GetMapping(IMPRIMIR_REPORTE_COMPRAS)
+    @Override
+    public void imprimirReporteParaCompras(@PathVariable("id") String codAlmacen,@Value(value = "1") int selection) {
+        getUc().imprimirReporteParaCompras(codAlmacen, 1);
     }
 
-    @PutMapping(DAR_MERMA_A_INSUMO_PATH)
-    public boolean darMermaInsumo(@RequestBody TransaccionMerma tm, @RequestBody Almacen almcn) {
-        //getUc().darMermaInsumo(tm, almcn);
-        return true;
+    @GetMapping(IMPRIMIR_RESUMEN)
+    @Override
+    public void imprimirResumenAlmacen(@PathVariable("id") String codAlmacen) {
+        getUc().imprimirResumenAlmacen(codAlmacen);
     }
 
-    @PutMapping(DAR_SALIDA_A_INSUMO_PATH)
-    public boolean darSalidaAInsumo(@RequestBody TransaccionSalida ts,
-            @RequestParam int i, @RequestBody Almacen almcn) {
-        //getUc().darSalidaAInsumo(ts, i, almcn);
-        return true;
+    @DeleteMapping(ELIMINAR_INSUMO)
+    @Override
+    public void removeInsumoFromStorage(@PathVariable("id") String codAlmacen,
+            @PathVariable("idInsumo") String codInsumo) {
+        getUc().removeInsumoFromStorage(codAlmacen, codInsumo);
     }
 
-    @PutMapping(DAR_TRANSFORMACION_A_INSUMO_PATH)
-    public boolean darTransformacionAInsumo(@RequestBody Transaccion trnscn,
-            @RequestBody Almacen almcn, @RequestBody Almacen almcn1) {
-        // getUc().darTransformacionAInsumo(trnscn, almcn, almcn1);
-        return true;
+    @PostMapping(BULK_IMPORT)
+    @Override
+    public boolean bulkImport(@RequestBody List<InsumoAlmacen> importList) {
+        return getUc().bulkImport(importList);
     }
 
-    @PutMapping(DAR_TRASPASO_A_INSUMO_PATH)
-    public boolean darTraspasoInsumo(@RequestBody TransaccionTraspaso tt,
-            @RequestBody Almacen almcn) {
-        //  getUc().darTraspasoInsumo(tt, almcn);
-        return true;
+    @GetMapping(BUSCAR_INSUMO)
+    @Override
+    public InsumoAlmacen findInsumo(@PathVariable("codInsumo") String codIns,
+            @PathVariable("id") String codAlmacen) {
+        return getUc().findInsumo(codIns, codAlmacen);
     }
 
-    @PostMapping(CREAR_TRANSFORMACION_PATH)
-    public boolean crearTransformacion(@RequestBody InsumoAlmacen ia,
-            @RequestParam float f, @RequestBody List<TransaccionTransformacion> list,
-            @RequestBody Almacen almcn) {
-        //  getUc().crearTransformacion(ia, f, list, almcn);
-        return true;
+    @PutMapping(RESET_ALMACEN)
+    @Override
+    public void resetAlmacen(@PathVariable("id") String codAlmacen) {
+        getUc().resetAlmacen(codAlmacen);
     }
 
 }

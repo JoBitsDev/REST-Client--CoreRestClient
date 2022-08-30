@@ -1,5 +1,5 @@
 group = 'com.jobits.pos.core.client.rest'
-version = '5.7.0'
+version = '6.0.0-SNAPSHOT'
 description = 'JoBits POS REST:Core'
 
 
@@ -15,7 +15,9 @@ jar {
 
 dependencies {
     implementation project(':Commons')
-    implementation 'org.jobits.pos:org.jobits.pos.core:5.10.1'
+    implementation 'org.jobits.pos:org.jobits.pos.core:6.0.0-SNAPSHOT'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:20.1.0'
 }
 
 

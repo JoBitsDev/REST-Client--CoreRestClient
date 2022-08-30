@@ -18,7 +18,8 @@ import java.util.List;
  */
 public class VentaResumenModel {
 
-    private final float ventaTotal,
+    private final float 
+            ventaTotal,
             ventaNeta,
             gastosInsumo,
             gastosSalario,

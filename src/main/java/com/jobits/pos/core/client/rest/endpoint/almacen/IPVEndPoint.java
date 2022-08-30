@@ -5,32 +5,26 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionListService;
-import com.jobits.pos.controller.venta.VentaListService;
-import com.jobits.pos.core.client.rest.assembler.IpvModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.IpvRegistroModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.IpvVentaRegistroModelAssembler;
+import com.jobits.pos.controller.puntoelaboracion.PuntoElaboracionService;
+import com.jobits.pos.controller.venta.VentaCalendarResumeUseCase;
 import com.jobits.pos.core.client.rest.persistence.models.IpvRegistroModel;
 import com.jobits.pos.core.domain.models.Cocina;
 import com.jobits.pos.core.domain.models.Insumo;
-import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import com.jobits.pos.inventario.core.almacen.domain.Ipv;
+import com.jobits.pos.inventario.core.almacen.domain.IpvPK;
 import com.jobits.pos.inventario.core.almacen.domain.IpvRegistro;
 import com.jobits.pos.inventario.core.almacen.domain.IpvVentaRegistro;
 import com.jobits.pos.inventario.core.almacen.usecase.IPVService;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,93 +33,184 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/ipv")
-public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
+@RequestMapping(path = "pos/ipv")
+public class IPVEndPoint
+        extends CrudRestEndPointTemplate<Ipv, IPVService>
+        implements IPVService {
 
-    public static final String DAR_ENTRADA_EXISTENCIA_INSUMO_PATH = "/dar_entrada_existencia_insumo";
-    public static final RequestMethod DAR_ENTRADA_EXISTENCIA_INSUMO_METHOD = RequestMethod.PUT;
+    public static final String DAR_ENTRADA_EXISTENCIA_INSUMO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/entrada/{cantidad}";
 
-    public static final String DAR_ENTRADA_IPV_PATH = "/dar_entrada_ipv";
-    public static final RequestMethod DAR_ENTRADA_IPV_METHOD = RequestMethod.PUT;
+    public static final String DAR_ENTRADA_IPV_PATH = "/productos/{idVenta}/{codProducto}/entrada/{cantidad}";
 
-    public static final String AJUSTAR_CONSUMO_PATH = "/ajustar_consumo";
-    public static final RequestMethod AJUSTAR_CONSUMO_METHOD = RequestMethod.PUT;
+    public static final String AJUSTAR_CONSUMO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/ajustar-consumo/{cantidad}";
 
-    public static final String TRANSFERIR_IPV_REGISTRO_PATH = "/transferir_ipv_registro";
-    public static final RequestMethod TRANSFERIR_IPV_REGISTRO_METHOD = RequestMethod.PUT;
+    public static final String AJUSTAR_COSTO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/ajustar-costo/{cantidad}";
 
-    public static final String TRANSFERIR_IPV_REGISTRO_TO_ALMACEN_PATH = "/transferir_ipv_registro_to_almacen";
-    public static final RequestMethod TRANSFERIR_IPV_REGISTRO_TO_ALMACEN_METHOD = RequestMethod.PUT;
+    public static final String TRANSFERIR_IPV_REGISTRO_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/transferir-ipv/{codCocinaTransferir}/{cantidad}";
 
-    public static final String REINICIAR_IPV_PATH = "/reiniciar_ipv";
-    public static final RequestMethod REINICIAR_IPV_METHOD = RequestMethod.PUT;
+    public static final String TRANSFERIR_IPV_REGISTRO_TO_ALMACEN_PATH = "/insumos/{idVenta}/{codCocina}/{codInsumo}/transferir-almacen/{codAlmacen}/{cantidad}";
 
-    public static final String GET_IPV_REGISTRO_LIST_PATH = "/ipv-registro-list/{cod_cocina}/{id_venta}";
-    public static final RequestMethod GET_IPV_REGISTRO_LIST_METHOD = RequestMethod.GET;
+    public static final String REINICIAR_IPV_PATH = "/reiniciar/{idVenta}/{codCocina}";
 
-    public static final String GET_IPV_REGISTRO_VENTA_LIST_PATH = "/ipv-venta-list/{cod_cocina}/{id_venta}";
-    public static final RequestMethod GET_IPV_REGISTRO_VENTA_LIST_METHOD = RequestMethod.GET;
+    public static final String RECALCULAR_IPV_INSUMOS_PATH = "/insumos/{id_venta}/recalcular";
 
-    IpvModelAssembler ipvAssembler = new IpvModelAssembler();
-    IpvRegistroModelAssembler ipvRegistroAssembler = new IpvRegistroModelAssembler();
-    IpvVentaRegistroModelAssembler ipvVentaRegistroAssembler = new IpvVentaRegistroModelAssembler();
+    public static final String RECALCULAR_IPV_VENTAS_PATH = "/productos/{id_venta}/recalcular";
+
+    public static final String HAY_DISPONIBILIDAD_PATH = "/productos/hay-disponibilidad/{id_venta}/{codProducto}/{cantidad}";
+
+    public static final String GET_IPV_REGISTRO_LIST_PATH = "/insumos/{idVenta}/{codCocina}/list";
+
+    public static final String GET_IPV_REGISTRO_VENTA_LIST_PATH = "/productos/{idVenta}/{codCocina}/list";
+
+    public static final String INICIALIZAR_EXISTENCIAS_PATH = "/insumos/{idVenta}/inicializar";
+
+    public static final String INICIALIZAR_IPVS_PATH = "/productos/{idVenta}/inicializar";
+
+    public static final String REGISTRAR_IPVS_PATH = "/insumos/{idVenta}/{codCocina}/registrar/{codInsumo}";
+
+    public static final String DELETE_BY_ID = "/delete/{codCocina}/{codInsumo}";
 
     @Override
     public IPVService getUc() {
         return PosCoreModule.getInstance().getImplementation(IPVService.class);
     }
 
-    @Override
-    public CrudModelAssembler<Ipv> getAssembler() {
-        return ipvAssembler;
-    }
-
     @PutMapping(DAR_ENTRADA_EXISTENCIA_INSUMO_PATH)
-    public boolean darEntradaExistencia(Insumo insumo, Cocina cocina, @RequestParam int idVenta, @RequestParam float cantidad) {
-        getUc().darEntradaExistencia(insumo, cocina, idVenta, cantidad);
-        return true;
+    @Override
+    public IpvRegistro darEntradaExistencia(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int idVenta,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().darEntradaExistencia(codInsumo, codCocina, idVenta, cantidad);
     }
 
     @PutMapping(DAR_ENTRADA_IPV_PATH)
-    public boolean darEntradaIPV(@RequestBody IpvVentaRegistro ipv_venta_registro_seleccionado, @RequestParam float cantidad) {
-        getUc().darEntradaIPV(ipv_venta_registro_seleccionado, cantidad);
-        return true;
+    @Override
+    public IpvVentaRegistro darEntradaIPV(@PathVariable("codProducto") String codProductoVenta,
+            @PathVariable("idVenta") int codVenta,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().darEntradaIPV(codProductoVenta, codVenta, cantidad);
     }
 
     @PutMapping(AJUSTAR_CONSUMO_PATH)
-    public boolean ajustarConsumo(@RequestBody IpvRegistro ipv_registro_seleciconado, @RequestParam float cantidad) {
-        getUc().ajustarConsumo(ipv_registro_seleciconado, cantidad);
-        return true;
+    @Override
+    public IpvRegistro ajustarConsumo(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int codVenta,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().ajustarConsumo(codInsumo, codCocina, codVenta, cantidad);
+    }
+
+    @PutMapping(AJUSTAR_COSTO_PATH)
+    @Override
+    public IpvRegistro ajustarCosto(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int codVenta,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().ajustarCosto(codInsumo, codCocina, codVenta, cantidad);
     }
 
     @PutMapping(TRANSFERIR_IPV_REGISTRO_PATH)
-    public boolean transferirIPVRegistro(@RequestBody IpvRegistro ipv_registro_seleciconado, @RequestBody Cocina cocina, @RequestParam float cantidad) {
-        getUc().transferirIPVRegistro(ipv_registro_seleciconado, cocina, cantidad);
-        return true;
+    @Override
+    public IpvRegistro transferirIPVRegistro(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int codVenta,
+            @PathVariable("codCocinaTransferir") String codCocinaTransferir,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().transferirIPVRegistro(codInsumo, codCocina, codVenta, codCocinaTransferir, cantidad);
     }
 
     @PutMapping(TRANSFERIR_IPV_REGISTRO_TO_ALMACEN_PATH)
-    public boolean transferirIPVRegistroToAlmacen(@RequestBody IpvRegistro ipv_registro_seleciconado, @RequestBody Almacen almacen, @RequestParam float cantidad) {
-        getUc().transferirIPVRegistroToAlmacen(ipv_registro_seleciconado, almacen, cantidad);
-        return true;
+    @Override
+    public IpvRegistro transferirIPVRegistroToAlmacen(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int codVenta,
+            @PathVariable("codAlmacen") String codAlmacenDestino,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().transferirIPVRegistroToAlmacen(codInsumo, codCocina, codVenta, codAlmacenDestino, cantidad);
     }
 
     @PutMapping(REINICIAR_IPV_PATH)
-    public boolean reiniciarIPV(@RequestBody Cocina cocina, @RequestBody Venta venta) {
-        getUc().reiniciarIPV(cocina, venta);
-        return true;
+    @Override
+    public boolean reiniciarIPV(@PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int codVenta) {
+        return getUc().reiniciarIPV(codCocina, codVenta);
     }
 
+    @PutMapping(RECALCULAR_IPV_INSUMOS_PATH)
+    @Override
+    public boolean recalcularExistencias(@PathVariable("idVenta") int idVenta) {
+        return getUc().recalcularExistencias(idVenta);
+    }
+
+    @PutMapping(RECALCULAR_IPV_VENTAS_PATH)
+    @Override
+    public boolean recalcularIpvRegistros(@PathVariable("idVenta") int idVenta) {
+        return getUc().recalcularIpvRegistros(idVenta);
+    }
+
+    @GetMapping(HAY_DISPONIBILIDAD_PATH)
+    @Override
+    public boolean hayDisponibilidad(@PathVariable("codProducto") String codProducto,
+            @PathVariable("idVenta") int idVenta,
+            @PathVariable("cantidad") float cantidad) {
+        return getUc().hayDisponibilidad(codProducto, idVenta, cantidad);
+    }
+
+    @GetMapping(GET_IPV_REGISTRO_LIST_PATH)
+    @Override
+    public List<IpvRegistro> getIpvRegistroList(@PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int idVenta) {
+        return getUc().getIpvRegistroList(codCocina, idVenta);
+    }
+
+    @GetMapping(GET_IPV_REGISTRO_VENTA_LIST_PATH)
+    @Override
+    public List<IpvVentaRegistro> getIpvRegistroVentaList(@PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int idVenta) {
+        return getUc().getIpvRegistroVentaList(codCocina, idVenta);
+    }
+
+    @PutMapping(INICIALIZAR_EXISTENCIAS_PATH)
+    @Override
+    public List<IpvRegistro> inicializarExistencias(@PathVariable("idVenta") int idVenta) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @PutMapping(INICIALIZAR_IPVS_PATH)
+    @Override
+    public List<IpvVentaRegistro> inicializarIpvs(@PathVariable("idVenta") int idVenta) {
+        throw new UnsupportedOperationException(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @PutMapping(REGISTRAR_IPVS_PATH)
+    @Override
+    public IpvRegistro registrarIPV(@PathVariable("codInsumo") String codInsumo,
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("idVenta") int idVenta) {
+        return getUc().registrarIPV(codInsumo, codCocina, idVenta);
+    }
+
+    @DeleteMapping(DELETE_BY_ID)
+    public Ipv deleteAux(
+            @PathVariable("codCocina") String codCocina,
+            @PathVariable("codInsumo") String codInsumo) {
+        return getUc().destroyById(new IpvPK(codInsumo, codCocina));
+    }
+
+    //
+    // Compatibilidad
+    //
     @GetMapping(value = {"/ipv-registro-list/{cod_cocina}", "/ipv-registro-list/{cod_cocina}/{id_venta}"})
     public synchronized ResponseEntity<List<IpvRegistroModel>> getIpvRegistroList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
-        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        PuntoElaboracionService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
         var pto = puntoElaboracionListService.findBy(codCocina);
         if (codVenta == null) {
-            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class).resolveVentaAbierta().getId();
         }
-        var list = getUc().getIpvRegistroList(pto, codVenta);
+        var list = getUc().getIpvRegistroList(pto.getCodCocina(), codVenta);
         List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
         ret = ret.stream().filter((t) -> {
             return t.getDisponible() != 0;
@@ -137,12 +222,12 @@ public class IPVEndPoint extends CrudRestServiceTemplate<Ipv> {
     public synchronized ResponseEntity<List<IpvRegistroModel>> getIpvRegistroVentaList(
             @PathVariable("cod_cocina") String codCocina,
             @PathVariable(value = "cod_venta", required = false) Integer codVenta) {
-        PuntoElaboracionListService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionListService.class);
+        PuntoElaboracionService puntoElaboracionListService = PosCoreModule.getInstance().getImplementation(PuntoElaboracionService.class);
         var pto = puntoElaboracionListService.findBy(codCocina);
         if (codVenta == null) {
-            codVenta = PosCoreModule.getInstance().getImplementation(VentaListService.class).resolveVentaAbierta().getId();
+            codVenta = PosCoreModule.getInstance().getImplementation(VentaCalendarResumeUseCase.class).resolveVentaAbierta().getId();
         }
-        var list = getUc().getIpvRegistroVentaList(pto, codVenta);
+        var list = getUc().getIpvRegistroVentaList(pto.getCodCocina(), codVenta);
         List<IpvRegistroModel> ret = list.stream().map(i -> IpvRegistroModel.from(i)).collect(Collectors.toList());
         ret = ret.stream().filter((t) -> {
             return t.getDisponible() != 0;
