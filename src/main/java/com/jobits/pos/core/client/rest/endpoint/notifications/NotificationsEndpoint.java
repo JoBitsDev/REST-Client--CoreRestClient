@@ -11,27 +11,22 @@ import com.jobits.pos.core.client.rest.persistence.models.ProductoVentaOrdenMode
 import com.jobits.pos.core.domain.models.NotificacionEnvioCocina;
 import com.jobits.pos.core.domain.models.ProductoVenta;
 import com.jobits.pos.core.module.PosCoreModule;
+import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * JoBits
  *
  * @author Jorge
- *
  */
 @RestController
-@RequestMapping(path = "/notifications")
+@RequestMapping(path = "pos/notifications")
 public class NotificationsEndpoint extends DefaultEndpoint {
 
     private NotificacionPuntoElaboracionService service = PosCoreModule.getInstance().getImplementation(NotificacionPuntoElaboracionService.class);
@@ -41,11 +36,11 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     }
 
     @GetMapping(path = "{cod_cocina}/get-pending")
-    public synchronized  ResponseEntity<List<ProductoVentaOrdenModel>> showPending(@PathVariable("cod_cocina") String codCocina, HttpServletRequest inRequest) {
+    public synchronized ResponseEntity<List<ProductoVentaOrdenModel>> showPending(@PathVariable("cod_cocina") String codCocina, HttpServletRequest inRequest) {
         service.linkDeviceAsPrinter(codCocina, inRequest.getRemoteHost());
         List<ProductoVentaOrdenModel> ret = new ArrayList<>();
         var all = service.getPendingNotificationsFrom(codCocina);
-        Collections.sort(all,(o1, o2) -> {
+        Collections.sort(all, (o1, o2) -> {
             return o1.getHoraNotificacion().compareTo(o2.getHoraNotificacion());
         });
         for (NotificacionEnvioCocina x : all) {
@@ -55,9 +50,9 @@ public class NotificationsEndpoint extends DefaultEndpoint {
     }
 
     @PostMapping("notify/{cod_orden}/{id_producto_orden}/{cantidad}")
-    public synchronized  ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
-            @PathVariable("id_producto_orden") int codProductoOrden,
-            @PathVariable("cantidad") float cantidad) {
+    public synchronized ResponseEntity<List<String>> notifyCocina(@PathVariable("cod_orden") String codOrden,
+                                                                  @PathVariable("id_producto_orden") int codProductoOrden,
+                                                                  @PathVariable("cantidad") float cantidad) {
         ordService.markReadyToPickup(codOrden, codProductoOrden, cantidad);
         return ResponseEntity.ok(Collections.singletonList("Notificacion Exitosa"));
     }

@@ -6,61 +6,30 @@
 package com.jobits.pos.core.client.rest.endpoint.gasto;
 
 import com.jobits.pos.controller.gasto.GastoOperacionService;
-import com.jobits.pos.core.client.rest.assembler.DefaultCostoModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.GastoOperacionModelAssembler;
-import com.jobits.pos.core.client.rest.assembler.TipoGastoModelAssembler;
 import com.jobits.pos.core.domain.models.GastoVenta;
-import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.domain.models.temporal.DefaultGasto;
 import com.jobits.pos.core.module.PosCoreModule;
 import com.jobits.pos.recursos.R;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/gasto_operacion")
-public class GastoOperacionEndPoint extends CrudRestServiceTemplate<GastoVenta> {
+@RequestMapping(path = "pos/gastos")
+public class GastoOperacionEndPoint extends CrudRestEndPointTemplate<GastoVenta, GastoOperacionService> implements GastoOperacionService {
 
-    public static final String CREATE_GASTO_PATH = "/create_gasto";
-    public static final RequestMethod CREATE_GASTO_METHOD = RequestMethod.POST;
 
-    public static final String REMOVE_GASTO_PATH = "/remove_gasto";
-    public static final RequestMethod DAR_ENTRADA_IPV_METHOD = RequestMethod.DELETE;
-
-    public static final String GET_VALOR_TOTAL_GASTOS_PATH = "/dar_entrada_ipv";
-    public static final RequestMethod GET_VALOR_TOTAL_GASTOS_METHOD = RequestMethod.GET;
-
-    public static final String GET_NOMBRE_BY_TIPO_PATH = "/get_nombres_by_tipo";
-    public static final RequestMethod GET_NOMBRES_BY_TIPO_METHOD = RequestMethod.GET;
-
-    public static final String GET_DEFAULT_GASTOS_LIST_PATH = "/get_default_gastos_list";
-    public static final RequestMethod GET_DEFAULT_GASTOS_LIST__METHOD = RequestMethod.GET;
-
-    public static final String AGREGAR_DEFAULT_GASTO_PATH = "/agregar_default_gasto";
-    public static final RequestMethod AGREGAR_DEFAULT_GASTO_METHOD = RequestMethod.POST;
-
-    public static final String ELIMINAR_DEFAULT_GASTO_PATH = "/eliminar_default_gasto";
-    public static final RequestMethod ELIMINAR_DEFAULT_GASTO_METHOD = RequestMethod.DELETE;
-
-    GastoOperacionModelAssembler gastoOperacionAssembler = new GastoOperacionModelAssembler();
-    DefaultCostoModelAssembler defaultCostoAssembler = new DefaultCostoModelAssembler();
-    TipoGastoModelAssembler tipoGastoAssembler = new TipoGastoModelAssembler();
+    public static final String CREATE_GASTO_PATH = "/create-gasto/{idVenta}/{tipo}/{nombre}/{monto}/{desc}";
+    public static final String REMOVE_GASTO_PATH = "/remove-gasto/{idVenta}/{codGasto}";
+    public static final String GET_VALOR_TOTAL_GASTOS_PATH = "/{idVenta}/get-valor-total-gastos";
+    public static final String GET_NOMBRE_BY_TIPO_PATH = "/nombres-por-tipo/{tipo}";
+    public static final String GET_DEFAULT_GASTOS_LIST_PATH = "/default-gastos-list";
+    public static final String AGREGAR_DEFAULT_GASTO_PATH = "/agregar-gasto/{categoria}/{alias}/{nombre}/{monto}/{desc}";
+    public static final String ELIMINAR_DEFAULT_GASTO_PATH = "/eliminar-gasto";
 
     @Override
     public GastoOperacionService getUc() {
@@ -68,55 +37,52 @@ public class GastoOperacionEndPoint extends CrudRestServiceTemplate<GastoVenta> 
     }
 
     @Override
-    public CrudModelAssembler<GastoVenta> getAssembler() {
-        return gastoOperacionAssembler;
+    @PostMapping(CREATE_GASTO_PATH)
+    public GastoVenta createGasto(@PathVariable("tipo") R.TipoGasto tipoGasto,
+                                  @PathVariable("nombre") String nombre,
+                                  @PathVariable("monto") float monto,
+                                  @PathVariable(value = "desc", required = false) String desc,
+                                  @PathVariable("idVenta") int idVenta) {
+        return getUc().createGasto(tipoGasto, nombre, monto, desc, idVenta);
     }
 
-    @PutMapping(CREATE_GASTO_PATH)
-    public boolean createGasto(@RequestBody R.TipoGasto cat, @RequestParam String nombre, @RequestParam float monto, @RequestParam String descripcion, @RequestBody Venta venta) {
-        getUc().createGasto(cat, nombre, monto, descripcion, venta);
-        return true;
+    @Override
+    @DeleteMapping(REMOVE_GASTO_PATH)
+    public GastoVenta removeGasto(@PathVariable("codGasto") String codGasto, @PathVariable("idVenta") int idVenta) {
+        return getUc().removeGasto(codGasto, idVenta);
     }
 
-    @PutMapping(REMOVE_GASTO_PATH)
-    public boolean removeGasto(@RequestBody GastoVenta gastoVenta, @RequestBody Venta diaVenta) {
-        getUc().removeGasto(gastoVenta.getGastoVentaPK());
-        return true;
-    }
-
+    @Override
     @GetMapping(GET_VALOR_TOTAL_GASTOS_PATH)
-    public float getValorTotalGastos(@RequestBody Venta diaVenta) {
-        return getUc().getValorTotalGastos(diaVenta.getId());
+    public float getValorTotalGastos(@PathVariable("idVenta") int idVenta) {
+        return getUc().getValorTotalGastos(idVenta);
     }
 
+
+    @Override
     @GetMapping(GET_NOMBRE_BY_TIPO_PATH)
-    public CollectionModel<EntityModel<String>> getNombresByTipo(@RequestParam String toString) {
-        CollectionModel<EntityModel<String>> entityModel
-                = tipoGastoAssembler.toCollectionModel(getUc().getNombresByTipo(toString));
-        entityModel.add(linkTo(methodOn(GastoOperacionEndPoint.class).getNombresByTipo(toString)).withRel("get_nombres_by_tipo"));
-        return entityModel;
+    public List<String> getNombresByTipo(@PathVariable("tipo") String tipo) {
+        return getUc().getNombresByTipo(tipo);
     }
 
+
+    @Override
     @GetMapping(GET_DEFAULT_GASTOS_LIST_PATH)
-    public CollectionModel<EntityModel<DefaultGasto>> getDefaultGastosList() {
-        CollectionModel<EntityModel<DefaultGasto>> entityModel
-                = defaultCostoAssembler.toCollectionModel(getUc().getDefaultGastosList());
-        entityModel.add(linkTo(methodOn(GastoOperacionEndPoint.class).getDefaultGastosList()).withRel("get_default_gastos_list"));
-        return entityModel;
-
+    public List<DefaultGasto> getDefaultGastosList() {
+        return getUc().getDefaultGastosList();
     }
 
-    @PutMapping(AGREGAR_DEFAULT_GASTO_PATH)
-    public EntityModel<DefaultGasto> agregarDefaultGasto(@RequestParam String alias, @RequestBody R.TipoGasto cat, @RequestParam String nombre, @RequestParam float monto, @RequestParam String descripcion) {
-        EntityModel<DefaultGasto> entityModel
-                = defaultCostoAssembler.toModel(getUc().agregarDefaultGasto(alias, cat, nombre, monto, descripcion));
-        entityModel.add(linkTo(methodOn(GastoOperacionEndPoint.class).getDefaultGastosList()).withRel("agregar_default_gasto"));
-        return entityModel;
+    @Override
+    @PostMapping(AGREGAR_DEFAULT_GASTO_PATH)
+    public DefaultGasto agregarDefaultGasto(@PathVariable("alias") String alias, @PathVariable("categoria") R.TipoGasto cat, @PathVariable("nombre") String nombre, @PathVariable("monto") float monto, @PathVariable("desc") String descripcion) {
+        return getUc().agregarDefaultGasto(alias, cat, nombre, monto, descripcion);
     }
 
+
+    @Override
     @PutMapping(ELIMINAR_DEFAULT_GASTO_PATH)
-    public boolean eliminarDefaultGasto(@RequestBody DefaultGasto gasto) {
-        getUc().eliminarDefaultGasto(gasto);
-        return true;
+    public DefaultGasto eliminarDefaultGasto(@RequestBody DefaultGasto defaultGasto) {
+        return getUc().eliminarDefaultGasto(defaultGasto);
     }
+
 }

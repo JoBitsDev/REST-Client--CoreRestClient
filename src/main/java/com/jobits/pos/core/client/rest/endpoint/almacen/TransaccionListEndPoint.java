@@ -5,21 +5,16 @@
  */
 package com.jobits.pos.core.client.rest.endpoint.almacen;
 
-import com.jobits.pos.core.client.rest.assembler.TransaccionModelAssembler;
 import com.jobits.pos.core.module.PosCoreModule;
-import com.jobits.pos.inventario.core.almacen.domain.Almacen;
 import com.jobits.pos.inventario.core.almacen.domain.Transaccion;
 import com.jobits.pos.inventario.core.almacen.usecase.TransaccionListService;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.List;
+import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,30 +22,36 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/transaccion_list")
-public class TransaccionListEndPoint extends CrudRestServiceTemplate<Transaccion> {
+@RequestMapping(path = "pos")
+public class TransaccionListEndPoint extends CrudRestEndPointTemplate<Transaccion, TransaccionListService>
+        implements TransaccionListService {
 
-    public static final String FIND_ALL_BY_ALMACEN_PATH = "/find_all_by_almacen";
-    public static final RequestMethod FIND_ALL_BY_ALMACEN_METHOD = RequestMethod.GET;
+    public static final String FIND_ALL_BY_ALMACEN_PATH = "/almacen/{id}/list-transacciones";
+    public static final String FIND_ALL_BY_ALMACEN_MERMA_PATH = "/almacen/{id}/list-transacciones-merma";
+    public static final String PRINT_PATH = "/transacciones/print";
 
-    TransaccionModelAssembler transaccionAssembler = new TransaccionModelAssembler();
 
     @Override
     public TransaccionListService getUc() {
         return PosCoreModule.getInstance().getImplementation(TransaccionListService.class);
     }
 
+    @GetMapping(FIND_ALL_BY_ALMACEN_PATH)
     @Override
-    public CrudModelAssembler<Transaccion> getAssembler() {
-        return transaccionAssembler;
+    public List<Transaccion> findAllByAlmacen(@PathVariable("id") String string) {
+        return getUc().findAllByAlmacen(string);
     }
 
-    @GetMapping(FIND_ALL_BY_ALMACEN_PATH)
-    public CollectionModel<EntityModel<Transaccion>> findAllByAlmacen(@RequestBody Almacen almacen) {
-        CollectionModel<EntityModel<Transaccion>> entityModel
-                = transaccionAssembler.toCollectionModel(getUc().findAllByAlmacen(almacen));
-        entityModel.add(linkTo(methodOn(TransaccionListEndPoint.class).findAllByAlmacen(almacen)).withRel("find_all_by_almacen"));
-        return entityModel;
+    @GetMapping(FIND_ALL_BY_ALMACEN_MERMA_PATH)
+    @Override
+    public List<Transaccion> findMermasByAlmacen(@PathVariable("id") String string) {
+        return getUc().findMermasByAlmacen(string);
+    }
+
+    @PutMapping(PRINT_PATH)
+    @Override
+    public void imprimirTransaccionesSeleccionadas(@RequestBody List<Transaccion> list) {
+        getUc().imprimirTransaccionesSeleccionadas(list);
     }
 
 }

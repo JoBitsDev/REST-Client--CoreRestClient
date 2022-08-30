@@ -6,82 +6,87 @@
 package com.jobits.pos.core.client.rest.endpoint.trabajador;
 
 import com.jobits.pos.controller.trabajadores.AsistenciaPersonalService;
-import com.jobits.pos.core.client.rest.assembler.AsistenciaPersonalModelAssembler;
 import com.jobits.pos.core.domain.models.AsistenciaPersonal;
-import com.jobits.pos.core.domain.models.Venta;
 import com.jobits.pos.core.module.PosCoreModule;
-import org.jobits.pos.client.rest.assembler.CrudModelAssembler;
-import org.jobits.pos.client.rest.endpoint.CrudRestServiceTemplate;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.jobits.pos.client.rest.endpoint.DefaultEndpoint;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
- *
  * @author Home
  */
 @RestController
-@RequestMapping(path = "/asistencia_personal")
-public class AsistenciaPersonalEndPoint extends CrudRestServiceTemplate<AsistenciaPersonal> {
+@RequestMapping(path = "pos/asistencia-personal")
+public class AsistenciaPersonalEndPoint
+        extends DefaultEndpoint
+        implements AsistenciaPersonalService {
 
-    public static final String IMPRIMIR_ASISTENCIA_PATH = "/imprimir_asistencia";
-    public static final RequestMethod IMPRIMIR_ASISTENCIA_METHOD = RequestMethod.POST;
+    public static final String IMPRIMIR_ASISTENCIA = "/venta/{id}/imprimir-asistencia";
 
-    public static final String UPDATE_A_MAYORES_PATH = "/find_insumo";
-    public static final RequestMethod UPDATE_A_MAYORES_METHOD = RequestMethod.PUT;
+    public static final String CALCULAR_PAGO_TRABAJADOR = "/venta/{id}/calcular-pago/{usuario}";
 
-    public static final String GET_PERSONAL_TRABAJANDO_PATH = "/get_personal_trabajando";
-    public static final RequestMethod GET_PERSONAL_TRABAJANDO_METHOD = RequestMethod.GET;
+    public static final String UPDATE_A_MAYORES = "/venta/{id}/a-mayores/{usuario}/{cantidad}";
 
-    public static final String UPDATE_SALARIES_PATH = "/update_salaries";
-    public static final RequestMethod UPDATE_SALARIES_METHOD = RequestMethod.PUT;
+    public static final String GET_PERSONAL_TRABAJANDO = "/venta/{id}/get-personal-trabajando";
 
-    AsistenciaPersonalModelAssembler asistenciaPersonalAssembler = new AsistenciaPersonalModelAssembler();
+    public static final String UPDATE_SALARIES = "/venta/{id}/update-salaries";
 
-    @Override
+    public static final String CREATE = "/venta/{id}/add-trabajador/{usuario}";
+
+    public static final String FIND_BY = "/venta/{id}/find/{usuario}";
+
+    public static final String DELETE = "/venta/{id}/delete/{usuario}";
+
     public AsistenciaPersonalService getUc() {
         return PosCoreModule.getInstance().getImplementation(AsistenciaPersonalService.class);
     }
 
     @Override
-    public CrudModelAssembler<AsistenciaPersonal> getAssembler() {
-        return asistenciaPersonalAssembler;
+    @PostMapping(CALCULAR_PAGO_TRABAJADOR)
+    public AsistenciaPersonal calcularPagoTrabajador(@PathVariable("id") int idVenta, @PathVariable String usuario) {
+        return getUc().calcularPagoTrabajador(idVenta, usuario);
     }
 
-    @PostMapping(IMPRIMIR_ASISTENCIA_PATH)
-    public boolean imprimirAsistencia(@RequestBody Venta venta) {
-        getUc().imprimirAsistencia(venta.getId());
-        return true;
+    @Override
+    @GetMapping(IMPRIMIR_ASISTENCIA)
+    public void imprimirAsistencia(@PathVariable("id") int idVenta) {
+        getUc().imprimirAsistencia(idVenta);
     }
 
-    @PutMapping(UPDATE_A_MAYORES_PATH)
-    public boolean updateAMayores(@RequestBody AsistenciaPersonal personalABuscar, @RequestParam float aMayoresValor) {
-        getUc().updateAMayores(personalABuscar, aMayoresValor);
-        return true;
+    @Override
+    @PutMapping(UPDATE_A_MAYORES)
+    public AsistenciaPersonal updateAMayores(@PathVariable("id") int idVenta, @PathVariable String usuario, @PathVariable float cantidad) {
+        return getUc().updateAMayores(idVenta, usuario, cantidad);
     }
 
-    @GetMapping(GET_PERSONAL_TRABAJANDO_PATH)
-    CollectionModel<EntityModel<AsistenciaPersonal>> getPersonalTrabajando(@RequestBody Venta v) {
-        CollectionModel<EntityModel<AsistenciaPersonal>> entityModel
-                = asistenciaPersonalAssembler.toCollectionModel(getUc().getPersonalTrabajando(v.getId()));
-        entityModel.add(linkTo(methodOn(AsistenciaPersonalEndPoint.class).getPersonalTrabajando(v)).withRel("get_personal_trabajando"));
-        return entityModel;
+    @Override
+    @GetMapping(GET_PERSONAL_TRABAJANDO)
+    public List<AsistenciaPersonal> getPersonalTrabajando(@PathVariable("id") int idVenta) {
+        return getUc().getPersonalTrabajando(idVenta);
     }
 
-    @PutMapping(UPDATE_SALARIES_PATH)
-    CollectionModel<EntityModel<AsistenciaPersonal>> updateSalaries(@RequestBody Venta venta) {
-        CollectionModel<EntityModel<AsistenciaPersonal>> entityModel
-                = asistenciaPersonalAssembler.toCollectionModel(getUc().updateSalaries(venta.getId()));
-        entityModel.add(linkTo(methodOn(AsistenciaPersonalEndPoint.class).updateSalaries(venta)).withRel("update_salaries"));
-        return entityModel;
+    @Override
+    @GetMapping(UPDATE_SALARIES)
+    public List<AsistenciaPersonal> updateSalaries(@PathVariable("id") int idVenta) {
+        return getUc().updateSalaries(idVenta);
     }
+
+
+    @PostMapping(CREATE)
+    public AsistenciaPersonal create(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().create(idVenta, usuario);
+    }
+
+    @GetMapping(FIND_BY)
+    public AsistenciaPersonal findBy(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().findBy(idVenta, usuario);
+    }
+
+    @DeleteMapping(DELETE)
+    public AsistenciaPersonal destroy(@PathVariable("id") int idVenta, @PathVariable("usuario") String usuario) {
+        return getUc().destroy(idVenta, usuario);
+    }
+
+
 }
