@@ -13,7 +13,6 @@ import com.jobits.pos.recursos.R;
 import org.jobits.pos.client.rest.endpoint.CrudRestEndPointTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
 public class GastoOperacionEndPoint extends CrudRestEndPointTemplate<GastoVenta, GastoOperacionService> implements GastoOperacionService {
 
 
-    public static final String CREATE_GASTO_PATH = "/create-gasto/{idVenta}/{tipo}/{nombre}/{monto}";
+    public static final String CREATE_GASTO_PATH = "/create-gasto/{idVenta}/{tipo}/{nombre}/{monto}/{desc}";
     public static final String REMOVE_GASTO_PATH = "/remove-gasto/{idVenta}/{codGasto}";
     public static final String GET_VALOR_TOTAL_GASTOS_PATH = "/{idVenta}/get-valor-total-gastos";
     public static final String GET_NOMBRE_BY_TIPO_PATH = "/nombres-por-tipo/{tipo}";
@@ -39,7 +38,11 @@ public class GastoOperacionEndPoint extends CrudRestEndPointTemplate<GastoVenta,
 
     @Override
     @PostMapping(CREATE_GASTO_PATH)
-    public GastoVenta createGasto(@PathVariable("tipo") R.TipoGasto tipoGasto, @PathVariable("nombre") String nombre, @PathVariable("monto") float monto, @PathParam("desc") String desc, @PathVariable("idVenta") int idVenta) {
+    public GastoVenta createGasto(@PathVariable("tipo") R.TipoGasto tipoGasto,
+                                  @PathVariable("nombre") String nombre,
+                                  @PathVariable("monto") float monto,
+                                  @PathVariable(value = "desc", required = false) String desc,
+                                  @PathVariable("idVenta") int idVenta) {
         return getUc().createGasto(tipoGasto, nombre, monto, desc, idVenta);
     }
 

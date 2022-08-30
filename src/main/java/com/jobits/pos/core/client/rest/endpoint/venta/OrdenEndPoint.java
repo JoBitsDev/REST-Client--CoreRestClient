@@ -48,6 +48,13 @@ public class OrdenEndPoint extends CrudRestEndPointTemplate<Orden, OrdenService>
     }
 
     @Override
+    @PostMapping(OrdenService.ADD_PRODUCT_ORDEN_PATH)
+    public Orden addProductvOrden(@PathVariable("idProductovOrden") int codProductvOrden,
+                                  @PathVariable("cantidad") Float cantidad) {
+        return getUc().addProductvOrden(codProductvOrden, cantidad);
+    }
+
+    @Override
     @PostMapping(ADD_PRODUCTO_COMPUESTO_PATH)
     public Orden addProductoCompuesto(@PathVariable("codOrden") String codOrden,
                                       @PathVariable("idProducto") String producto_agregar,
